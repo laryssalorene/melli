@@ -1,0 +1,93 @@
+/* public/styles/login.css */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url('/imgs/background2.png'); /* Caminho ajustado */
+    background-size: cover;
+    background-position: center;
+}
+
+.login-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.login-container h1 {
+    color: #02416d;
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #02416d;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cce7f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #333;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #50c8c6;
+    box-shadow: 0 0 0 3px rgba(80, 200, 198, 0.3);
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background-color: #aedd2b;
+    color: #02416d;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #8cc63f;
+}
+
+.error-message {
+    color: #e53e3e;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.link-cadastro {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #02416d;
+}
+
+.link-cadastro a {
+    color: #50c8c6;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.link-cadastro a:hover {
+    text-decoration: underline;
+}

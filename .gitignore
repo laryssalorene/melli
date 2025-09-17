@@ -1,0 +1,42 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.pnpm-store/
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.bak
+temp/
+tmp/
+
+# Variáveis de ambiente
+.env
+.env.local
+.env.*.local
+.DS_Store # macOS
+Thumbs.db # Windows
+
+# Bancos de dados locais (se houver, como SQLite)
+*.sqlite
+*.sqlite3
+/data/*.db # Exemplo: se você armazena um DB na pasta 'data'
+
+# Artefatos de build (se você tivesse um processo de build para o frontend)
+dist/
+build/
+
+# IDEs e Editores de Código
+.vscode/ # Para VS Code - geralmente inclui configurações do workspace, exceto se você quer compartilhar algumas
+.idea/   # Para WebStorm/IntelliJ
+*.swp    # Para Vim
+*~       # Para Emacs
+
+# Dependências de frontend (se você usasse um gerenciador como Bower/Webpack com saída para node_modules)
+# bower_components/
+
+# Outros
+coverage/ # Se você tiver testes com cobertura de código

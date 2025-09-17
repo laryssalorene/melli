@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Área do Herói - Melli Hero</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/home.css" />
+</head>
+<body class="bg-[#f8f8ec] text-[#02416d]">
+
+    <nav class="menu">
+        <div class="logo">🍬 Melli Hero</div>
+        <ul class="menu-desktop menu-links">
+            <li><button id="btn-perfil" class="hover:text-[#aedd2b]">👤 Perfil</button></li>
+            <li><a href="/html/home.html" class="ativo">🎓 Aprender</a></li>
+            <li><a href="#" class="hover:text-[#aedd2b]">⚡ Prática</a></li>
+            <li><a href="#" class="hover:text-[#aedd2b]">🏆 Conquistas</a></li>
+            <li><button id="btn-logout" class="ml-4 px-3 py-1 bg-red-500 rounded hover:bg-red-600 text-white">Sair</button></li>
+        </ul>
+        <button id="menu-toggle" class="mobile-toggle-btn">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </nav>
+    
+    <ul id="mobile-menu" class="mobile-menu-items">
+        <li><button id="btn-perfil-mobile" class="block w-full text-left hover:text-[#aedd2b]">👤 Perfil</button></li>
+        <li><a href="/html/home.html" class="block hover:text-[#aedd2b]">🎓 Aprender</a></li>
+        <li><a href="#" class="block hover:text-[#aedd2b]">⚡ Prática</a></li>
+        <li><a href="#" class="block hover:text-[#aedd2b]">🏆 Conquistas</a></li>
+        <li><button id="btn-logout-mobile" class="mt-2 block w-full text-left px-3 py-1 bg-red-500 rounded hover:bg-red-600">Sair</button></li>
+    </ul>
+
+    <div class="conteudo">
+        <aside class="coluna-esquerda" id="coluna-esquerda">
+            <div class="avatar">
+                <img src="/img/avatar-default.png" alt="Avatar do usuário" />
+            </div>
+            <div class="info">
+                <p>Nome: <strong id="user-name">Carregando...</strong></p>
+                <p>🔥 Sequência: <strong id="user-assiduidade">0 dias</strong></p>
+                <p>⭐ XP: <strong id="user-pontos">0</strong></p>
+                <p>⚙️ Configurações</p>
+            </div>
+        </aside>
+
+        <main class="coluna-centro">
+            <h1>Bem-vindo, <span id="welcome-name">herói do açúcar</span>! 🍭</h1>
+            <p>Escolha um módulo para continuar sua jornada.</p>
+            <div class="modulos" id="modulos-container">
+                <p>Carregando módulos...</p>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const btnPerfil = document.getElementById("btn-perfil");
+        const btnPerfilMobile = document.getElementById("btn-perfil-mobile");
+        const colunaEsquerda = document.getElementById("coluna-esquerda");
+        const menuToggle = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const modulosContainer = document.getElementById("modulos-container");
+        const userNameSpan = document.getElementById("user-name");
+        const userAssiduidadeSpan = document.getElementById("user-assiduidade");
+        const userPontosSpan = document.getElementById("user-pontos");
+        const welcomeNameSpan = document.getElementById("welcome-name");
+        const btnLogout = document.getElementById('btn-logout');
+        const btnLogoutMobile = document.getElementById('btn-logout-mobile');
+
+        // Função auxiliar para fazer requisições autenticadas
+        async function fetchAuthenticatedData(url, options = {}) {
+            const token = localStorage.getItem('melliHeroToken');
+            if (!token) {
+                alert('Sessão expirada ou não autorizado. Faça login novamente.');
+                localStorage.removeItem('melliHeroToken');
+                localStorage.removeItem('melliHeroUser');
+                window.location.href = '/html/login.html';
+                return null;
+            }
+
+            const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            const response = await fetch(url, { ...options, headers });
+
+            if (response.status === 401 || response.status === 403) {
+                alert('Sessão expirada ou não autorizada. Faça login novamente.');
+                localStorage.removeItem('melliHeroToken');
+                localStorage.removeItem('melliHeroUser');
+                window.location.href = '/html/login.html';
+                return null;
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
+            }
+
+            return response.json();
+        }
+
+        // Função para carregar e exibir os dados do perfil do usuário
+        async function loadUserProfile() {
+            try {
+                const user = await fetchAuthenticatedData('/api/profile');
+                if (user) {
+                    userNameSpan.textContent = user.nome;
+                    userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
+                    userPontosSpan.textContent = user.pontos;
+                    welcomeNameSpan.textContent = user.nome.split(' ')[0];
+                    
+                    localStorage.setItem('melliHeroUser', JSON.stringify({
+                        id_usuario: user.id_usuario,
+                        nome: user.nome,
+                        email: user.email,
+                        pontos: user.pontos,
+                        assiduidade_dias: user.assiduidade_dias
+                    }));
+                }
+            } catch (error) {
+                console.error('Erro ao carregar perfil do usuário:', error);
+            }
+        }
+
+        // Função para carregar e exibir os módulos
+        async function loadModules() {
+            modulosContainer.innerHTML = '<p>Carregando módulos...</p>';
+
+            try {
+                const modules = await fetchAuthenticatedData('/api/modules');
+                
+
+                if (modules) { // Era 'if (modules && progress)'
+                    modulosContainer.innerHTML = '';
+
+                    modules.forEach(module => {
+                        let moduleIsActuallyUnlocked = false;
+                        if (module.ordem === 1) {
+                            moduleIsActuallyUnlocked = true;
+                        } else {
+                            const previousModuleOrder = module.ordem - 1;
+                            // Mude como você acessa o progresso. Agora, 'modules' já contém o 'unidades_concluidas'
+                            // Isso pressupõe que seu backend já calcula se um módulo anterior está completo
+                            // ou que você terá uma lógica mais robusta para isso no backend/frontend
+                            
+                            // Exemplo de como você PODE adaptar se modules.unidades_concluidas é suficiente
+                            // Isso é uma simplificação. A lógica exata dependerá de como o backend determina
+                            // se um módulo está 'completo' para desbloquear o próximo.
+                            
+                            // Se o backend enviar um campo 'concluido_modulo' no próprio objeto 'module':
+                            // const previousModule = modules.find(m => m.ordem === previousModuleOrder);
+                            // if (previousModule && previousModule.concluido_modulo) {
+                            //    moduleIsActuallyUnlocked = true;
+                            // }
+
+                            // Por agora, vamos simplificar a lógica de desbloqueio para testar:
+                            // Por exemplo, o módulo anterior está desbloqueado se tiver unidades concluídas
+                            // (essa lógica precisa ser mais precisa dependendo do que 'concluido_modulo' significa)
+                            const previousModule = modules.find(m => m.ordem === previousModuleOrder);
+                            if (previousModule && previousModule.unidades_concluidas === previousModule.total_unidades && previousModule.total_unidades > 0) 
+                            {
+                                moduleIsActuallyUnlocked = true;
+                            }
+                        }
+
+                const moduleClass = moduleIsActuallyUnlocked ? 'modulo desbloqueado' : 'modulo bloqueado';
+                const moduleLink = moduleIsActuallyUnlocked 
+                    ? `<a href="/html/modulo.html?id=${module.id_modulo}" class="${moduleClass}">${module.nome_modulo}</a>` 
+                    : `<div class="${moduleClass}">🔒 ${module.nome_modulo}</div>`;
+                
+                modulosContainer.innerHTML += moduleLink;
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar módulos:', error);
+        modulosContainer.innerHTML = '<p>Erro ao carregar módulos. Tente novamente mais tarde.</p>';
+    }
+}
+
+        // Função para fazer logout
+        function logout() {
+            localStorage.removeItem('melliHeroToken');
+            localStorage.removeItem('melliHeroUser');
+            alert('Você foi desconectado.');
+            window.location.href = '/html/login.html';
+        }
+
+        // ------------------------------------
+        // Event Listeners e Inicialização
+        // ------------------------------------
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserProfile();
+            loadModules();
+        });
+
+        // Toggle do painel de perfil
+        btnPerfil.addEventListener("click", () => {
+            colunaEsquerda.classList.toggle("visivel");
+        });
+
+        if (btnPerfilMobile) { 
+            btnPerfilMobile.addEventListener("click", () => {
+                colunaEsquerda.classList.toggle("visivel"); 
+                mobileMenu.classList.remove("visivel"); 
+            }); 
+        }
+
+        // Lógica CORRIGIDA para o menu hambúrguer
+        menuToggle.addEventListener("click", () => {
+            mobileMenu.classList.toggle("visivel");
+            colunaEsquerda.classList.remove("visivel"); 
+        });
+
+        btnLogout.addEventListener('click', logout);
+        if (btnLogoutMobile) { 
+            btnLogoutMobile.addEventListener('click', logout); 
+        }
+    </script>
+</body>
+</html>

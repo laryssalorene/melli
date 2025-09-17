@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - Melli Hero</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/home.css" />
+    <link rel="stylesheet" href="/styles/quiz.css" />
+</head>
+<body class="bg-[#f8f8ec] text-[#02416d]">
+
+    <nav class="menu">
+        <div class="logo">🍬 Melli Hero</div>
+        <ul class="menu-desktop menu-links">
+            <li><button id="btn-perfil" class="hover:text-[#aedd2b]">👤 Perfil</button></li>
+            <li><a href="/html/home.html" class="ativo">🎓 Aprender</a></li>
+            <li><a href="#" class="hover:text-[#aedd2b]">⚡ Prática</a></li>
+            <li><a href="#" class="hover:text-[#aedd2b]">🏆 Conquistas</a></li>
+            <li><button id="btn-logout" class="ml-4 px-3 py-1 bg-red-500 rounded hover:bg-red-600 text-white">Sair</button></li>
+        </ul>
+        <button id="menu-toggle" class="mobile-toggle-btn">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </nav>
+    
+    <ul id="mobile-menu" class="mobile-menu-items">
+        <li><button id="btn-perfil-mobile" class="block w-full text-left hover:text-[#aedd2b]">👤 Perfil</button></li>
+        <li><a href="/html/home.html" class="block hover:text-[#aedd2b]">🎓 Aprender</a></li>
+        <li><a href="#" class="block hover:text-[#aedd2b]">⚡ Prática</a></li>
+        <li><a href="#" class="block hover:text-[#aedd2b]">🏆 Conquistas</a></li>
+        <li><button id="btn-logout-mobile" class="mt-2 block w-full text-left px-3 py-1 bg-red-500 rounded hover:bg-red-600">Sair</button></li>
+    </ul>
+
+    <div class="conteudo">
+        <aside class="coluna-esquerda" id="coluna-esquerda">
+            <div class="avatar">
+                <img src="/img/avatar-default.png" alt="Avatar do usuário" />
+            </div>
+            <div class="info">
+                <p>Nome: <strong id="user-name">Carregando...</strong></p>
+                <p>🔥 Sequência: <strong id="user-assiduidade">0 dias</strong></p>
+                <p>⭐ XP: <strong id="user-pontos">0</strong></p>
+                <p>⚙️ Configurações</p>
+            </div>
+        </aside>
+
+        <main class="coluna-centro">
+            <div class="quiz-container">
+                <h1 id="unit-title" class="text-3xl font-bold mb-4">Carregando Quiz...</h1>
+                <div id="quiz-content">
+                    <div id="question-area" class="bg-white p-6 rounded-lg shadow-md mb-6">
+                        <p id="question-counter" class="text-sm text-gray-500 mb-2">Questão 1 de X</p>
+                        <img id="question-image" class="w-full h-48 object-contain mb-4 hidden" alt="Imagem da Questão">
+                        <p id="question-text" class="text-xl font-semibold mb-4"></p>
+                        <div id="alternatives-container" class="grid grid-cols-1 gap-3">
+                            </div>
+                        <button id="submit-button" class="mt-6 w-full py-3 bg-[#066699] text-white rounded-lg font-bold hover:bg-[#044b73] transition-colors">Confirmar Resposta</button>
+                    </div>
+                </div>
+
+                <div id="results-area" class="hidden bg-white p-8 rounded-lg shadow-md text-center">
+                    <h2 class="text-3xl font-bold text-[#02416d] mb-4">Quiz Concluído!</h2>
+                    <p class="text-xl mb-2">Sua pontuação: <span id="final-score" class="font-bold text-[#aedd2b]"></span></p>
+                    <p class="text-md text-gray-700 mb-6">Parabéns por completar a unidade!</p>
+                    <button id="return-to-modules-button" class="py-3 px-6 bg-[#50c8c6] text-white rounded-lg font-bold hover:bg-[#3aa6a4] transition-colors">Voltar para Módulos</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Funções de Perfil e Autenticação (reutilizadas de home.html e modulo.html)
+        const btnPerfil = document.getElementById("btn-perfil");
+        const btnPerfilMobile = document.getElementById("btn-perfil-mobile");
+        const colunaEsquerda = document.getElementById("coluna-esquerda");
+        const menuToggle = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const userNameSpan = document.getElementById("user-name");
+        const userAssiduidadeSpan = document.getElementById("user-assiduidade");
+        const userPontosSpan = document.getElementById("user-pontos");
+        const btnLogout = document.getElementById('btn-logout');
+        const btnLogoutMobile = document.getElementById('btn-logout-mobile');
+
+        async function fetchAuthenticatedData(url, options = {}) {
+            const token = localStorage.getItem('melliHeroToken');
+            if (!token) {
+                alert('Sessão expirada ou não autorizado. Faça login novamente.');
+                localStorage.removeItem('melliHeroToken');
+                localStorage.removeItem('melliHeroUser');
+                window.location.href = '/html/login.html';
+                return null;
+            }
+
+            const headers = { ...options.headers, 'Authorization': `Bearer ${token}` };
+            const response = await fetch(url, { ...options, headers });
+
+            if (response.status === 401 || response.status === 403) {
+                alert('Sessão expirada ou não autorizada. Faça login novamente.');
+                localStorage.removeItem('melliHeroToken');
+                localStorage.removeItem('melliHeroUser');
+                window.location.href = '/html/login.html';
+                return null;
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
+            }
+
+            return response.json();
+        }
+
+        async function loadUserProfile() {
+            try {
+                const user = await fetchAuthenticatedData('/api/profile');
+                if (user) {
+                    userNameSpan.textContent = user.nome;
+                    userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
+                    userPontosSpan.textContent = user.pontos;
+                    localStorage.setItem('melliHeroUser', JSON.stringify(user));
+                }
+            } catch (error) {
+                console.error('Erro ao carregar perfil do usuário:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('melliHeroToken');
+            localStorage.removeItem('melliHeroUser');
+            alert('Você foi desconectado.');
+            window.location.href = '/html/login.html';
+        }
+
+        // ----------------------------------------------------
+        // Lógica Específica da Página de Quiz
+        // ----------------------------------------------------
+
+        let questions = []; // Array para armazenar as questões do quiz
+        let currentQuestionIndex = 0; // Índice da questão atual
+        let userScore = 0; // Pontuação do usuário
+        let unitId = null; // ID da unidade atual
+
+        const unitTitleElement = document.getElementById('unit-title');
+        const questionCounterElement = document.getElementById('question-counter');
+        const questionImageElement = document.getElementById('question-image');
+        const questionTextElement = document.getElementById('question-text');
+        const alternativesContainer = document.getElementById('alternatives-container');
+        const submitButton = document.getElementById('submit-button');
+        const quizContent = document.getElementById('quiz-content');
+        const resultsArea = document.getElementById('results-area');
+        const finalScoreElement = document.getElementById('final-score');
+        const returnToModulesButton = document.getElementById('return-to-modules-button');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            loadUserProfile();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            unitId = urlParams.get('unitId');
+
+            if (!unitId) {
+                unitTitleElement.textContent = 'Unidade não especificada.';
+                questionTextElement.textContent = 'Retorne à página de módulos para selecionar uma unidade.';
+                submitButton.disabled = true;
+                return;
+            }
+
+            try {
+                // Carrega informações da unidade
+                const unitInfo = await fetchAuthenticatedData(`/api/units/${unitId}`);
+                if (unitInfo) {
+                    unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
+                }
+
+                // Carrega as questões do quiz
+                const fetchedQuestions = await fetchAuthenticatedData(`/api/units/${unitId}/questions`);
+                if (fetchedQuestions && fetchedQuestions.length > 0) {
+                    questions = fetchedQuestions;
+                    displayQuestion(currentQuestionIndex);
+                } else {
+                    unitTitleElement.textContent = `Nenhuma questão encontrada para esta unidade.`;
+                    questionTextElement.textContent = 'Retorne à página de módulos.';
+                    submitButton.disabled = true;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar quiz:', error);
+                unitTitleElement.textContent = 'Erro ao carregar o quiz.';
+                questionTextElement.textContent = 'Tente novamente mais tarde.';
+                submitButton.disabled = true;
+            }
+        });
+
+        function displayQuestion(index) {
+            const question = questions[index];
+            if (!question) {
+                // Se não há mais questões, mostra os resultados
+                showResults();
+                return;
+            }
+
+            questionCounterElement.textContent = `Questão ${index + 1} de ${questions.length}`;
+            questionTextElement.textContent = question.texto_questao;
+
+            // Exibe a imagem da questão se existir, senão esconde
+            if (question.img_url) {
+                questionImageElement.src = question.img_url;
+                questionImageElement.classList.remove('hidden');
+            } else {
+                questionImageElement.classList.add('hidden');
+                questionImageElement.src = ''; // Limpa a src para evitar erro de imagem quebrada
+            }
+
+            alternativesContainer.innerHTML = ''; // Limpa alternativas anteriores
+            question.alternatives.forEach(alternative => {
+                const label = document.createElement('label');
+                label.className = 'alternative-item';
+                label.innerHTML = `
+                    <input type="radio" name="alternative" value="${alternative.id_alternativa}" class="hidden" data-correct="${alternative.correta}">
+                    <span>${alternative.texto_alternativa}</span>
+                `;
+                alternativesContainer.appendChild(label);
+            });
+
+            submitButton.disabled = false;
+            submitButton.textContent = 'Confirmar Resposta';
+        }
+
+        submitButton.addEventListener('click', () => {
+            const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
+
+            if (!selectedAlternative) {
+                alert('Por favor, selecione uma alternativa!');
+                return;
+            }
+
+            const isCorrect = selectedAlternative.dataset.correct === '1';
+            
+            // Marca a alternativa selecionada com feedback visual
+            const labelSelected = selectedAlternative.closest('label');
+            if (isCorrect) {
+                labelSelected.classList.add('correct-answer');
+                userScore++; // Incrementa a pontuação se a resposta estiver correta
+            } else {
+                labelSelected.classList.add('wrong-answer');
+                // Opcional: mostrar a resposta correta
+                const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
+                correctAnswerLabel.classList.add('correct-answer-feedback');
+            }
+
+            // Desabilita todas as alternativas para evitar mudanças
+            alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
+            
+            submitButton.disabled = true; // Desabilita o botão de submit temporariamente
+            submitButton.textContent = 'Próxima Questão';
+            
+            // Adiciona um listener para avançar para a próxima questão
+            const nextQuestionHandler = () => {
+                currentQuestionIndex++;
+                resetAlternativeStyles(); // Limpa estilos de feedback
+                displayQuestion(currentQuestionIndex);
+                submitButton.removeEventListener('click', nextQuestionHandler); // Remove o listener antigo
+                submitButton.addEventListener('click', () => submitButton.click()); // Adiciona o listener original novamente
+            };
+            submitButton.removeEventListener('click', () => submitButton.click()); // Remove o listener original
+            submitButton.addEventListener('click', nextQuestionHandler); // Adiciona o listener para a próxima questão
+        });
+
+        function resetAlternativeStyles() {
+            alternativesContainer.querySelectorAll('.alternative-item').forEach(label => {
+                label.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback');
+                label.querySelector('input').disabled = false;
+                label.querySelector('input').checked = false; // Desseleciona o radio button
+            });
+        }
+
+        async function showResults() {
+            quizContent.classList.add('hidden');
+            resultsArea.classList.remove('hidden');
+
+            const totalQuestions = questions.length;
+            const percentage = (userScore / totalQuestions) * 100;
+
+            finalScoreElement.textContent = `${userScore} de ${totalQuestions} (${percentage.toFixed(0)}%)`;
+
+            // Enviar a pontuação para a API para registrar a conclusão da unidade
+            try {
+                const response = await fetchAuthenticatedData(`/api/units/${unitId}/complete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ pontuacao: userScore }),
+                });
+
+                if (response) {
+                    console.log('Unidade concluída e progresso salvo:', response);
+                    // Opcional: Recarregar perfil para atualizar pontos e assiduidade na navbar/painel
+                    loadUserProfile(); 
+                }
+            } catch (error) {
+                console.error('Erro ao registrar conclusão da unidade:', error);
+                alert('Não foi possível registrar seu progresso. Tente novamente.');
+            }
+        }
+
+        returnToModulesButton.addEventListener('click', () => {
+            window.location.href = '/html/home.html';
+        });
+
+        // Event Listeners para o menu e perfil
+        btnPerfil.addEventListener("click", () => {
+            colunaEsquerda.classList.toggle("visivel");
+        });
+        
+        if (btnPerfilMobile) { 
+            btnPerfilMobile.addEventListener("click", () => {
+                colunaEsquerda.classList.toggle("visivel"); 
+                mobileMenu.classList.remove("visivel"); 
+            }); 
+        }
+
+        menuToggle.addEventListener("click", () => {
+            mobileMenu.classList.toggle("visivel");
+            colunaEsquerda.classList.remove("visivel"); 
+        });
+
+        btnLogout.addEventListener('click', logout);
+        
+        if (btnLogoutMobile) { 
+            btnLogoutMobile.addEventListener('click', logout); 
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+/* public/styles/index.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;700&family=Nunito:wght@400;700&display=swap');
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: #f8f8ec;
+    color: #02416d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    text-align: center;
+    background-image: url('/imgs/background2.png'); /* Caminho ajustado */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/imgs/background1.png'); /* Caminho ajustado */
+    background-repeat: repeat;
+    background-size: contain;
+    opacity: 0.05;
+    filter: brightness(1.1) blur(1px);
+    z-index: -1;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    margin: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.logo-main {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 3.5rem;
+    color: #066699;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+h1 {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 2.2rem;
+    margin-bottom: 25px;
+    color: #02416d;
+}
+
+p {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin-bottom: 35px;
+    color: #333;
+}
+
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 30px;
+}
+
+.btn {
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    color: #02416d; /* Cor do texto padrão para botões */
+}
+
+.btn-primary {
+    background-color: #aedd2b;
+    color: #02416d;
+}
+
+.btn-primary:hover {
+    background-color: #8cc63f;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-secondary {
+    background-color: #50c8c6;
+    color: white; /* Cor do texto para botão secundário */
+}
+
+.btn-secondary:hover {
+    background-color: #3aa6a4;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .container {
+        padding: 30px;
+        margin: 15px;
+    }
+    .logo-main {
+        font-size: 2.5rem;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    p {
+        font-size: 1rem;
+    }
+    .buttons-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .btn {
+        width: 100%;
+    }
+}

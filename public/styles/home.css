@@ -1,0 +1,337 @@
+/* styles/home.css */
+
+/* RESET (Mantenha) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #f8f8ec;
+    background-image: url('/imgs/background2.png'); /* Caminho ajustado */
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+    z-index: 0;
+    color: #02416d;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/imgs/background1.png'); /* Caminho ajustado */
+    background-repeat: repeat;
+    background-size: contain;
+    opacity: 0.05;
+    filter: brightness(1.1) blur(1px);
+    z-index: -1;
+}
+
+/* NAVBAR PRINCIPAL */
+.menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #066699;
+    color: white;
+    border-bottom: 3px solid #aedd2b;
+    z-index: 999;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #f8f8ec;
+}
+
+.menu-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.menu-links li {
+    font-weight: bold;
+    color: #f9f2e7;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.menu-links li:hover {
+    color: #aedd2b;
+}
+
+.menu-links li .ativo {
+    color: #aedd2b;
+    border-bottom: 2px solid #aedd2b;
+    padding-bottom: 2px;
+}
+
+/* Esconde o botão de hambúrguer por padrão em desktop */
+.mobile-toggle-btn {
+    display: none;
+    cursor: pointer;
+}
+
+/* Estilo do menu mobile (escondido por padrão) */
+.mobile-menu-items {
+    display: none; /* CORRIGIDO: Sempre hidden por padrão em ambos os contextos */
+    list-style: none;
+    position: fixed;
+    top: 64px; /* Abaixo da navbar */
+    left: 0;
+    width: 100%;
+    background-color: #066699;
+    z-index: 998;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 10px 20px;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* mobile-menu-items.visivel é o que o JS vai alternar para mostrar */
+.mobile-menu-items.visivel {
+    display: flex; /* CORRIGIDO: Mostra com display: flex quando visivel */
+}
+
+.mobile-menu-items li {
+    text-align: left;
+}
+
+.mobile-menu-items a, .mobile-menu-items button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 0;
+    color: white;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.mobile-menu-items a:hover, .mobile-menu-items button:hover {
+    color: #aedd2b;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.conteudo {
+    display: flex;
+    width: 100%;
+    min-height: calc(100vh - 64px);
+    margin-top: 64px; /* Empurra o conteúdo para baixo da navbar fixa */
+    position: relative;
+    z-index: 10;
+}
+
+/* COLUNA ESQUERDA (perfil) */
+.coluna-esquerda {
+    width: 25%;
+    max-width: 280px;
+    background-color: #ffffff;
+    display: none; /* Escondido por padrão */
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    position: fixed;
+    height: calc(100vh - 64px);
+    top: 64px;
+    left: 0;
+    z-index: 50;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.coluna-esquerda.visivel {
+    display: flex;
+    transform: translateX(0);
+}
+
+.avatar img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 6px solid #50c8c6;
+    object-fit: cover;
+}
+
+.info {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-size: 1rem;
+    color: #02416d;
+}
+
+/* COLUNA CENTRAL */
+.coluna-centro {
+    flex: 1;
+    padding: 50px;
+    background-color: transparent;
+    background-position: bottom right;
+    background-repeat: no-repeat;
+    background-size: 180px;
+    position: relative;
+    margin-left: 0;
+    transition: margin-left 0.3s ease-in-out;
+}
+
+/* Empurra a coluna central quando a coluna esquerda está visível */
+.coluna-esquerda.visivel ~ .coluna-centro {
+    margin-left: 280px;
+}
+
+.coluna-centro h1,
+.coluna-centro p,
+.coluna-centro .modulos {
+    position: relative;
+    z-index: 1;
+}
+
+.coluna-centro h1 {
+    font-size: 1.8rem;
+    color: #02416d;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.coluna-centro p {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* MÓDULOS */
+.modulos {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: center;
+}
+
+.modulo {
+    padding: 16px 14px;
+    border-radius: 14px;
+    font-weight: bold;
+    font-size: 1rem;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 280px;
+    width: 100%;
+    backdrop-filter: blur(4px);
+    opacity: 0.85;
+}
+
+.modulo:hover {
+    opacity: 1;
+    transform: scale(1.02);
+}
+
+.desbloqueado {
+    background-color: #aedd2b;
+    color: #02416d;
+    cursor: pointer;
+}
+
+.bloqueado {
+    background-color: #cee891;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* RESPONSIVIDADE */
+@media (min-width: 768px) {
+    /* Mostra o menu desktop e esconde o toggle em telas maiores */
+    .menu-desktop {
+        display: flex;
+    }
+    .mobile-toggle-btn {
+        display: none;
+    }
+    /* O menu mobile deve estar escondido sempre em desktop */
+    .mobile-menu-items,
+    .mobile-menu-items.visivel {
+        display: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Estilos para telas menores que 768px (mobile) */
+    .menu-desktop {
+        display: none; /* Esconde o menu desktop no mobile */
+    }
+    .mobile-toggle-btn {
+        display: block; /* Mostra o botão de hambúrguer no mobile */
+    }
+    
+    /* Garante que o menu mobile esteja oculto por padrão em mobile */
+    .mobile-menu-items {
+        display: none;
+        list-style: none;
+        position: fixed;
+        top: 64px; 
+        left: 0;
+        width: 100%;
+        background-color: #066699;
+        z-index: 998;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 10px 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* O menu mobile é mostrado quando a classe 'visivel' é adicionada */
+    .mobile-menu-items.visivel {
+        display: flex;
+    }
+
+    .conteudo {
+        flex-direction: column; /* Coloca as colunas em uma única coluna */
+        margin-top: 0; /* Remove a margem fixa */
+        min-height: auto;
+    }
+
+    .coluna-esquerda {
+        width: 100%;
+        max-width: none;
+        position: static; /* Volta a ser um elemento normal no fluxo da página */
+        height: auto;
+        transform: translateX(0); /* Remove o transform */
+        box-shadow: none;
+        border-bottom: 1px solid #cce7f0;
+        margin-bottom: 20px;
+        display: none; /* Escondido por padrão, o JS vai mostrar */
+    }
+
+    .coluna-esquerda.visivel {
+        display: flex;
+    }
+
+    .coluna-esquerda.visivel ~ .coluna-centro {
+        margin-left: 0; /* Remove a margem da coluna central no mobile */
+    }
+
+    .coluna-centro {
+        padding: 30px 20px;
+        margin-left: 0;
+    }
+}

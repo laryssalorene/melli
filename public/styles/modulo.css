@@ -1,0 +1,71 @@
+/* styles/modulo.css */
+
+/* Estilo para o botão de voltar */
+.voltar-btn {
+    display: inline-block;
+    margin-bottom: 2rem;
+    padding: 0.5rem 1rem;
+    background-color: #066699;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.voltar-btn:hover {
+    background-color: #044b73;
+}
+
+/* Estilo para a lista de unidades */
+.unidades {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+/* Estilo para o cartão de cada unidade */
+.unidade-card {
+    display: block;
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    text-decoration: none;
+    color: inherit;
+}
+
+.unidade-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.unidade-card h3 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #02416d;
+    margin-bottom: 0.5rem;
+}
+
+.unidade-card p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.unidade-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: #888;
+    border-top: 1px solid #eee;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* Estilos para a coluna central do conteúdo */
+.coluna-centro {
+    flex: 1;
+    padding: 2rem;
+}
