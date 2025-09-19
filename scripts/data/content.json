@@ -1,9 +1,8 @@
-{
-  "modulos": [
+{  "modulos": [
     {
       "id_modulo": 1,
       "nome_modulo": "Bem-vindo ao Melli Hero!",
-      "descricao": "Comece sua jornada de aprendizado sobre desenvolvimento pessoal e tecnologia com Melli Hero.",
+      "descricao": "Aprenda sobre.",
       "ordem": 1,
       "unidades": [
         {
@@ -12,7 +11,7 @@
           "nome_unidade": "Introdução à Plataforma",
           "pontos_por_conclusao": 10,
           "tipo": "texto",
-          "descricao": "Olá! Seja bem-vindo(a) ao Melli Hero. Esta plataforma foi criada para te ajudar a desenvolver habilidades e conhecimentos em diversas áreas...",
+          "descricao": "aaa",
           "img_unidade": "/assets/images/intro_plataforma.png",
           "questoes": [
             {
