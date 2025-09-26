@@ -1,6 +1,8 @@
 // scripts/controllers/contentController.js
-// Importa o novo serviço unificado que gerencia todo o conteúdo e o progresso
-const contentService = require('../services/contentService'); // <-- ESTA É A ÚNICA IMPORTAÇÃO DE SERVIÇO DE CONTEÚDO
+// Importa o serviço unificado que gerencia todo o conteúdo
+const contentService = require('../services/contentService');
+// Importa o modelo de Progresso para interagir com o DB, conforme sua arquitetura
+const Progresso = require('../models/Progresso'); 
 
 const contentController = {
     /**
@@ -11,13 +13,8 @@ const contentController = {
      */
     getAllModules: async (req, res) => {
         try {
-            // Pega o ID do usuário do token JWT, se houver um usuário logado.
-            // Se o token não for fornecido ou for inválido, req.user será undefined/null.
             const id_usuario = req.user ? req.user.id_usuario : null; 
-            
-            // Chama o método do contentService que retorna módulos com resumo de progresso
             const modules = await contentService.getAllModulesWithProgressSummary(id_usuario);
-            
             res.status(200).json(modules);
         } catch (error) {
             console.error('Erro ao buscar todos os módulos:', error);
@@ -27,15 +24,15 @@ const contentController = {
 
     /**
      * Obtém os detalhes de um módulo específico por ID, incluindo suas unidades e o progresso do usuário nelas.
+     * Corresponde à rota GET /api/modulo/:id.
      * @param {object} req - Objeto de requisição do Express (req.params.id para ID do módulo, req.user para ID do usuário).
      * @param {object} res - Objeto de resposta do Express.
      */
-    getModuleById: async (req, res) => {
+    getModuleById: async (req, res) => { // Renomeado para getModuleById para bater com a rota
         try {
-            const moduleId = req.params.id; // Pega o ID do módulo da URL
-            const id_usuario = req.user ? req.user.id_usuario : null; // Pega o ID do usuário logado
+            const moduleId = req.params.id; // Pega o ID do módulo da URL. Nome do parâmetro na rota: ':id'
+            const id_usuario = req.user ? req.user.id_usuario : null; 
 
-            // Chama o método do contentService que retorna o módulo com unidades e progresso
             const module = await contentService.getModuleByIdWithUnitsAndProgress(moduleId, id_usuario);
 
             if (!module) {
@@ -50,21 +47,18 @@ const contentController = {
 
     /**
      * Obtém todas as unidades de um módulo específico por ID do módulo (com informações de progresso).
-     * Nota: Este método pode ser redundante se `getModuleById` já retorna as unidades.
-     * No entanto, ele é útil se o frontend precisar apenas da lista de unidades sem os detalhes completos do módulo.
+     * Corresponde à rota GET /api/modulo/:id/units.
      * @param {object} req - Objeto de requisição do Express (req.params.id para ID do módulo, req.user para ID do usuário).
      * @param {object} res - Objeto de resposta do Express.
      */
     getUnitsByModuleId: async (req, res) => {
         try {
-            const moduleId = req.params.id; // Pega o ID do módulo da URL
-            const id_usuario = req.user ? req.user.id_usuario : null; // Pega o ID do usuário logado
+            const moduleId = req.params.id; // Pega o ID do módulo da URL. Nome do parâmetro na rota: ':id'
+            const id_usuario = req.user ? req.user.id_usuario : null; 
 
-            // Reutiliza o método que busca o módulo com unidades e progresso, e extrai apenas as unidades
             const moduleDetails = await contentService.getModuleByIdWithUnitsAndProgress(moduleId, id_usuario);
 
             if (!moduleDetails || !moduleDetails.unidades || moduleDetails.unidades.length === 0) {
-                // Se não encontrar unidades, retorna 200 com array vazio (mais flexível para o frontend)
                 return res.status(200).json([]); 
             }
             res.status(200).json(moduleDetails.unidades);
@@ -76,12 +70,14 @@ const contentController = {
 
     /**
      * Obtém os detalhes de uma unidade específica por ID, incluindo suas questões.
+     * Corresponde à rota GET /api/unidade/:id_unidade.
      * @param {object} req - Objeto de requisição do Express (req.params.id_unidade contém o ID da unidade).
      * @param {object} res - Objeto de resposta do Express.
      */
     getUnitById: async (req, res) => {
         try {
-            const unitId = req.params.id_unidade; // <--- CORREÇÃO AQUI: Espera `id_unidade`
+            // O parâmetro da rota é ':id_unidade' (conforme contentRoutes.js)
+            const unitId = req.params.id_unidade; 
             const unitWithDetails = await contentService.getUnitByIdWithDetails(unitId);
 
             if (!unitWithDetails) {
@@ -96,19 +92,20 @@ const contentController = {
 
     /**
      * Obtém todas as questões de uma unidade específica por ID da unidade.
+     * Corresponde à rota GET /api/unidade/:id_unidade/questions.
      * @param {object} req - Objeto de requisição do Express (req.params.id_unidade contém o ID da unidade).
      * @param {object} res - Objeto de resposta do Express.
      */
     getQuestionsByUnitId: async (req, res) => {
         try {
-            const unitId = req.params.id_unidade; // Assumindo que o parâmetro na rota será 'id_unidade'
-            // Reutiliza o método que busca a unidade com suas questões
-            const unitWithDetails = await contentService.getUnitByIdWithDetails(unitId); 
-            
-            if (!unitWithDetails || !unitWithDetails.questoes || unitWithDetails.questoes.length === 0) {
-                return res.status(200).json([]); // Retorna array vazio se não houver questões
+            // O parâmetro da rota é ':id_unidade' (conforme contentRoutes.js)
+            const unitId = req.params.id_unidade; 
+            const questions = await contentService.getQuestionsForUnit(unitId); // Usando um método mais direto
+
+            if (!questions || questions.length === 0) {
+                return res.status(200).json([]); 
             }
-            res.status(200).json(unitWithDetails.questoes);
+            res.status(200).json(questions);
         } catch (error) {
             console.error(`Erro ao buscar questões da unidade ${req.params.id_unidade}:`, error);
             res.status(500).json({ message: 'Erro interno do servidor ao carregar as questões.' });
@@ -117,12 +114,13 @@ const contentController = {
 
     /**
      * Retorna uma questão específica por ID.
+     * Corresponde à rota GET /api/question/:id_questao.
      * @param {object} req - Objeto de requisição do Express (req.params.id_questao).
      * @param {object} res - Objeto de resposta do Express.
      */
     getQuestionById: async (req, res) => {
         try {
-            const questionId = req.params.id_questao;
+            const questionId = req.params.id_questao; // Parâmetro da rota é ':id_questao'
             const question = await contentService.getQuestionById(questionId);
             if (!question) {
                 return res.status(404).json({ message: 'Questão não encontrada.' });
@@ -136,23 +134,43 @@ const contentController = {
 
     /**
      * Registra ou atualiza o progresso de um usuário em uma unidade.
+     * Corresponde à rota POST /api/progress/:id_modulo/:id_unidade.
+     * E também a POST /api/units/:id_unidade/complete.
      * @param {object} req - Objeto de requisição do Express (req.params para IDs, req.body para concluido/pontuacao, req.user para ID do usuário).
      * @param {object} res - Objeto de resposta do Express.
      */
     updateUserProgress: async (req, res) => {
         try {
-            const id_usuario = req.user.id_usuario; // Deve vir do token JWT verificado
-            const { id_modulo, id_unidade } = req.params; // IDs da URL
-            const { concluido, pontuacao } = req.body; // Dados do corpo da requisição
+            const id_usuario = req.user.id_usuario; 
+            // id_modulo pode vir da rota, ou ser inferido/padrão
+            let { id_modulo, id_unidade } = req.params; 
+            const { concluido, pontuacao } = req.body; 
 
-            if (id_usuario === undefined || id_modulo === undefined || id_unidade === undefined || concluido === undefined) {
-                return res.status(400).json({ message: 'Dados insuficientes para atualizar o progresso.' });
+            // Se id_modulo não foi fornecido na rota (ex: /units/:id_unidade/complete),
+            // tentamos obter o id_modulo da unidade.
+            if (!id_modulo && id_unidade) {
+                const unitDetails = await contentService.getUnitByIdWithDetails(id_unidade);
+                if (unitDetails && unitDetails.id_modulo) {
+                    id_modulo = unitDetails.id_modulo;
+                } else {
+                    console.warn(`[updateUserProgress] Módulo não encontrado para unidade ${id_unidade}. Usando id_modulo padrão (1).`);
+                    id_modulo = 1; // Fallback para um módulo padrão ou erro se preferir
+                }
             }
+            
+            // Garantir que os IDs são números
+            const parsedIdModulo = parseInt(id_modulo, 10);
+            const parsedIdUnidade = parseInt(id_unidade, 10);
 
-            const updatedProgress = await contentService.updateUserProgress(
+            if (id_usuario === undefined || isNaN(parsedIdModulo) || isNaN(parsedIdUnidade) || concluido === undefined) {
+                return res.status(400).json({ message: 'Dados insuficientes ou inválidos para atualizar o progresso.' });
+            }
+            
+            // Chamar o método do Progresso model diretamente para persistir no DB
+            const updatedProgress = await Progresso.setUnidadeConcluida(
                 id_usuario,
-                parseInt(id_modulo, 10),
-                parseInt(id_unidade, 10),
+                parsedIdModulo,
+                parsedIdUnidade,
                 concluido,
                 pontuacao
             );
@@ -165,6 +183,7 @@ const contentController = {
 
     /**
      * Obtém o progresso de um usuário em uma unidade específica.
+     * Corresponde à rota GET /api/progress/:id_modulo/:id_unidade.
      * @param {object} req - Objeto de requisição do Express (req.params para IDs, req.user para ID do usuário).
      * @param {object} res - Objeto de resposta do Express.
      */
@@ -173,17 +192,20 @@ const contentController = {
             const id_usuario = req.user.id_usuario;
             const { id_modulo, id_unidade } = req.params;
 
-            if (id_usuario === undefined || id_modulo === undefined || id_unidade === undefined) {
-                return res.status(400).json({ message: 'Dados insuficientes para buscar o progresso da unidade.' });
+            const parsedIdModulo = parseInt(id_modulo, 10);
+            const parsedIdUnidade = parseInt(id_unidade, 10);
+
+            if (id_usuario === undefined || isNaN(parsedIdModulo) || isNaN(parsedIdUnidade)) {
+                return res.status(400).json({ message: 'Dados insuficientes ou inválidos para buscar o progresso da unidade.' });
             }
 
-            const progress = await contentService.getProgressoByUnit(
+            // Chamar o método do Progresso model diretamente
+            const progress = await Progresso.getProgressoByUnit(
                 id_usuario,
-                parseInt(id_modulo, 10),
-                parseInt(id_unidade, 10)
+                parsedIdModulo,
+                parsedIdUnidade
             );
 
-            // Retorna o progresso (ou null se não houver)
             res.status(200).json(progress);
         } catch (error) {
             console.error('Erro ao buscar progresso da unidade:', error);

@@ -1,195 +1,125 @@
 // scripts/services/contentService.js
+const fs = require('fs').promises; // Usar promessas para async/await
 const path = require('path');
-const fs = require('fs/promises'); // Usando fs/promises para readFile assíncrono
 
-// Caminhos para os arquivos JSON (relativos a scripts/services/)
-const MODULES_FILE_PATH = path.join(__dirname, '..', 'data', 'modules.json');
-const UNITS_FILE_PATH = path.join(__dirname, '..', 'data', 'units.json');
-const QUESTIONS_FILE_PATH = path.join(__dirname, '..', 'data', 'questions.json');
+// =======================================================
+// AJUSTE DOS CAMINHOS DOS ARQUIVOS JSON AQUI (CORRIGIDO)
+// =======================================================
+// Seu `contentService.js` está em `melli/scripts/services`.
+// A pasta `data` está em `melli/scripts/data`.
+// Para chegar na pasta `data` a partir de `__dirname` (services),
+// precisamos subir um nível (`..`) e então ir para a pasta `data`.
+const DATA_DIR = path.resolve(__dirname, '..', 'data'); 
 
-// Importe o modelo Progresso (que interage com o DB)
-const ProgressoModel = require('../models/Progresso'); // Renomeado para ProgressoModel para clareza
+console.log('DATA_DIR (contentService - CORRIGIDO):', DATA_DIR);
 
-// Cache para armazenar o conteúdo dos JSONs após a primeira leitura
-let cachedContent = null;
+// Definindo os caminhos completos para cada arquivo JSON
+const MODULES_FILE = path.join(DATA_DIR, 'modules.json');
+const UNITS_FILE = path.join(DATA_DIR, 'units.json');
+const QUESTIONS_FILE = path.join(DATA_DIR, 'questions.json'); // Inclui as respostas agora
 
-/**
- * Carrega todos os dados de módulos, unidades e questões dos arquivos JSON.
- * Usa um cache para evitar leituras repetidas do disco.
- * @returns {Promise<object>} Um objeto contendo modules, units e questions.
- */
+// Cache para armazenar o conteúdo dos arquivos JSON
+let contentCache = {
+    modules: [],
+    units: [],
+    questions: [] 
+};
+
+// Função para carregar todos os arquivos JSON de conteúdo
 async function loadAllContent() {
-    if (cachedContent) {
-        return cachedContent;
-    }
-
     try {
-        console.log('Carregando dados de conteúdo dos arquivos JSON...');
-        const modulesData = await fs.readFile(MODULES_FILE_PATH, 'utf8');
-        const unitsData = await fs.readFile(UNITS_FILE_PATH, 'utf8');
-        const questionsData = await await fs.readFile(QUESTIONS_FILE_PATH, 'utf8'); // Garantindo await aqui também
-        
-        const allModules = JSON.parse(modulesData);
-        const allUnits = JSON.parse(unitsData);
-        const allQuestions = JSON.parse(questionsData);
+        if (contentCache.modules.length === 0) {
+            console.log("Carregando arquivos JSON de conteúdo...");
+            const [modulesData, unitsData, questionsData] = await Promise.all([
+                fs.readFile(MODULES_FILE, 'utf8').then(JSON.parse),
+                fs.readFile(UNITS_FILE, 'utf8').then(JSON.parse),
+                fs.readFile(QUESTIONS_FILE, 'utf8').then(JSON.parse)
+            ]);
 
-        // Processa as questões para aninhar as respostas
-        const questionsWithAnswers = allQuestions.map(q => {
-            // Se as respostas já vêm aninhadas no JSON, como no seu exemplo, 
-            // basta retornar 'q'. Caso contrário, aqui seria a lógica para agrupá-las.
-            return q;
-        });
-
-        cachedContent = {
-            modules: allModules,
-            units: allUnits,
-            questions: questionsWithAnswers // Usa as questões processadas
-        };
-
-        console.log('Dados de conteúdo (módulos, unidades, questões) carregados e em cache.');
-        return cachedContent;
-
+            contentCache = {
+                modules: modulesData,
+                units: unitsData,
+                questions: questionsData
+            };
+            console.log("Arquivos JSON de conteúdo carregados com sucesso!");
+        }
+        return contentCache;
     } catch (error) {
-        console.error('ERRO: Falha ao carregar o conteúdo dos arquivos JSON:', error);
-        // É crucial relançar o erro para que o ponto de inicialização do servidor possa tratá-lo
-        throw new Error('Falha ao carregar conteúdo do curso. Verifique os arquivos JSON e suas permissões: ' + error.message);
+        console.error('Erro ao carregar o conteúdo dos arquivos JSON:', error);
+        throw new Error('Falha ao carregar conteúdo do curso. Verifique os arquivos JSON: ' + error.message);
     }
 }
 
 const contentService = {
-    /**
-     * Retorna todos os módulos com um resumo de progresso para um usuário específico.
-     * Ideal para a página inicial (home.html) que lista os módulos.
-     * @param {number|null} id_usuario - ID do usuário logado, ou null se não estiver logado.
-     * @returns {Promise<Array>} Lista de módulos com informações de progresso.
-     */
-    getAllModulesWithProgressSummary: async (id_usuario) => {
-        const { modules, units } = await loadAllContent();
-        
-        // Se o usuário não estiver logado (id_usuario é null), userProgress será um array vazio.
-        const userProgress = id_usuario ? await ProgressoModel.getProgressoUsuario(id_usuario) : [];
-
-        return modules.map(module => {
-            const moduleUnits = units.filter(u => u.id_modulo === module.id_modulo);
-            const total_unidades = moduleUnits.length;
-            let unidades_concluidas = 0;
-
-            moduleUnits.forEach(unit => {
-                const progressRecord = userProgress.find(p => 
-                    p.id_modulo === module.id_modulo && p.id_unidade === unit.id_unidade && p.concluido === 1
-                );
-                if (progressRecord) {
-                    unidades_concluidas++;
-                }
-            });
-            // Calcula a porcentagem e garante que não há divisão por zero
-            const percent = total_unidades > 0 ? Math.round((unidades_concluidas / total_unidades) * 100) : 0;
-            
-            return {
-                id_modulo: module.id_modulo,
-                nome_modulo: module.nome_modulo,
-                descricao: module.descricao,
-                ordem: module.ordem,
-                // Adiciona o objeto 'progress' conforme o frontend espera
-                progress: {
-                    totalUnits: total_unidades,
-                    completedUnits: unidades_concluidas,
-                    percent: percent
-                }
-            };
-        });
+    _ensureContentLoaded: async () => {
+        if (contentCache.modules.length === 0) {
+            await loadAllContent();
+        }
     },
 
-    /**
-     * Retorna os detalhes de um módulo específico, incluindo suas unidades e o progresso do usuário nelas.
-     * Ideal para a página de detalhes do módulo.
-     * @param {number} id_modulo - ID do módulo.
-     * @param {number|null} id_usuario - ID do usuário logado, ou null se não estiver logado.
-     * @returns {Promise<object|null>} Objeto do módulo com array de unidades, cada uma com status de progresso.
-     */
-    getModuleByIdWithUnitsAndProgress: async (id_modulo, id_usuario) => {
-        const { modules, units } = await loadAllContent(); 
-        const moduleId = parseInt(id_modulo, 10); // Garante que o ID é um número
+    getAllModulesWithProgressSummary: async (userId) => {
+        await contentService._ensureContentLoaded();
+        const { modules, units } = contentCache;
+        
+        return modules.map(m => ({
+            ...m,
+            progresso: userId ? {
+                total_unidades: units.filter(u => u.id_modulo === m.id).length,
+                unidades_concluidas: 0,
+                porcentagem: 0
+            } : null
+        }));
+    },
 
-        const module = modules.find(m => m.id_modulo === moduleId);
+    getModuleByIdWithUnitsAndProgress: async (moduleId, userId) => {
+        await contentService._ensureContentLoaded();
+        const { modules, units, questions } = contentCache;
+
+        const module = modules.find(m => m.id_modulo === parseInt(moduleId, 10));
         if (!module) return null;
 
-        const moduleUnits = units.filter(u => u.id_modulo === moduleId).sort((a, b) => a.ordem - b.ordem); // Ordena as unidades
-        const userProgress = id_usuario ? await ProgressoModel.getProgressoUsuario(id_usuario) : [];
+        const moduleUnits = units.filter(unit => unit.id_modulo === parseInt(moduleId, 10));
 
-        const unitsWithProgress = moduleUnits.map(unit => {
-            const progressRecord = userProgress.find(p => 
-                p.id_modulo === moduleId && p.id_unidade === unit.id_unidade
-            );
+        const unitsWithDetails = moduleUnits.map(unit => {
+            const unitQuestions = questions.filter(q => q.id_unidade === unit.id_unidade);
             return {
                 ...unit,
-                concluido: !!progressRecord?.concluido, // Convert to boolean (true se 1, false se 0 ou undefined)
-                pontuacao: progressRecord ? progressRecord.pontuacao : 0
+                questoes: unitQuestions,
+                progresso: userId ? { concluido: false, pontuacao: 0 } : null
             };
         });
 
-        return { ...module, unidades: unitsWithProgress };
+        return {
+            ...module,
+            unidades: unitsWithDetails
+        };
     },
 
-    /**
-     * Retorna os detalhes de uma unidade específica, incluindo todas as suas questões.
-     * @param {number} id_unidade - ID da unidade.
-     * @returns {Promise<object|null>} Objeto da unidade com array de questões aninhadas.
-     */
-    getUnitByIdWithDetails: async (id_unidade) => { 
-        const { units, questions } = await loadAllContent();
-        const unitId = parseInt(id_unidade, 10);
+    getUnitByIdWithDetails: async (unitId) => {
+        await contentService._ensureContentLoaded();
+        const { units, questions } = contentCache;
 
-        const unit = units.find(u => u.id_unidade === unitId);
+        const unit = units.find(u => u.id_unidade === parseInt(unitId, 10));
         if (!unit) return null;
 
-        const unitQuestions = questions.filter(q => q.id_unidade === unitId);
-        
-        // Retorna a unidade com suas questões aninhadas
-        return { ...unit, questoes: unitQuestions };
+        const unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
+
+        return {
+            ...unit,
+            questoes: unitQuestions
+        };
     },
 
-    /**
-     * Retorna uma questão específica por ID.
-     * @param {number} id_questao - ID da questão.
-     * @returns {Promise<object|null>} Objeto da questão.
-     */
-    getQuestionById: async (id_questao) => {
-        const { questions } = await loadAllContent();
-        const questionId = parseInt(id_questao, 10);
-        return questions.find(q => q.id_questao === questionId);
+    getQuestionsForUnit: async (unitId) => {
+        await contentService._ensureContentLoaded();
+        const { questions } = contentCache;
+        return questions.filter(q => q.id_unidade === parseInt(unitId, 10));
     },
 
-    /**
-     * Registra ou atualiza o progresso de um usuário em uma unidade.
-     * @param {number} id_usuario - ID do usuário.
-     * @param {number} id_modulo - ID do módulo da unidade.
-     * @param {number} id_unidade - ID da unidade.
-     * @param {boolean} concluido - True se a unidade foi concluída, false caso contrário.
-     * @param {number} [pontuacao=0] - Pontuação obtida na unidade.
-     * @returns {Promise<object>} O registro de progresso atualizado.
-     */
-    updateUserProgress: async (id_usuario, id_modulo, id_unidade, concluido, pontuacao = 0) => {
-        // Valida se a unidade existe antes de registrar o progresso
-        const { units } = await loadAllContent();
-        const unitExists = units.some(u => u.id_modulo === id_modulo && u.id_unidade === id_unidade);
-        if (!unitExists) {
-            throw new Error(`Unidade com ID ${id_unidade} no módulo ${id_modulo} não encontrada.`);
-        }
-        
-        // O ProgressoModel lida com a inserção/atualização no banco de dados
-        return ProgressoModel.updateProgresso(id_usuario, id_modulo, id_unidade, concluido, pontuacao);
-    },
-
-    /**
-     * Obtém o progresso de um usuário em uma unidade específica.
-     * @param {number} id_usuario - ID do usuário.
-     * @param {number} id_modulo - ID do módulo.
-     * @param {number} id_unidade - ID da unidade.
-     * @returns {Promise<object|null>} Objeto de progresso ou null.
-     */
-    getProgressoByUnit: async (id_usuario, id_modulo, id_unidade) => {
-        return ProgressoModel.getProgressoByUnit(id_usuario, id_modulo, id_unidade);
+    getQuestionById: async (questionId) => {
+        await contentService._ensureContentLoaded();
+        const { questions } = contentCache;
+        return questions.find(q => q.id_questao === parseInt(questionId, 10));
     }
 };
 
