@@ -1,0 +1,26 @@
+[
+  {
+    "id_unidade": 101,
+    "id_modulo": 1,
+    "nome_unidade": "Começando sua Jornada",
+    "descricao": "Aprenda a navegar na plataforma Melli Hero e dê os primeiros passos.",
+    "ordem": 1,
+    "pontos_por_conclusao": 10
+  },
+  {
+    "id_unidade": 102,
+    "id_modulo": 1,
+    "nome_unidade": "Navegando na Interface",
+    "descricao": "Explore as funcionalidades e o layout do ambiente de aprendizado.",
+    "ordem": 2,
+    "pontos_por_conclusao": 15
+  },
+  {
+    "id_unidade": 201,
+    "id_modulo": 2,
+    "nome_unidade": "Comunicação Eficaz",
+    "descricao": "Aprimore suas habilidades de comunicação verbal e escrita.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+  }
+]

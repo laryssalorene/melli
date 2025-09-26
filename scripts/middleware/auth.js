@@ -1,40 +1,37 @@
-//scripts/middleware/auth.js
 const jwt = require('jsonwebtoken');
 
-// A chave secreta deve ser carregada de uma variável de ambiente para segurança
-const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta_super_segura';
+// <<-- NOVO: Define JWT_SECRET uma única vez no arquivo
+// Deve vir de process.env.JWT_SECRET que é carregado pelo dotenv no server.js
+// Removido o fallback para forçar que a variável de ambiente seja usada
+const JWT_SECRET = process.env.JWT_SECRET; 
 
-/**
- * Middleware para autenticar requisições usando tokens JWT.
- * @param {Object} req O objeto de requisição do Express.
- * @param {Object} res O objeto de resposta do Express.
- * @param {Function} next A próxima função de middleware na cadeia.
- */
-function authenticateToken(req, res, next) {
-    // 1. Tenta obter o token do cabeçalho 'Authorization'
+function verifyToken(req, res, next) {
     const authHeader = req.headers['authorization'];
-    // Espera o formato 'Bearer TOKEN', então divide para pegar apenas o token
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = authHeader && authHeader.split(' ')[1]; // Espera "Bearer TOKEN"
 
-    // 2. Se não houver token, retorna um erro 401 (Não Autorizado)
     if (token == null) {
         return res.status(401).json({ message: 'Token de autenticação não fornecido.' });
     }
 
-    // 3. Tenta verificar o token
+    // Verifica se o secret foi carregado
+    if (!JWT_SECRET) {
+        console.error("ERRO CRÍTICO: JWT_SECRET não está definido no middleware de autenticação.");
+        return res.status(500).json({ message: 'Configuração de segurança do servidor incompleta.' });
+    }
+
     jwt.verify(token, JWT_SECRET, (err, user) => {
-        // Se houver um erro na verificação (token inválido ou expirado),
-        // retorna um erro 403 (Proibido)
         if (err) {
             console.error('Erro na verificação do token:', err);
+            // Retorna 403 para token inválido/expirado
             return res.status(403).json({ message: 'Token de autenticação inválido ou expirado.' });
         }
         
-        // 4. Se o token for válido, anexa a informação do usuário à requisição
-        // e passa o controle para a próxima função (o controller)
-        req.user = user;
-        next();
+        req.user = user; // Anexa o payload do token (id_usuario) ao objeto de requisição
+        next(); // Continua para a próxima função middleware/rota
     });
 }
 
-module.exports = { authenticateToken };
+// Exporta um objeto com a função verifyToken
+module.exports = {
+    verifyToken: verifyToken
+};

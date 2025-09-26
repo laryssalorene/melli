@@ -51,14 +51,16 @@
             <div class="quiz-container">
                 <h1 id="unit-title" class="text-3xl font-bold mb-4">Carregando Quiz...</h1>
                 <div id="quiz-content">
-                    <div id="question-area" class="bg-white p-6 rounded-lg shadow-md mb-6">
-                        <p id="question-counter" class="text-sm text-gray-500 mb-2">Questão 1 de X</p>
-                        <img id="question-image" class="w-full h-48 object-contain mb-4 hidden" alt="Imagem da Questão">
-                        <p id="question-text" class="text-xl font-semibold mb-4"></p>
-                        <div id="alternatives-container" class="grid grid-cols-1 gap-3">
-                            </div>
-                        <button id="submit-button" class="mt-6 w-full py-3 bg-[#066699] text-white rounded-lg font-bold hover:bg-[#044b73] transition-colors">Confirmar Resposta</button>
+                <div id="question-area" class="bg-white p-6 rounded-lg shadow-md mb-6">
+                    <p id="question-counter" class="text-sm text-gray-500 mb-2">Questão 1 de X</p>
+                    <img id="question-image" class="w-full h-48 object-contain mb-4 hidden" alt="Imagem da Questão">
+                    <p id="question-text" class="text-xl font-semibold mb-4"></p>
+                    
+                    <p id="explanation-text" class="text-md text-gray-700 italic mt-4 mb-4 hidden"></p> 
+
+                    <div id="alternatives-container" class="grid grid-cols-1 gap-3">
                     </div>
+                    <button id="submit-button" class="mt-6 w-full py-3 bg-[#066699] text-white rounded-lg font-bold hover:bg-[#044b73] transition-colors">Confirmar Resposta</button>
                 </div>
 
                 <div id="results-area" class="hidden bg-white p-8 rounded-lg shadow-md text-center">
@@ -83,6 +85,7 @@
         const userPontosSpan = document.getElementById("user-pontos");
         const btnLogout = document.getElementById('btn-logout');
         const btnLogoutMobile = document.getElementById('btn-logout-mobile');
+        const explanationTextElement = document.getElementById('explanation-text'); // Adicionado aqui
 
         async function fetchAuthenticatedData(url, options = {}) {
             const token = localStorage.getItem('melliHeroToken');
@@ -106,8 +109,18 @@
             }
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
+                let errorBody = await response.text(); // Leia o corpo uma única vez como texto
+                let errorData = {};
+
+                try {
+                    errorData = JSON.parse(errorBody); // Tente parsear como JSON
+                } catch (e) {
+                    console.warn(`Resposta de erro não-JSON da URL ${url}:`, errorBody);
+                    // Não faça nada, errorData permanecerá vazio ou com valor default
+                }
+                
+                const errorMessage = errorData.message || `Erro na requisição: ${response.status} ${response.statusText}. Detalhes: ${errorBody.substring(0, 200)}...`;
+                throw new Error(errorMessage);
             }
 
             return response.json();
@@ -115,7 +128,8 @@
 
         async function loadUserProfile() {
             try {
-                const user = await fetchAuthenticatedData('/api/profile');
+                // CORRIGIDO: URL para /api/users/profile
+                const user = await fetchAuthenticatedData('/api/users/profile');
                 if (user) {
                     userNameSpan.textContent = user.nome;
                     userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
@@ -124,6 +138,7 @@
                 }
             } catch (error) {
                 console.error('Erro ao carregar perfil do usuário:', error);
+                // Pode adicionar um feedback visual aqui para o usuário se o perfil falhar
             }
         }
 
@@ -168,14 +183,16 @@
             }
 
             try {
-                // Carrega informações da unidade
-                const unitInfo = await fetchAuthenticatedData(`/api/units/${unitId}`);
+                // CORRIGIDO: Carrega informações da unidade usando a rota '/api/unidade/:id'
+                // O ':id' na rota do backend é o unitId aqui
+                const unitInfo = await fetchAuthenticatedData(`/api/unidade/${unitId}`);
                 if (unitInfo) {
                     unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
                 }
 
-                // Carrega as questões do quiz
-                const fetchedQuestions = await fetchAuthenticatedData(`/api/units/${unitId}/questions`);
+                // CORRIGIDO: Carrega as questões do quiz usando a rota '/api/unidade/:id_unidade/questions'
+                // O ':id_unidade' na rota do backend é o unitId aqui
+                const fetchedQuestions = await fetchAuthenticatedData(`/api/unidade/${unitId}/questions`);
                 if (fetchedQuestions && fetchedQuestions.length > 0) {
                     questions = fetchedQuestions;
                     displayQuestion(currentQuestionIndex);
@@ -185,9 +202,9 @@
                     submitButton.disabled = true;
                 }
             } catch (error) {
-                console.error('Erro ao carregar quiz:', error);
+                console.error('Erro ao carregar quiz (info da unidade ou questões):', error);
                 unitTitleElement.textContent = 'Erro ao carregar o quiz.';
-                questionTextElement.textContent = 'Tente novamente mais tarde.';
+                questionTextElement.textContent = `Tente novamente mais tarde. Detalhes: ${error.message}`;
                 submitButton.disabled = true;
             }
         });
@@ -195,30 +212,31 @@
         function displayQuestion(index) {
             const question = questions[index];
             if (!question) {
-                // Se não há mais questões, mostra os resultados
                 showResults();
                 return;
             }
 
             questionCounterElement.textContent = `Questão ${index + 1} de ${questions.length}`;
-            questionTextElement.textContent = question.texto_questao;
+            questionTextElement.textContent = question.enunciado_pergunta;
 
-            // Exibe a imagem da questão se existir, senão esconde
-            if (question.img_url) {
-                questionImageElement.src = question.img_url;
+            if (question.img_url_pergunta) { 
+                questionImageElement.src = question.img_url_pergunta;
                 questionImageElement.classList.remove('hidden');
             } else {
                 questionImageElement.classList.add('hidden');
-                questionImageElement.src = ''; // Limpa a src para evitar erro de imagem quebrada
+                questionImageElement.src = ''; 
             }
 
-            alternativesContainer.innerHTML = ''; // Limpa alternativas anteriores
-            question.alternatives.forEach(alternative => {
+            explanationTextElement.classList.add('hidden');
+            explanationTextElement.textContent = ''; 
+
+            alternativesContainer.innerHTML = ''; 
+            question.respostas.forEach(alternative => { 
                 const label = document.createElement('label');
                 label.className = 'alternative-item';
                 label.innerHTML = `
-                    <input type="radio" name="alternative" value="${alternative.id_alternativa}" class="hidden" data-correct="${alternative.correta}">
-                    <span>${alternative.texto_alternativa}</span>
+                    <input type="radio" name="alternative" value="${alternative.id_alternativa}" class="hidden" data-correct="${alternative.eh_correto ? '1' : '0'}">
+                    <span>${alternative.texto_resposta}</span>
                 `;
                 alternativesContainer.appendChild(label);
             });
@@ -227,52 +245,86 @@
             submitButton.textContent = 'Confirmar Resposta';
         }
 
-        submitButton.addEventListener('click', () => {
-            const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
+        // Remove o listener antigo e adiciona o novo para evitar duplicidade
+        submitButton.removeEventListener('click', handleSubmitOrNextQuestion); 
+        submitButton.addEventListener('click', handleSubmitOrNextQuestion);
 
+        // A função handleSubmitOrNextQuestion já lida com o clique, o listener adicional abaixo é redundante e pode causar comportamento inesperado. Removendo.
+        /* submitButton.addEventListener('click', () => {
+            const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
             if (!selectedAlternative) {
                 alert('Por favor, selecione uma alternativa!');
                 return;
             }
-
             const isCorrect = selectedAlternative.dataset.correct === '1';
-            
-            // Marca a alternativa selecionada com feedback visual
             const labelSelected = selectedAlternative.closest('label');
             if (isCorrect) {
                 labelSelected.classList.add('correct-answer');
-                userScore++; // Incrementa a pontuação se a resposta estiver correta
+                userScore++;
             } else {
                 labelSelected.classList.add('wrong-answer');
-                // Opcional: mostrar a resposta correta
                 const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
                 correctAnswerLabel.classList.add('correct-answer-feedback');
             }
-
-            // Desabilita todas as alternativas para evitar mudanças
             alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
-            
-            submitButton.disabled = true; // Desabilita o botão de submit temporariamente
+            submitButton.disabled = true;
             submitButton.textContent = 'Próxima Questão';
-            
-            // Adiciona um listener para avançar para a próxima questão
-            const nextQuestionHandler = () => {
-                currentQuestionIndex++;
-                resetAlternativeStyles(); // Limpa estilos de feedback
-                displayQuestion(currentQuestionIndex);
-                submitButton.removeEventListener('click', nextQuestionHandler); // Remove o listener antigo
-                submitButton.addEventListener('click', () => submitButton.click()); // Adiciona o listener original novamente
-            };
-            submitButton.removeEventListener('click', () => submitButton.click()); // Remove o listener original
-            submitButton.addEventListener('click', nextQuestionHandler); // Adiciona o listener para a próxima questão
-        });
+            submitButton.removeEventListener('click', handleSubmitOrNextQuestion);
+            submitButton.addEventListener('click', handleNextQuestion);
+        }); */
+
+        // Função para lidar com o click no botão: submit ou próxima questão
+        function handleSubmitOrNextQuestion() {
+            if (submitButton.textContent === 'Confirmar Resposta') {
+                const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
+                const currentQuestion = questions[currentQuestionIndex]; 
+
+                if (!selectedAlternative) {
+                    alert('Por favor, selecione uma alternativa!');
+                    return;
+                }
+
+                const isCorrect = selectedAlternative.dataset.correct === '1';
+                
+                const labelSelected = selectedAlternative.closest('label');
+                if (isCorrect) {
+                    labelSelected.classList.add('correct-answer');
+                    userScore++;
+                } else {
+                    labelSelected.classList.add('wrong-answer');
+                    const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
+                    correctAnswerLabel.classList.add('correct-answer-feedback');
+
+                    if (currentQuestion.explicacao_pergunta) {
+                        explanationTextElement.textContent = `Explicação: ${currentQuestion.explicacao_pergunta}`;
+                        explanationTextElement.classList.remove('hidden');
+                    }
+                }
+
+                alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
+                
+                submitButton.textContent = 'Próxima Questão';
+            } else {
+                handleNextQuestion();
+            }
+        }
+
+        function handleNextQuestion() {
+            currentQuestionIndex++;
+            resetAlternativeStyles();
+            displayQuestion(currentQuestionIndex);
+            submitButton.textContent = 'Confirmar Resposta';
+            submitButton.disabled = false;
+        }
 
         function resetAlternativeStyles() {
             alternativesContainer.querySelectorAll('.alternative-item').forEach(label => {
                 label.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback');
                 label.querySelector('input').disabled = false;
-                label.querySelector('input').checked = false; // Desseleciona o radio button
+                label.querySelector('input').checked = false; 
             });
+            explanationTextElement.classList.add('hidden');
+            explanationTextElement.textContent = '';
         }
 
         async function showResults() {
@@ -284,19 +336,36 @@
 
             finalScoreElement.textContent = `${userScore} de ${totalQuestions} (${percentage.toFixed(0)}%)`;
 
-            // Enviar a pontuação para a API para registrar a conclusão da unidade
             try {
+                // AQUI VOCÊ DEVE TER UMA ROTA PARA REGISTRAR O PROGRESSO DA UNIDADE E PONTUAÇÃO
+                // EXEMPLO: /api/modules/:id_modulo/units/:id_unidade/progress
+                // Você precisaria do ID do módulo aqui. Se não tiver, precisa obtê-lo
+                // junto com o ID da unidade, ou ajustar a rota para apenas :id_unidade.
+
+                // Por enquanto, vamos usar uma rota genérica que só precisa do unitId.
+                // VERIFIQUE SE SEU contentRoutes.js TEM UMA ROTA POST PARA ISSO:
+                // router.post('/units/:id_unidade/complete', verifyToken, contentController.updateUserProgress);
+                // Ou router.post('/modulo/:id_modulo/unidades/:id_unidade/progresso', verifyToken, contentController.updateUserProgress);
+
+                // Se a rota do backend for /api/modules/:id_modulo/units/:id_unidade/progress
+                // const id_modulo = // VOCÊ PRECISA OBTER O ID DO MÓDULO AQUI, TALVEZ DO unitInfo OU DE UM localStorage
+                // const response = await fetchAuthenticatedData(`/api/modules/${id_modulo}/units/${unitId}/progress`, {
+                //      method: 'POST',
+                //      headers: { 'Content-Type': 'application/json' },
+                //      body: JSON.stringify({ concluido: true, pontuacao: userScore }),
+                // });
+
+                // Se a rota do backend for /api/units/:id_unidade/complete (mais simples para o quiz)
                 const response = await fetchAuthenticatedData(`/api/units/${unitId}/complete`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ pontuacao: userScore }),
+                    body: JSON.stringify({ pontuacao: userScore }), // Ajuste para o que seu backend espera (ex: { concluido: true, pontuacao: userScore })
                 });
 
                 if (response) {
                     console.log('Unidade concluída e progresso salvo:', response);
-                    // Opcional: Recarregar perfil para atualizar pontos e assiduidade na navbar/painel
                     loadUserProfile(); 
                 }
             } catch (error) {
@@ -331,6 +400,10 @@
         if (btnLogoutMobile) { 
             btnLogoutMobile.addEventListener('click', logout); 
         }
+
+        // Inicializa o listener do botão de submit/próxima questão
+        // Mantenha apenas UMA vez para evitar listeners duplicados
+        // submitButton.addEventListener('click', handleSubmitOrNextQuestion); // Este já está no início do script
     </script>
 </body>
 </html>

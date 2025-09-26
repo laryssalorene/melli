@@ -2,24 +2,28 @@
 const express = require('express');
 const router = express.Router();
 const contentController = require('../controllers/contentController');
-const { authenticateToken } = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth'); 
 
-// Rotas protegidas que exigem um token JWT válido
+console.log("ContentController imported in routes:", Object.keys(contentController)); 
 
-// Rota para obter todos os módulos com progresso do usuário (do JSON)
-router.get('/modules', authenticateToken, contentController.getAllModules);
+// ======================================================================================
+// ROTAS DE CONTEÚDO (MÓDULOS, UNIDADES, QUESTÕES E PROGRESSO)
+// ======================================================================================
 
-// Rota para obter detalhes de um módulo específico (com unidades e seu progresso)
-router.get('/modules/:id', authenticateToken, contentController.getModuleDetails); // 'id' aqui é id_modulo
+router.get('/modules', verifyToken, contentController.getAllModules);
+router.get('/modulo/:id', verifyToken, contentController.getModuleById); 
+router.get('/modulo/:id/units', verifyToken, contentController.getUnitsByModuleId); 
 
-// Rota para obter as unidades de um módulo específico
-// ATENÇÃO: A URL do frontend é '/modules/1/units', então a rota DEVE ser assim:
-router.get('/modules/:id/units', authenticateToken, contentController.getUnitsByModuloId);
+// Rota para obter detalhes de uma unidade específica
+// MUDADO: parâmetro de ':id' para ':id_unidade' para consistência
+router.get('/unidade/:id_unidade', verifyToken, contentController.getUnitById); // <--- MUDANÇA AQUI
 
-// Rota para obter os detalhes de uma unidade específica (com suas questões)
-router.get('/modules/:id/units/:unitId', authenticateToken, contentController.getUnitDetails);
+// Rota para obter APENAS as questões de uma unidade específica (já estava correta no parâmetro)
+router.get('/unidade/:id_unidade/questions', verifyToken, contentController.getQuestionsByUnitId); 
 
-// Rota para marcar uma unidade como concluída e registrar pontuação
-router.post('/modules/:id/units/:unitId/complete', authenticateToken, contentController.markUnitAsComplete);
+router.get('/question/:id_questao', verifyToken, contentController.getQuestionById); 
+
+router.post('/progress/:id_modulo/:id_unidade', verifyToken, contentController.updateUserProgress);
+router.get('/progress/:id_modulo/:id_unidade', verifyToken, contentController.getUnitProgress);
 
 module.exports = router;

@@ -1,0 +1,14 @@
+[
+  {
+    "id_modulo": 1,
+    "nome_modulo": "Introdução à Plataforma",
+    "descricao": "Uma jornada inicial para o Melli Hero.",
+    "ordem": 1
+  },
+  {
+    "id_modulo": 2,
+    "nome_modulo": "Habilidades Essenciais de Mercado",
+    "descricao": "Desenvolva competências valiosas para o mercado de trabalho.",
+    "ordem": 2
+  }
+]

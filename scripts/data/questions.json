@@ -1,0 +1,56 @@
+[
+  {
+    "id_questao": 1,
+    "id_unidade": 101,
+    "enunciado_pergunta": "Qual é a capital da França?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Paris é a capital da França e uma das cidades mais importantes da Europa.", 
+    "respostas": [
+      {
+        "id_resposta": 1,
+        "texto_resposta": "Berlim",
+        "eh_correto": false,
+        "id_questao": 1
+      },
+      {
+        "id_resposta": 2,
+        "texto_resposta": "Paris",
+        "eh_correto": true,
+        "id_questao": 1
+      },
+      {
+        "id_resposta": 3,
+        "texto_resposta": "Londres",
+        "eh_correto": false,
+        "id_questao": 1
+      }
+    ]
+  },
+  {
+    "id_questao": 2,
+    "id_unidade": 101,
+    "enunciado_pergunta": "Qual o principal componente do ar que respiramos?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "O nitrogênio é o gás mais abundante na atmosfera terrestre, compondo cerca de 78% do ar.", 
+    "respostas": [
+      {
+        "id_resposta": 4,
+        "texto_resposta": "Oxigênio",
+        "eh_correto": false,
+        "id_questao": 2
+      },
+      {
+        "id_resposta": 5,
+        "texto_resposta": "Dióxido de Carbono",
+        "eh_correto": false,
+        "id_questao": 2
+      },
+      {
+        "id_resposta": 6,
+        "texto_resposta": "Nitrogênio",
+        "eh_correto": true,
+        "id_questao": 2
+      }
+    ]
+  }
+]
