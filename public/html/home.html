@@ -50,19 +50,20 @@
         <main class="coluna-centro">
             <h1>Bem-vindo, <span id="welcome-name">herói do açúcar</span>! 🍭</h1>
             <p>Escolha um módulo para continuar sua jornada.</p>
-            <div class="modulos" id="modulos-container">
-                <p>Carregando módulos...</p>
+            <div class="modulos" id="modules-container"> 
+                <p class="text-gray-700">Carregando módulos...</p> 
             </div>
         </main>
     </div>
 
     <script>
+        // Obtenção de referências aos elementos do DOM
         const btnPerfil = document.getElementById("btn-perfil");
         const btnPerfilMobile = document.getElementById("btn-perfil-mobile");
         const colunaEsquerda = document.getElementById("coluna-esquerda");
         const menuToggle = document.getElementById("menu-toggle");
         const mobileMenu = document.getElementById("mobile-menu");
-        const modulosContainer = document.getElementById("modulos-container");
+        const modulesContainer = document.getElementById("modules-container"); // Variável unificada
         const userNameSpan = document.getElementById("user-name");
         const userAssiduidadeSpan = document.getElementById("user-assiduidade");
         const userPontosSpan = document.getElementById("user-pontos");
@@ -93,7 +94,12 @@
             }
 
             if (!response.ok) {
-                const errorData = await response.json();
+                let errorData = {};
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    throw new Error(`Erro na requisição: ${response.statusText} (${response.status})`);
+                }
                 throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
             }
 
@@ -103,7 +109,7 @@
         // Função para carregar e exibir os dados do perfil do usuário
         async function loadUserProfile() {
             try {
-                const user = await fetchAuthenticatedData('/api/profile');
+                const user = await fetchAuthenticatedData('/api/users/profile'); 
                 if (user) {
                     userNameSpan.textContent = user.nome;
                     userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
@@ -125,58 +131,46 @@
 
         // Função para carregar e exibir os módulos
         async function loadModules() {
-            modulosContainer.innerHTML = '<p>Carregando módulos...</p>';
-
             try {
-                const modules = await fetchAuthenticatedData('/api/modules');
+                // URL corrigida para '/modulos'
+                const modules = await fetchAuthenticatedData('/api/content/modulos');
                 
+                if (modulesContainer) { // Verificação para garantir que o elemento existe
+                    modulesContainer.innerHTML = ''; // Limpa o conteúdo existente
+                }
 
-                if (modules) { // Era 'if (modules && progress)'
-                    modulosContainer.innerHTML = '';
-
+                if (modules && modules.length > 0) {
                     modules.forEach(module => {
-                        let moduleIsActuallyUnlocked = false;
-                        if (module.ordem === 1) {
-                            moduleIsActuallyUnlocked = true;
-                        } else {
-                            const previousModuleOrder = module.ordem - 1;
-                            // Mude como você acessa o progresso. Agora, 'modules' já contém o 'unidades_concluidas'
-                            // Isso pressupõe que seu backend já calcula se um módulo anterior está completo
-                            // ou que você terá uma lógica mais robusta para isso no backend/frontend
-                            
-                            // Exemplo de como você PODE adaptar se modules.unidades_concluidas é suficiente
-                            // Isso é uma simplificação. A lógica exata dependerá de como o backend determina
-                            // se um módulo está 'completo' para desbloquear o próximo.
-                            
-                            // Se o backend enviar um campo 'concluido_modulo' no próprio objeto 'module':
-                            // const previousModule = modules.find(m => m.ordem === previousModuleOrder);
-                            // if (previousModule && previousModule.concluido_modulo) {
-                            //    moduleIsActuallyUnlocked = true;
-                            // }
-
-                            // Por agora, vamos simplificar a lógica de desbloqueio para testar:
-                            // Por exemplo, o módulo anterior está desbloqueado se tiver unidades concluídas
-                            // (essa lógica precisa ser mais precisa dependendo do que 'concluido_modulo' significa)
-                            const previousModule = modules.find(m => m.ordem === previousModuleOrder);
-                            if (previousModule && previousModule.unidades_concluidas === previousModule.total_unidades && previousModule.total_unidades > 0) 
-                            {
-                                moduleIsActuallyUnlocked = true;
-                            }
+                        const moduleCard = document.createElement('a');
+                        moduleCard.href = `/html/modulo.html?id=${module.id_modulo}`;
+                        // Mantendo as classes Tailwind e adicionando a classe 'module-custom-style' para o CSS personalizado
+                        moduleCard.className = 'module-card flex items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow module-custom-style'; 
+                        
+                        if (module.completo) {
+                            moduleCard.classList.add('completed');
                         }
 
-                const moduleClass = moduleIsActuallyUnlocked ? 'modulo desbloqueado' : 'modulo bloqueado';
-                const moduleLink = moduleIsActuallyUnlocked 
-                    ? `<a href="/html/modulo.html?id=${module.id_modulo}" class="${moduleClass}">${module.nome_modulo}</a>` 
-                    : `<div class="${moduleClass}">🔒 ${module.nome_modulo}</div>`;
-                
-                modulosContainer.innerHTML += moduleLink;
-            });
+                        // Conteúdo do card SEM a imagem
+                        moduleCard.innerHTML = `
+                            <div>
+                                <h3 class="text-xl font-semibold text-[#02416d]">${module.nome_modulo}</h3>
+                                <p class="text-gray-600">${module.descricao}</p>
+                                ${module.progresso_unidades !== undefined ? `<p class="text-sm text-gray-500">${module.progresso_unidades.concluidas}/${module.progresso_unidades.total} unidades</p>` : ''}
+                            </div>
+                        `;
+                        if (modulesContainer) { // Mais uma verificação antes de adicionar
+                            modulesContainer.appendChild(moduleCard);
+                        }
+                    });
+                } else {
+                    if (modulesContainer) {
+                        modulesContainer.innerHTML = '<p class="text-gray-700">Nenhum módulo encontrado.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao carregar módulos:', error);
+            }
         }
-    } catch (error) {
-        console.error('Erro ao carregar módulos:', error);
-        modulosContainer.innerHTML = '<p>Erro ao carregar módulos. Tente novamente mais tarde.</p>';
-    }
-}
 
         // Função para fazer logout
         function logout() {

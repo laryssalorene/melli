@@ -1,18 +1,26 @@
 // scripts/controllers/userController.js
 const userService = require('../services/userService'); // Importe seu UserService
-// Não precisa de bcrypt, jwt, ou JWT_SECRET aqui, pois userService fará isso
-// e authController/middleware farão a parte do JWT.
 
 const userController = {
     /**
      * Obtém o perfil completo do usuário logado.
-     * Requer que o middleware verifyToken já tenha anexado req.user ao objeto da requisição.
+     * Requer que o middleware verifyToken já tenha anexado req.userId ao objeto da requisição.
      */
     getProfile: async (req, res) => {
         try {
-            // req.user.id_usuario é definido pelo middleware verifyToken (auth.js)
-            const id_usuario = req.user.id_usuario; 
+            // =========================================================================
+            // CORREÇÃO ESSENCIAL AQUI:
+            // O middleware auth.js anexa o ID do usuário diretamente em `req.userId`.
+            // Portanto, devemos ler de `req.userId`, NÃO de `req.user.id_usuario`.
+            // =========================================================================
+            const id_usuario = req.userId; 
             
+            // Se, por algum motivo, o middleware não anexou o userId (o que não deve acontecer
+            // se o token foi validado), é bom ter uma checagem.
+            if (!id_usuario) {
+                return res.status(401).json({ message: 'Não autorizado: ID do usuário não encontrado na requisição.' });
+            }
+
             // Usamos o userService para buscar o perfil completo do usuário
             const userProfile = await userService.getUserProfile(id_usuario);
 
@@ -30,11 +38,15 @@ const userController = {
 
     // Você pode adicionar outras funções aqui que manipulem o perfil do usuário logado:
     // Por exemplo, updateUserProfile, changePassword, etc.
+    // Lembre-se de usar `req.userId` em qualquer método que precise do ID do usuário logado.
     // Exemplo:
     // updateProfile: async (req, res) => {
     //     try {
-    //         const id_usuario = req.user.id_usuario;
-    //         const { nome, mascote_id } = req.body; // Campos que podem ser atualizados
+    //         const id_usuario = req.userId; // Usar req.userId aqui também!
+    //         if (!id_usuario) {
+    //             return res.status(401).json({ message: 'Não autorizado.' });
+    //         }
+    //         const { nome, mascote_id } = req.body; 
     //         const updatedUser = await userService.updateUserProfile(id_usuario, { nome, mascote_id });
     //         res.status(200).json({ message: 'Perfil atualizado com sucesso!', user: updatedUser });
     //     } catch (error) {

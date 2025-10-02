@@ -1,29 +1,27 @@
-// scripts/routes/contentRoutes.js
 const express = require('express');
 const router = express.Router();
 const contentController = require('../controllers/contentController');
-const { verifyToken } = require('../middleware/auth'); 
+const auth = require('../middleware/auth');
 
-console.log("ContentController imported in routes:", Object.keys(contentController)); 
+// Rotas de Módulos
+router.get('/modulos', auth.verifyToken, contentController.getAllModules);
+router.get('/modulo/:id_modulo', auth.verifyToken, contentController.getModuleById);
 
-// ======================================================================================
-// ROTAS DE CONTEÚDO (MÓDULOS, UNIDADES, QUESTÕES E PROGRESSO)
-// ======================================================================================
+// Rotas de Unidades
+router.get('/modulo/:id_modulo/units', auth.verifyToken, contentController.getUnitsByModuleId); // Pode ser usada no futuro se precisar listar unidades sem as questões
+router.get('/unidade/:id_unidade', auth.verifyToken, contentController.getUnitById);
 
-router.get('/modules', verifyToken, contentController.getAllModules);
-router.get('/modulo/:id', verifyToken, contentController.getModuleById); 
-router.get('/modulo/:id/units', verifyToken, contentController.getUnitsByModuleId); 
+// Rotas de Questões
+router.get('/unidade/:id_unidade/questions', auth.verifyToken, contentController.getQuestionsByUnitId);
+router.get('/questao/:id_questao', auth.verifyToken, contentController.getQuestionById); // Se precisar pegar uma questão individual
 
-// Rota para obter detalhes de uma unidade específica
-// MUDADO: parâmetro de ':id' para ':id_unidade' para consistência
-router.get('/unidade/:id_unidade', verifyToken, contentController.getUnitById); // <--- MUDANÇA AQUI
+// Rotas de Progresso
+router.post('/units/:unitId/complete', auth.verifyToken, contentController.updateUserProgress);
+router.get('/progress/unit/:unitId', auth.verifyToken, contentController.getUnitProgress); // Rota para pegar progresso de UMA unidade
+// =========================================================
+// NOVO: Rota para obter o progresso de todas as unidades de um módulo para o usuário logado
+// =========================================================
+router.get('/progress/:id_modulo/allunits', auth.verifyToken, contentController.getModuleUnitsProgress);
 
-// Rota para obter APENAS as questões de uma unidade específica (já estava correta no parâmetro)
-router.get('/unidade/:id_unidade/questions', verifyToken, contentController.getQuestionsByUnitId); 
-
-router.get('/question/:id_questao', verifyToken, contentController.getQuestionById); 
-
-router.post('/progress/:id_modulo/:id_unidade', verifyToken, contentController.updateUserProgress);
-router.get('/progress/:id_modulo/:id_unidade', verifyToken, contentController.getUnitProgress);
 
 module.exports = router;

@@ -120,7 +120,9 @@ async function initializeDatabase() {
 // =======================================================
 app.use('/api/auth', authRoutes);     // Rotas de autenticação (cadastro, login)
 app.use('/api/users', userRoutes);    // Rotas relacionadas ao perfil do usuário (getProfile)
-app.use('/api', contentRoutes);       // Rotas de conteúdo (módulos, unidades, etc.)
+app.use('/api/content', contentRoutes);
+
+      // Rotas de conteúdo (módulos, unidades, etc.)
 
 
 // =======================================================

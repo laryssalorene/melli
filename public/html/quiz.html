@@ -85,7 +85,7 @@
         const userPontosSpan = document.getElementById("user-pontos");
         const btnLogout = document.getElementById('btn-logout');
         const btnLogoutMobile = document.getElementById('btn-logout-mobile');
-        const explanationTextElement = document.getElementById('explanation-text'); // Adicionado aqui
+        const explanationTextElement = document.getElementById('explanation-text'); 
 
         async function fetchAuthenticatedData(url, options = {}) {
             const token = localStorage.getItem('melliHeroToken');
@@ -109,14 +109,13 @@
             }
 
             if (!response.ok) {
-                let errorBody = await response.text(); // Leia o corpo uma única vez como texto
+                let errorBody = await response.text(); 
                 let errorData = {};
 
                 try {
-                    errorData = JSON.parse(errorBody); // Tente parsear como JSON
+                    errorData = JSON.parse(errorBody); 
                 } catch (e) {
                     console.warn(`Resposta de erro não-JSON da URL ${url}:`, errorBody);
-                    // Não faça nada, errorData permanecerá vazio ou com valor default
                 }
                 
                 const errorMessage = errorData.message || `Erro na requisição: ${response.status} ${response.statusText}. Detalhes: ${errorBody.substring(0, 200)}...`;
@@ -128,7 +127,6 @@
 
         async function loadUserProfile() {
             try {
-                // CORRIGIDO: URL para /api/users/profile
                 const user = await fetchAuthenticatedData('/api/users/profile');
                 if (user) {
                     userNameSpan.textContent = user.nome;
@@ -138,7 +136,6 @@
                 }
             } catch (error) {
                 console.error('Erro ao carregar perfil do usuário:', error);
-                // Pode adicionar um feedback visual aqui para o usuário se o perfil falhar
             }
         }
 
@@ -153,10 +150,10 @@
         // Lógica Específica da Página de Quiz
         // ----------------------------------------------------
 
-        let questions = []; // Array para armazenar as questões do quiz
-        let currentQuestionIndex = 0; // Índice da questão atual
-        let userScore = 0; // Pontuação do usuário
-        let unitId = null; // ID da unidade atual
+        let questions = []; 
+        let currentQuestionIndex = 0; 
+        let userScore = 0; 
+        let unitId = null; 
 
         const unitTitleElement = document.getElementById('unit-title');
         const questionCounterElement = document.getElementById('question-counter');
@@ -183,16 +180,12 @@
             }
 
             try {
-                // CORRIGIDO: Carrega informações da unidade usando a rota '/api/unidade/:id'
-                // O ':id' na rota do backend é o unitId aqui
-                const unitInfo = await fetchAuthenticatedData(`/api/unidade/${unitId}`);
+                const unitInfo = await fetchAuthenticatedData(`/api/content/unidade/${unitId}`);
                 if (unitInfo) {
                     unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
                 }
 
-                // CORRIGIDO: Carrega as questões do quiz usando a rota '/api/unidade/:id_unidade/questions'
-                // O ':id_unidade' na rota do backend é o unitId aqui
-                const fetchedQuestions = await fetchAuthenticatedData(`/api/unidade/${unitId}/questions`);
+                const fetchedQuestions = await fetchAuthenticatedData(`/api/content/unidade/${unitId}/questions`);
                 if (fetchedQuestions && fetchedQuestions.length > 0) {
                     questions = fetchedQuestions;
                     displayQuestion(currentQuestionIndex);
@@ -245,35 +238,9 @@
             submitButton.textContent = 'Confirmar Resposta';
         }
 
-        // Remove o listener antigo e adiciona o novo para evitar duplicidade
         submitButton.removeEventListener('click', handleSubmitOrNextQuestion); 
         submitButton.addEventListener('click', handleSubmitOrNextQuestion);
 
-        // A função handleSubmitOrNextQuestion já lida com o clique, o listener adicional abaixo é redundante e pode causar comportamento inesperado. Removendo.
-        /* submitButton.addEventListener('click', () => {
-            const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
-            if (!selectedAlternative) {
-                alert('Por favor, selecione uma alternativa!');
-                return;
-            }
-            const isCorrect = selectedAlternative.dataset.correct === '1';
-            const labelSelected = selectedAlternative.closest('label');
-            if (isCorrect) {
-                labelSelected.classList.add('correct-answer');
-                userScore++;
-            } else {
-                labelSelected.classList.add('wrong-answer');
-                const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
-                correctAnswerLabel.classList.add('correct-answer-feedback');
-            }
-            alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
-            submitButton.disabled = true;
-            submitButton.textContent = 'Próxima Questão';
-            submitButton.removeEventListener('click', handleSubmitOrNextQuestion);
-            submitButton.addEventListener('click', handleNextQuestion);
-        }); */
-
-        // Função para lidar com o click no botão: submit ou próxima questão
         function handleSubmitOrNextQuestion() {
             if (submitButton.textContent === 'Confirmar Resposta') {
                 const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
@@ -337,36 +304,39 @@
             finalScoreElement.textContent = `${userScore} de ${totalQuestions} (${percentage.toFixed(0)}%)`;
 
             try {
-                // AQUI VOCÊ DEVE TER UMA ROTA PARA REGISTRAR O PROGRESSO DA UNIDADE E PONTUAÇÃO
-                // EXEMPLO: /api/modules/:id_modulo/units/:id_unidade/progress
-                // Você precisaria do ID do módulo aqui. Se não tiver, precisa obtê-lo
-                // junto com o ID da unidade, ou ajustar a rota para apenas :id_unidade.
-
-                // Por enquanto, vamos usar uma rota genérica que só precisa do unitId.
-                // VERIFIQUE SE SEU contentRoutes.js TEM UMA ROTA POST PARA ISSO:
-                // router.post('/units/:id_unidade/complete', verifyToken, contentController.updateUserProgress);
-                // Ou router.post('/modulo/:id_modulo/unidades/:id_unidade/progresso', verifyToken, contentController.updateUserProgress);
-
-                // Se a rota do backend for /api/modules/:id_modulo/units/:id_unidade/progress
-                // const id_modulo = // VOCÊ PRECISA OBTER O ID DO MÓDULO AQUI, TALVEZ DO unitInfo OU DE UM localStorage
-                // const response = await fetchAuthenticatedData(`/api/modules/${id_modulo}/units/${unitId}/progress`, {
-                //      method: 'POST',
-                //      headers: { 'Content-Type': 'application/json' },
-                //      body: JSON.stringify({ concluido: true, pontuacao: userScore }),
-                // });
-
-                // Se a rota do backend for /api/units/:id_unidade/complete (mais simples para o quiz)
-                const response = await fetchAuthenticatedData(`/api/units/${unitId}/complete`, {
+                const response = await fetchAuthenticatedData(`/api/content/units/${unitId}/complete`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ pontuacao: userScore }), // Ajuste para o que seu backend espera (ex: { concluido: true, pontuacao: userScore })
+                    body: JSON.stringify({ 
+                        pontuacao: userScore,
+                        concluido: true 
+                    }),
                 });
 
                 if (response) {
                     console.log('Unidade concluída e progresso salvo:', response);
                     loadUserProfile(); 
+                    
+                    // =========================================================
+                    // AQUI: Pegar o id_modulo da resposta e redirecionar
+                    // =========================================================
+                    const moduleId = response.id_modulo; // Pega o id_modulo da resposta do backend
+
+                    // Remove o listener antigo para evitar múltiplos listeners se a função for chamada novamente
+                    returnToModulesButton.removeEventListener('click', redirectToHome); 
+                    
+                    returnToModulesButton.addEventListener('click', () => {
+                        // Redireciona para a página do módulo específico
+                        if (moduleId) {
+                            window.location.href = `/html/modulo.html?id=${moduleId}`;
+                        } else {
+                            // Fallback se por algum motivo o moduleId não for retornado
+                            window.location.href = '/html/home.html'; 
+                        }
+                    });
+
                 }
             } catch (error) {
                 console.error('Erro ao registrar conclusão da unidade:', error);
@@ -374,9 +344,22 @@
             }
         }
 
-        returnToModulesButton.addEventListener('click', () => {
+        // Funções auxiliares para redirecionamento, caso você mantenha um listener padrão
+        function redirectToHome() {
             window.location.href = '/html/home.html';
-        });
+        }
+        // É importante que o listener padrão seja adicionado apenas UMA VEZ
+        // e o novo listener seja adicionado APENAS QUANDO showResults é chamado.
+        // Se você tinha um listener direto em returnToModulesButton fora de showResults,
+        // ele foi movido/adaptado para dentro de showResults para controle dinâmico.
+        // Se a unidade for carregada mas o quiz não for concluído, o botão continua com o comportamento padrão
+        // (que neste caso é redirectToHome, mas foi substituído dinamicamente).
+        // Se você quer que ele volte para home.html por padrão se showResults não for chamado,
+        // você pode adicionar:
+        // returnToModulesButton.addEventListener('click', redirectToHome);
+        // FORA de showResults, mas ANTES do `if (response)` em showResults.
+        // Por enquanto, vou manter como está no `showResults` para clareza da solução.
+
 
         // Event Listeners para o menu e perfil
         btnPerfil.addEventListener("click", () => {
@@ -400,10 +383,6 @@
         if (btnLogoutMobile) { 
             btnLogoutMobile.addEventListener('click', logout); 
         }
-
-        // Inicializa o listener do botão de submit/próxima questão
-        // Mantenha apenas UMA vez para evitar listeners duplicados
-        // submitButton.addEventListener('click', handleSubmitOrNextQuestion); // Este já está no início do script
     </script>
 </body>
 </html>

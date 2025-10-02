@@ -1,4 +1,4 @@
-/* styles/modulo.css */
+/* melli/public/styles/modulo.css */
 
 /* Estilo para o botão de voltar */
 .voltar-btn {
@@ -68,4 +68,33 @@
 .coluna-centro {
     flex: 1;
     padding: 2rem;
+}
+
+/* =========================================================
+   Estilos para unidades concluídas (do seu <style> anterior)
+   ========================================================= */
+.unit-card.completed {
+    background-color: #d1f7d1; /* Um verde claro ou a cor que você preferir */
+    border: 2px solid #50c8c6; /* Borda da cor do seu tema */
+    color: #02416d; /* Cor do texto principal */
+}
+.unit-card.completed .unit-icon {
+    filter: grayscale(0%); /* Se o ícone for cinza para não concluído, desfaz o cinza */
+}
+.unit-card.completed::after {
+    content: '✓'; /* Um checkmark simples */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.5rem;
+    color: #28a745; /* Verde para o checkmark */
+    font-weight: bold;
+}
+
+/* Ajustando/Garantindo estilos para os cards das unidades, se necessário */
+.unit-card { /* Usando 'unit-card' como sua classe JS, alinhando com 'unidade-card' */
+    position: relative; /* Necessário para o posicionamento do checkmark */
+}
+.unit-icon {
+    display: none; /* Esconde a imagem/ícone da unidade, já que não queremos imagens */
 }

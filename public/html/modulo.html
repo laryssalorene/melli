@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Módulo Detalhes - Melli Hero</title>
+    <title>Módulo - Melli Hero</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/styles/home.css" />
-    <link rel="stylesheet" href="/styles/modulo.css" />
-</head>
+    <link rel="stylesheet" href="/styles/modulo.css" /> 
+    </head>
 <body class="bg-[#f8f8ec] text-[#02416d]">
 
     <nav class="menu">
@@ -48,13 +48,11 @@
         </aside>
 
         <main class="coluna-centro">
-            <a href="/html/home.html" class="voltar-btn">&larr; Voltar para os Módulos</a>
+            <h1 id="module-title" class="text-4xl font-bold mb-4">Carregando Módulo...</h1>
+            <p id="module-description" class="text-lg text-gray-700 mb-6"></p>
             
-            <h1 id="modulo-title" class="text-4xl font-extrabold mb-4">Carregando Módulo...</h1>
-            <p id="modulo-description" class="text-lg text-gray-700 mb-6"></p>
-
-            <div class="unidades">
-                <p>Carregando unidades...</p>
+            <div id="units-container" class="unidades">
+                <p class="text-gray-700">Carregando unidades...</p>
             </div>
         </main>
     </div>
@@ -93,18 +91,18 @@
                 return null;
             }
 
-            // AQUI É A MUDANÇA CRÍTICA: Se a resposta não for OK e não for JSON, trate como erro HTML
             if (!response.ok) {
-                // Tenta ler como JSON primeiro, mas se falhar, assume que é HTML
+                let errorBody = await response.text(); 
+                let errorData = {};
+
                 try {
-                    const errorData = await response.json();
-                    throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
-                } catch (jsonError) {
-                    // Se não conseguir fazer parse como JSON, significa que provavelmente é HTML de erro
-                    const errorText = await response.text(); // Pega o corpo da resposta como texto
-                    console.error("Resposta não-JSON recebida:", errorText);
-                    throw new Error(`Erro na requisição: ${response.status} ${response.statusText}. Resposta inesperada (não-JSON).`);
+                    errorData = JSON.parse(errorBody); 
+                } catch (e) {
+                    console.warn(`Resposta de erro não-JSON da URL ${url}:`, errorBody);
                 }
+                
+                const errorMessage = errorData.message || `Erro na requisição: ${response.status} ${response.statusText}. Detalhes: ${errorBody.substring(0, 200)}...`;
+                throw new Error(errorMessage);
             }
 
             return response.json();
@@ -112,7 +110,6 @@
 
         async function loadUserProfile() {
             try {
-                // CORRIGIDO: URL para /api/users/profile
                 const user = await fetchAuthenticatedData('/api/users/profile');
                 if (user) {
                     userNameSpan.textContent = user.nome;
@@ -132,56 +129,80 @@
             window.location.href = '/html/login.html';
         }
 
-        // Lógica Principal da Página de Módulo
+        // ----------------------------------------------------
+        // Lógica Específica da Página de Módulo
+        // ----------------------------------------------------
+
+        let currentModuleId = null; 
+        let userProgress = {}; // Guardará o progresso do usuário para as unidades deste módulo
+
         document.addEventListener('DOMContentLoaded', async () => {
-            loadUserProfile();
-
+            loadUserProfile(); // Carrega o perfil do usuário
+            
             const urlParams = new URLSearchParams(window.location.search);
-            const idModulo = urlParams.get('id');
+            currentModuleId = urlParams.get('id'); // Pega o ID do módulo da URL
 
-            if (!idModulo) {
-                document.getElementById('modulo-title').textContent = 'Módulo não encontrado.';
-                document.getElementById('modulo-description').textContent = 'Por favor, selecione um módulo válido.';
-                document.querySelector('.unidades').innerHTML = `<p style="color: red;">ID do módulo não fornecido na URL.</p>`;
-                return;
-            }
+            if (currentModuleId) {
+                try {
+                    // Carrega os detalhes do módulo, incluindo as unidades
+                    const moduleData = await fetchAuthenticatedData(`/api/content/modulo/${currentModuleId}`);
+                    if (moduleData) {
+                        document.getElementById('module-title').textContent = moduleData.nome_modulo;
+                        document.getElementById('module-description').textContent = moduleData.descricao;
+                        
+                        // NOVO: Carregar o progresso do usuário para este módulo
+                        const progressoResponse = await fetchAuthenticatedData(`/api/content/progress/${currentModuleId}/allunits`);
+                        if (progressoResponse && progressoResponse.progresso) {
+                            userProgress = progressoResponse.progresso.reduce((acc, item) => {
+                                acc[item.id_unidade] = item; // Guarda o objeto de progresso pela id_unidade
+                                return acc;
+                            }, {});
+                            console.log("Progresso do usuário carregado:", userProgress);
+                        } else {
+                            console.log("Nenhum progresso encontrado para este módulo ou usuário.");
+                        }
 
-            try {
-                // CORRIGIDO: URL para /api/modulo/${idModulo}
-                const modulo = await fetchAuthenticatedData(`/api/modulo/${idModulo}`);
-                document.getElementById('modulo-title').textContent = modulo.nome_modulo;
-                document.getElementById('modulo-description').textContent = modulo.descricao;
-
-                // CORRIGIDO: URL para /api/modulo/${idModulo}/units
-                const unidades = await fetchAuthenticatedData(`/api/modulo/${idModulo}/units`);
-                const unidadesContainer = document.querySelector('.unidades');
-                unidadesContainer.innerHTML = ''; // Limpa a mensagem "Carregando..."
-
-                if (unidades.length === 0) {
-                    unidadesContainer.innerHTML = '<p>Nenhuma unidade encontrada para este módulo.</p>';
-                    return;
+                        // Renderiza as unidades, passando o progresso
+                        renderUnits(moduleData.unidades);
+                    } else {
+                        document.getElementById('module-title').textContent = 'Módulo não encontrado.';
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar detalhes do módulo:', error);
+                    document.getElementById('module-title').textContent = 'Erro ao carregar módulo.';
                 }
-
-                unidades.forEach(unidade => {
-                    const unidadeCard = document.createElement('a');
-                    unidadeCard.href = `/html/quiz.html?unitId=${unidade.id_unidade}`;
-                    unidadeCard.className = 'unidade-card';
-                    unidadeCard.innerHTML = `
-                        <h3>${unidade.nome_unidade}</h3>
-                        <p>${unidade.descricao}</p>
-                        <div class="unidade-meta">
-                            <span>Ordem: ${unidade.ordem}</span>
-                            <span>Pontos: ${unidade.pontos_por_conclusao}</span>
-                        </div>
-                    `;
-                    unidadesContainer.appendChild(unidadeCard);
-                });
-
-            } catch (error) {
-                console.error('Erro ao carregar dados do módulo:', error);
-                document.querySelector('.unidades').innerHTML = `<p style="color: red;">Erro ao carregar as unidades. Verifique sua conexão ou tente novamente mais tarde.</p>`;
+            } else {
+                document.getElementById('module-title').textContent = 'Módulo não especificado.';
             }
         });
+
+        function renderUnits(units) {
+            const unitsContainer = document.getElementById('units-container');
+            unitsContainer.innerHTML = ''; 
+
+            if (units && units.length > 0) {
+                units.forEach(unit => {
+                    const unitCard = document.createElement('a');
+                    unitCard.href = `/html/quiz.html?unitId=${unit.id_unidade}`;
+                    unitCard.className = 'unidade-card unit-card flex flex-col p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer relative'; 
+                    
+                    const progressForUnit = userProgress[unit.id_unidade];
+                    if (progressForUnit && progressForUnit.completo) {
+                        unitCard.classList.add('completed');
+                    }
+
+                    unitCard.innerHTML = `
+                        <div>
+                            <h3 class="text-xl font-semibold text-[#02416d]">${unit.nome_unidade || 'Nome da Unidade'}</h3>
+                            <p class="text-gray-600">${unit.descricao || 'Nenhuma descrição disponível.'}</p>
+                        </div>
+                    `;
+                    unitsContainer.appendChild(unitCard);
+                });
+            } else {
+                unitsContainer.innerHTML = '<p class="text-gray-700">Nenhuma unidade encontrada para este módulo.</p>';
+            }
+        }
 
         // Event Listeners para o menu e perfil
         btnPerfil.addEventListener("click", () => {

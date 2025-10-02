@@ -1,4 +1,3 @@
-// scripts/models/Progresso.js
 const { get, run, all } = require('../db'); 
 
 class Progresso {
@@ -13,22 +12,35 @@ class Progresso {
                 pontuacao_unidade INTEGER DEFAULT 0,
                 data_conclusao TEXT,
                 FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
+                -- =========================================================
+                -- JÁ EXISTENTE: Garante que a combinação é única
+                -- =========================================================
                 UNIQUE(id_usuario, id_modulo, id_unidade)
             )
         `);
     }
 
-    static async setUnidadeConcluida(id_usuario, id_modulo, id_unidade, pontuacao_unidade = 0) {
+    static async setUnidadeConcluida(id_usuario, id_modulo, id_unidade, completo, pontuacao_unidade = 0) {
         const data_conclusao = new Date().toISOString().split('T')[0]; 
         
         const result = await run(`
             INSERT INTO progresso_usuario (id_usuario, id_modulo, id_unidade, completo, pontuacao_unidade, data_conclusao)
-            VALUES (?, ?, ?, 1, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?)
             ON CONFLICT(id_usuario, id_modulo, id_unidade) DO UPDATE SET
-                completo = 1,
+                completo = ?,                 
                 pontuacao_unidade = ?,
                 data_conclusao = ?
-        `, [id_usuario, id_modulo, id_unidade, pontuacao_unidade, data_conclusao, pontuacao_unidade, data_conclusao]);
+        `, [
+            id_usuario,
+            id_modulo,
+            id_unidade,
+            completo, 
+            pontuacao_unidade,
+            data_conclusao,
+            completo, 
+            pontuacao_unidade,
+            data_conclusao
+        ]);
         
         return { message: 'Progresso da unidade registrado/atualizado com sucesso.', id_progresso: result.lastID };
     }
@@ -43,6 +55,23 @@ class Progresso {
         const progressoFormatado = rows.map(row => ({
             ...row,
             completo: row.completo === 1
+        }));
+        return progressoFormatado;
+    }
+
+    // =========================================================
+    // NOVO MÉTODO: Para obter progresso por módulo
+    // =========================================================
+    static async getProgressoUsuarioPorModulo(id_usuario, id_modulo) {
+        const rows = await all(`
+            SELECT id_unidade, completo, pontuacao_unidade, data_conclusao
+            FROM progresso_usuario
+            WHERE id_usuario = ? AND id_modulo = ?
+        `, [id_usuario, id_modulo]);
+        
+        const progressoFormatado = rows.map(row => ({
+            ...row,
+            completo: row.completo === 1 // Converte o BOOLEAN de 0/1 para true/false
         }));
         return progressoFormatado;
     }
