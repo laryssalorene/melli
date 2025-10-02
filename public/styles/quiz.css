@@ -16,6 +16,64 @@
     margin-bottom: 1.5rem;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Estilos para a área de explicação passo a passo (#explanation-step-area) */
+/* -------------------------------------------------------------------------- */
+#explanation-step-area {
+    background-color: #ffffff;
+    border: 1px solid #e0e7ee;
+    padding: 1.5rem;
+    border-radius: 10px;
+    text-align: center; /* Centraliza o título e o botão */
+}
+
+#explanation-step-area h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #02416d;
+    margin-bottom: 1.5rem;
+}
+
+#current-explanation-block-content {
+    margin-bottom: 2rem; /* Espaço antes do botão Próximo */
+    text-align: left; /* Garante que o conteúdo de texto e mídia seja alinhado à esquerda dentro do bloco */
+}
+
+#current-explanation-block-content p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+#current-explanation-block-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.5rem auto; /* Centraliza a imagem e adiciona margem */
+    display: block; /* Garante que a margem auto funcione */
+}
+
+/* Estilo para o container responsivo do vídeo dentro da explicação */
+#current-explanation-block-content .iframe-container {
+    max-width: 100%;
+    margin: 1.5rem auto; /* Centraliza o vídeo e adiciona margem */
+    display: block; /* Garante que a margem auto funcione */
+}
+
+/* Estilo para o botão "Próximo" nas explicações */
+#next-step-button {
+    font-size: 1.2rem;
+    padding: 0.9rem 2.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Estilos para a área da questão (#question-area) */
+/* -------------------------------------------------------------------------- */
 #question-area {
     background-color: #ffffff;
     border: 1px solid #e0e7ee;
@@ -177,6 +235,23 @@
     font-size: 1.1rem;
 }
 
+/* Estilo para a explicação pós-resposta (#post-explanation-text) */
+#post-explanation-text {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #f7fafd;
+    border-left: 5px solid #50c8c6;
+    border-radius: 0 8px 8px 0; /* Borda arredondada apenas na direita */
+    color: #02416d;
+    font-style: normal; /* Sobrescreve o italic padrão que estava no HTML */
+    line-height: 1.5;
+    text-align: left;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Estilos para a área de resultados (#results-area) */
+/* -------------------------------------------------------------------------- */
 #results-area {
     padding: 2.5rem;
     margin-top: 2rem;
@@ -192,11 +267,26 @@
     padding: 0.8rem 1.8rem;
 }
 
+/* -------------------------------------------------------------------------- */
 /* Responsividade */
+/* -------------------------------------------------------------------------- */
 @media (max-width: 767px) {
     .quiz-container {
         padding: 1rem;
         margin: 1rem auto;
+    }
+    .quiz-container h1 {
+        font-size: 1.8rem;
+    }
+    #explanation-step-area h2 {
+        font-size: 1.5rem;
+    }
+    #current-explanation-block-content p {
+        font-size: 1rem;
+    }
+    #next-step-button {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
     }
     #question-text {
         font-size: 1.2rem;
@@ -219,9 +309,6 @@
     #submit-button, #return-to-modules-button {
         font-size: 1rem;
         padding: 0.75rem 1.5rem;
-    }
-    h1 {
-        font-size: 1.8rem;
     }
     #results-area h2 {
         font-size: 2rem;

@@ -1,0 +1,57 @@
+[
+  {
+    "id_questao": 101, 
+    "explicacoes_pre_questao": [ 
+      {
+        "ordem": 1, 
+        "texto": "Antes de responder sobre capitais, é importante refrescar a memória sobre a localização dos países europeus.",
+        "url_media": null,
+        "tipo_media": null 
+      },
+      {
+        "ordem": 2,
+        "texto": "A França é um país da Europa Ocidental, conhecido por sua arte e gastronomia.",
+        "url_media": "/img/mapa_franca.png", 
+        "tipo_media": "imagem" 
+      },
+      {
+        "ordem": 3,
+        "texto": null, 
+        "url_media": "https://www.youtube.com/embed/some_video_id", 
+        "tipo_media": "video"
+      },
+      {
+        "ordem": 4,
+        "texto": "Confira o mapa para melhor visualização.", 
+        "url_media": null,
+        "tipo_media": null
+      }
+    ]
+  },
+  {
+    "id_questao": 102, 
+    "explicacoes_pre_questao": [ 
+      {
+        "ordem": 1,
+        "texto": "A atmosfera terrestre é uma camada de gases essencial para a vida, composta majoritariamente por dois gases: Nitrogênio e Oxigênio.",
+        "url_media": null,
+        "tipo_media": null
+      },
+      {
+        "ordem": 2,
+        "texto": "O Nitrogênio é o gás mais abundante, seguido pelo Oxigênio, que é vital para a respiração.",
+        "url_media": "/img/composicao_ar.png",
+        "tipo_media": "imagem"
+      }
+    ]
+  },
+  {
+    "id_questao": 103, 
+    "explicacoes_pre_questao": [
+      {
+        "ordem": 1,
+        "texto": "Este é um bloco de explicação puramente textual para contextualizar a próxima questão. Preste atenção aos detalhes."
+      }
+    ]
+  }
+]

@@ -1,120 +1,214 @@
 // scripts/services/contentService.js
-const fs = require('fs').promises; 
+const fs = require('fs').promises;
 const path = require('path');
+const ProgressoModel = require('../models/Progresso'); // Importa o modelo de progresso
 
 const DATA_DIR = path.resolve(__dirname, '..', 'data'); 
 
-console.log('DATA_DIR (contentService - CORRIGIDO):', DATA_DIR);
+console.log('DATA_DIR (contentService):', DATA_DIR);
 
 const MODULES_FILE = path.join(DATA_DIR, 'modules.json');
 const UNITS_FILE = path.join(DATA_DIR, 'units.json');
 const QUESTIONS_FILE = path.join(DATA_DIR, 'questions.json');
+const EXPLICATIONS_FILE = path.join(DATA_DIR, 'explicacoes.json');
 
 let contentCache = {
-    modules: [],
-    units: [],
-    questions: [] 
+    modules: [],
+    units: [],
+    questions: [],
+    explanations: []
 };
 
+// =========================================================
+// Funções de Carregamento e Cache
+// =========================================================
 async function loadAllContent() {
-    try {
-        if (contentCache.modules.length === 0) {
-            console.log("Carregando arquivos JSON de conteúdo...");
-            const [modulesData, unitsData, questionsData] = await Promise.all([
-                fs.readFile(MODULES_FILE, 'utf8').then(JSON.parse),
-                fs.readFile(UNITS_FILE, 'utf8').then(JSON.parse),
-                fs.readFile(QUESTIONS_FILE, 'utf8').then(JSON.parse)
-            ]);
+    try {
+        if (contentCache.modules.length === 0) {
+            console.log("Carregando arquivos JSON de conteúdo...");
+            const [modulesData, unitsData, questionsData, explanationsData] = await Promise.all([
+                fs.readFile(MODULES_FILE, 'utf8').then(JSON.parse),
+                fs.readFile(UNITS_FILE, 'utf8').then(JSON.parse),
+                fs.readFile(QUESTIONS_FILE, 'utf8').then(JSON.parse),
+                fs.readFile(EXPLICATIONS_FILE, 'utf8').then(JSON.parse)
+            ]);
 
-            contentCache = {
-                modules: modulesData,
-                units: unitsData,
-                questions: questionsData
-            };
-            console.log("Arquivos JSON de conteúdo carregados com sucesso!");
-        }
-        return contentCache;
-    } catch (error) {
-        console.error('Erro ao carregar o conteúdo dos arquivos JSON:', error);
-        throw new Error('Falha ao carregar conteúdo do curso. Verifique os arquivos JSON: ' + error.message);
-    }
+            contentCache = {
+                modules: modulesData,
+                units: unitsData,
+                questions: questionsData,
+                explanations: explanationsData
+            };
+            console.log("Arquivos JSON de conteúdo carregados com sucesso!");
+            console.log('Total de módulos carregados:', contentCache.modules.length);
+            console.log('Total de unidades carregadas:', contentCache.units.length);
+            console.log('Total de questões carregadas:', contentCache.questions.length);
+            console.log('Total de explicações carregadas:', contentCache.explanations.length);
+        }
+        return contentCache;
+    } catch (error) {
+        console.error('Erro ao carregar o conteúdo dos arquivos JSON:', error);
+        throw new Error('Falha ao carregar conteúdo do curso. Verifique os arquivos JSON: ' + error.message);
+    }
 }
 
+// Chamar a função de carregamento para popular o cache quando o serviço é inicializado
+loadAllContent();
+
 const contentService = {
-    _ensureContentLoaded: async () => {
-        if (contentCache.modules.length === 0) {
-            await loadAllContent();
-        }
-    },
+    _ensureContentLoaded: async () => {
+        if (contentCache.modules.length === 0) {
+            await loadAllContent();
+        }
+    },
 
-    getAllModulesWithProgressSummary: async (userId) => {
-        await contentService._ensureContentLoaded();
-        const { modules, units } = contentCache;
-        
-        return modules.map(m => ({
-            ...m,
-            progresso: userId ? {
-                // CORREÇÃO AQUI: Mudado de m.id para m.id_modulo
-                total_unidades: units.filter(u => u.id_modulo === m.id_modulo).length, 
-                unidades_concluidas: 0, // Placeholder, você pode buscar do DB depois
-                porcentagem: 0 // Placeholder
-            } : null
-        }));
-    },
+    // =========================================================
+    // Métodos para Módulos
+    // =========================================================
+    async getAllModulesWithProgressSummary(userId) {
+        await contentService._ensureContentLoaded();
+        const { modules, units } = contentCache;
 
-    getModuleByIdWithUnitsAndProgress: async (moduleId, userId) => {
-        await contentService._ensureContentLoaded();
-        const { modules, units, questions } = contentCache;
+        // Se não houver userId, retorna módulos sem progresso detalhado
+        if (!userId) {
+            return modules.map(m => ({
+                ...m,
+                total_unidades: units.filter(u => u.id_modulo === m.id_modulo).length,
+                unidades_concluidas: 0,
+                progresso_percentual: 0
+            }));
+        }
 
-        // CORREÇÃO AQUI: Mudando de m.id para m.id_modulo
-        const module = modules.find(m => m.id_modulo === parseInt(moduleId, 10)); 
-        if (!module) return null;
+        // Se houver userId, busca o progresso real
+        const allUserProgress = await ProgressoModel.getProgressoUsuario(userId);
 
-        const moduleUnits = units.filter(unit => unit.id_modulo === parseInt(moduleId, 10));
+        return modules.map(module => {
+            const unitsInModule = units.filter(u => u.id_modulo === module.id_modulo);
+            const totalUnits = unitsInModule.length;
 
-        const unitsWithDetails = moduleUnits.map(unit => {
-            const unitQuestions = questions.filter(q => q.id_unidade === unit.id_unidade);
-            return {
-                ...unit,
-                questoes: unitQuestions,
-                progresso: userId ? { concluido: false, pontuacao: 0 } : null // Placeholder
-            };
-        });
+            let completedUnits = 0;
+            if (totalUnits > 0) {
+                completedUnits = unitsInModule.filter(unit => {
+                    const progress = allUserProgress.find(p => 
+                        p.id_unidade === unit.id_unidade && 
+                        p.id_modulo === module.id_modulo
+                    );
+                    return progress && progress.completo;
+                }).length;
+            }
 
-        return {
-            ...module,
-            unidades: unitsWithDetails
-        };
-    },
+            return {
+                ...module,
+                total_unidades: totalUnits,
+                unidades_concluidas: completedUnits,
+                progresso_percentual: totalUnits > 0 ? parseFloat(((completedUnits / totalUnits) * 100).toFixed(2)) : 0
+            };
+        });
+    },
 
-    // As funções abaixo já parecem corretas assumindo que units.json e questions.json
-    // usam id_unidade e id_questao respectivamente.
-    getUnitByIdWithDetails: async (unitId) => {
-        await contentService._ensureContentLoaded();
-        const { units, questions } = contentCache;
+    async getModuleByIdWithUnitsAndProgress(moduleId, userId) {
+        await contentService._ensureContentLoaded();
+        const { modules, units } = contentCache;
 
-        const unit = units.find(u => u.id_unidade === parseInt(unitId, 10));
-        if (!unit) return null;
+        const module = modules.find(m => m.id_modulo === parseInt(moduleId, 10));
+        if (!module) return null;
 
-        const unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
+        let moduleUnits = units.filter(unit => unit.id_modulo === parseInt(moduleId, 10));
 
-        return {
-            ...unit,
-            questoes: unitQuestions
-        };
-    },
+        // Adiciona progresso às unidades se userId estiver presente
+        if (userId) {
+            const moduleProgress = await ProgressoModel.getProgressoUsuarioPorModulo(userId, parseInt(moduleId, 10));
+            moduleUnits = moduleUnits.map(unit => {
+                const progress = moduleProgress.find(p => p.id_unidade === unit.id_unidade);
+                return {
+                    ...unit,
+                    concluido: progress ? progress.completo : false,
+                    pontuacao: progress ? progress.pontuacao_unidade : 0
+                };
+            });
+        } else {
+            // Se não houver userId, retorna unidades com progresso padrão (não iniciado)
+            moduleUnits = moduleUnits.map(unit => ({ ...unit, concluido: false, pontuacao: 0 }));
+        }
 
-    getQuestionsForUnit: async (unitId) => {
-        await contentService._ensureContentLoaded();
-        const { questions } = contentCache;
-        return questions.filter(q => q.id_unidade === parseInt(unitId, 10));
-    },
+        return {
+            ...module,
+            unidades: moduleUnits
+        };
+    },
 
-    getQuestionById: async (questionId) => {
-        await contentService._ensureContentLoaded();
-        const { questions } = contentCache;
-        return questions.find(q => q.id_questao === parseInt(questionId, 10));
-    }
+    // =========================================================
+    // Métodos para Unidades
+    // =========================================================
+    async getUnitById(unitId) { // Método para obter APENAS a unidade por ID
+        await contentService._ensureContentLoaded();
+        const { units } = contentCache;
+        return units.find(u => u.id_unidade === parseInt(unitId, 10));
+    },
+
+    async getUnitByIdWithDetails(unitId) { // Método para obter a unidade com questões e explicações
+        await contentService._ensureContentLoaded();
+        const { units, questions, explanations } = contentCache;
+
+        const unit = units.find(u => u.id_unidade === parseInt(unitId, 10));
+        if (!unit) return null;
+
+        let unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
+
+        // Anexar explicações pré-questão a cada questão na unidade
+        unitQuestions = unitQuestions.map(question => {
+            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao);
+            return {
+                ...question,
+                explicacoes_pre_questao: preExplanationsEntry ?
+                                         preExplanationsEntry.explicacoes_pre_questao.sort((a, b) => a.ordem - b.ordem) :
+                                         []
+            };
+        });
+
+        return {
+            ...unit,
+            questoes: unitQuestions // Inclui as questões com explicações
+        };
+    },
+
+    // =========================================================
+    // Métodos para Questões
+    // =========================================================
+    async getQuestionsForUnit(unitId) {
+        await contentService._ensureContentLoaded();
+        const { questions, explanations } = contentCache;
+
+        let unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
+
+        // Anexar explicações pré-questão a cada questão
+        unitQuestions = unitQuestions.map(question => {
+            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao);
+            return {
+                ...question,
+                explicacoes_pre_questao: preExplanationsEntry ?
+                                         preExplanationsEntry.explicacoes_pre_questao.sort((a, b) => a.ordem - b.ordem) :
+                                         []
+            };
+        });
+        return unitQuestions;
+    },
+
+    async getQuestionById(questionId) {
+        await contentService._ensureContentLoaded();
+        const { questions, explanations } = contentCache;
+
+        let question = questions.find(q => q.id_questao === parseInt(questionId, 10));
+        if (!question) return null;
+
+        // Anexar explicações pré-questão à questão única
+        const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao);
+        question.explicacoes_pre_questao = preExplanationsEntry ?
+                                         preExplanationsEntry.explicacoes_pre_questao.sort((a, b) => a.ordem - b.ordem) :
+                                         [];
+
+        return question;
+    }
 };
 
 module.exports = contentService;

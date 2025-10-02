@@ -7,6 +7,25 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/styles/home.css" />
     <link rel="stylesheet" href="/styles/quiz.css" />
+    <style>
+        /* Estilo para garantir que apenas um container seja visível por vez, e para o vídeo responsivo */
+        .hidden { display: none !important; }
+        .iframe-container { /* Estilo para o container responsivo do vídeo */
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+        }
+        .iframe-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
 </head>
 <body class="bg-[#f8f8ec] text-[#02416d]">
 
@@ -50,16 +69,26 @@
         <main class="coluna-centro">
             <div class="quiz-container">
                 <h1 id="unit-title" class="text-3xl font-bold mb-4">Carregando Quiz...</h1>
-                <div id="quiz-content">
-                <div id="question-area" class="bg-white p-6 rounded-lg shadow-md mb-6">
+                
+                <div id="explanation-step-area" class="bg-white p-6 rounded-lg shadow-md mb-6 hidden">
+                    <h2 class="text-2xl font-bold mb-4 text-[#02416d]">Explicação da Unidade/Questão</h2>
+                    <div id="current-explanation-block-content" class="mb-6">
+                        </div>
+                    <button id="next-step-button" class="w-full py-3 bg-[#aedd2b] text-white rounded-lg font-bold hover:bg-[#8ecb21] transition-colors">
+                        Próximo
+                    </button>
+                </div>
+
+                <div id="question-area" class="bg-white p-6 rounded-lg shadow-md mb-6 hidden">
                     <p id="question-counter" class="text-sm text-gray-500 mb-2">Questão 1 de X</p>
+                    
                     <img id="question-image" class="w-full h-48 object-contain mb-4 hidden" alt="Imagem da Questão">
                     <p id="question-text" class="text-xl font-semibold mb-4"></p>
                     
-                    <p id="explanation-text" class="text-md text-gray-700 italic mt-4 mb-4 hidden"></p> 
+                    <p id="post-explanation-text" class="text-md text-gray-700 italic mt-4 mb-4 hidden"></p> 
 
                     <div id="alternatives-container" class="grid grid-cols-1 gap-3">
-                    </div>
+                        </div>
                     <button id="submit-button" class="mt-6 w-full py-3 bg-[#066699] text-white rounded-lg font-bold hover:bg-[#044b73] transition-colors">Confirmar Resposta</button>
                 </div>
 
@@ -74,7 +103,7 @@
     </div>
 
     <script>
-        // Funções de Perfil e Autenticação (reutilizadas de home.html e modulo.html)
+        // --- Funções de Perfil e Autenticação (Mantidas como estão) ---
         const btnPerfil = document.getElementById("btn-perfil");
         const btnPerfilMobile = document.getElementById("btn-perfil-mobile");
         const colunaEsquerda = document.getElementById("coluna-esquerda");
@@ -85,7 +114,7 @@
         const userPontosSpan = document.getElementById("user-pontos");
         const btnLogout = document.getElementById('btn-logout');
         const btnLogoutMobile = document.getElementById('btn-logout-mobile');
-        const explanationTextElement = document.getElementById('explanation-text'); 
+        const postExplanationTextElement = document.getElementById('post-explanation-text'); 
 
         async function fetchAuthenticatedData(url, options = {}) {
             const token = localStorage.getItem('melliHeroToken');
@@ -146,6 +175,7 @@
             window.location.href = '/html/login.html';
         }
 
+
         // ----------------------------------------------------
         // Lógica Específica da Página de Quiz
         // ----------------------------------------------------
@@ -154,17 +184,28 @@
         let currentQuestionIndex = 0; 
         let userScore = 0; 
         let unitId = null; 
+        let currentModuleId = null; // <-- ADICIONADO: Variável para armazenar o ID do módulo
+        let currentExplanationBlocks = []; // Array de blocos de explicação da questão atual
+        let currentExplanationBlockIndex = 0; // Índice do bloco de explicação atual sendo exibido
 
+
+        // Elementos do Quiz
         const unitTitleElement = document.getElementById('unit-title');
         const questionCounterElement = document.getElementById('question-counter');
         const questionImageElement = document.getElementById('question-image');
         const questionTextElement = document.getElementById('question-text');
         const alternativesContainer = document.getElementById('alternatives-container');
         const submitButton = document.getElementById('submit-button');
-        const quizContent = document.getElementById('quiz-content');
+        const questionArea = document.getElementById('question-area'); 
         const resultsArea = document.getElementById('results-area');
         const finalScoreElement = document.getElementById('final-score');
         const returnToModulesButton = document.getElementById('return-to-modules-button');
+
+        // Elementos da Nova Área de Explicação Passo a Passo
+        const explanationStepArea = document.getElementById('explanation-step-area'); 
+        const currentExplanationBlockContent = document.getElementById('current-explanation-block-content');
+        const nextStepButton = document.getElementById('next-step-button'); // Botão "Próximo" para avançar em explicações
+
 
         document.addEventListener('DOMContentLoaded', async () => {
             loadUserProfile();
@@ -174,8 +215,7 @@
 
             if (!unitId) {
                 unitTitleElement.textContent = 'Unidade não especificada.';
-                questionTextElement.textContent = 'Retorne à página de módulos para selecionar uma unidade.';
-                submitButton.disabled = true;
+                hideAllContainers();
                 return;
             }
 
@@ -183,64 +223,157 @@
                 const unitInfo = await fetchAuthenticatedData(`/api/content/unidade/${unitId}`);
                 if (unitInfo) {
                     unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
+                    currentModuleId = unitInfo.id_modulo; // <-- CORRIGIDO: Armazena o id_modulo
                 }
 
                 const fetchedQuestions = await fetchAuthenticatedData(`/api/content/unidade/${unitId}/questions`);
                 if (fetchedQuestions && fetchedQuestions.length > 0) {
                     questions = fetchedQuestions;
-                    displayQuestion(currentQuestionIndex);
+                    currentQuestionIndex = 0; 
+                    
+                    // Inicia o fluxo verificando as explicações da primeira questão
+                    startQuestionFlow(currentQuestionIndex);
+
                 } else {
                     unitTitleElement.textContent = `Nenhuma questão encontrada para esta unidade.`;
-                    questionTextElement.textContent = 'Retorne à página de módulos.';
-                    submitButton.disabled = true;
+                    hideAllContainers();
                 }
             } catch (error) {
                 console.error('Erro ao carregar quiz (info da unidade ou questões):', error);
                 unitTitleElement.textContent = 'Erro ao carregar o quiz.';
-                questionTextElement.textContent = `Tente novamente mais tarde. Detalhes: ${error.message}`;
-                submitButton.disabled = true;
+                hideAllContainers();
             }
         });
 
-        function displayQuestion(index) {
-            const question = questions[index];
-            if (!question) {
+        // Função para ocultar todos os containers principais (explicação, questão, resultados)
+        function hideAllContainers() {
+            explanationStepArea.classList.add('hidden');
+            questionArea.classList.add('hidden');
+            resultsArea.classList.add('hidden');
+        }
+
+        // Função para iniciar o fluxo de uma questão (explicações ou direto para a pergunta)
+        function startQuestionFlow(index) {
+            if (index >= questions.length) {
                 showResults();
                 return;
             }
 
-            questionCounterElement.textContent = `Questão ${index + 1} de ${questions.length}`;
-            questionTextElement.textContent = question.enunciado_pergunta;
+            const question = questions[index];
+            currentExplanationBlocks = question.explicacoes_pre_questao || [];
+            currentExplanationBlockIndex = 0; // Sempre começa do primeiro bloco de explicação
 
+            if (currentExplanationBlocks.length > 0) {
+                // Se houver explicações, exibe a tela de explicações
+                displayExplanationStep();
+            } else {
+                // Se não houver explicações, vai direto para a pergunta
+                displayQuestion();
+            }
+        }
+
+        // Função para exibir a tela de explicações passo a passo
+        function displayExplanationStep() {
+            hideAllContainers();
+            explanationStepArea.classList.remove('hidden');
+
+            renderCurrentExplanationBlock();
+            
+            // Remove o listener anterior para evitar múltiplos e adiciona o novo
+            nextStepButton.removeEventListener('click', handleNextStep);
+            nextStepButton.addEventListener('click', handleNextStep);
+        }
+
+        // Renderiza o bloco de explicação atual no container
+        function renderCurrentExplanationBlock() {
+            currentExplanationBlockContent.innerHTML = ''; // Limpa o conteúdo anterior
+
+            if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
+                const expBlock = currentExplanationBlocks[currentExplanationBlockIndex];
+                
+                if (expBlock.texto) {
+                    const p = document.createElement('p');
+                    p.textContent = expBlock.texto;
+                    p.classList.add('mb-2', 'text-gray-800'); 
+                    currentExplanationBlockContent.appendChild(p);
+                }
+                if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
+                    const img = document.createElement('img');
+                    img.src = expBlock.url_media;
+                    img.alt = expBlock.texto || "Conteúdo visual da explicação";
+                    img.classList.add('w-full', 'max-w-md', 'mx-auto', 'my-4', 'rounded-lg', 'shadow-sm'); 
+                    currentExplanationBlockContent.appendChild(img);
+                }
+                if (expBlock.url_media && expBlock.tipo_media === 'video') {
+                    const iframeContainer = document.createElement('div');
+                    iframeContainer.classList.add('iframe-container', 'max-w-full', 'mx-auto', 'my-4'); // Adicionado 'iframe-container'
+                    const iframe = document.createElement('iframe');
+                    iframe.src = expBlock.url_media;
+                    iframe.classList.add('w-full', 'h-full', 'rounded-lg'); // Removidas classes 'absolute', 'top-0', 'left-0' daqui
+                    iframe.frameBorder = "0";
+                    iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                    iframe.allowFullscreen = true;
+                    iframeContainer.appendChild(iframe);
+                    currentExplanationBlockContent.appendChild(iframeContainer);
+                    currentExplanationBlockContent.appendChild(iframeContainer);
+                }
+                nextStepButton.textContent = 'Próximo'; // Mantém o texto "Próximo"
+            } else {
+                nextStepButton.textContent = 'Iniciar Questão'; // Última explicação, botão para a pergunta
+            }
+        }
+
+        // Handler para o botão "Próximo" na tela de explicação
+        function handleNextStep() {
+            currentExplanationBlockIndex++;
+            if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
+                // Ainda há blocos de explicação para mostrar
+                renderCurrentExplanationBlock();
+            } else {
+                // Todos os blocos de explicação foram mostrados. Agora, exibe a pergunta.
+                displayQuestion();
+            }
+        }
+
+        // Função para exibir a pergunta e alternativas
+        function displayQuestion() {
+            hideAllContainers();
+            questionArea.classList.remove('hidden');
+
+            const question = questions[currentQuestionIndex];
+            
+            questionCounterElement.textContent = `Questão ${currentQuestionIndex + 1} de ${questions.length}`;
+            
+            questionImageElement.classList.add('hidden');
+            questionImageElement.src = ''; 
             if (question.img_url_pergunta) { 
                 questionImageElement.src = question.img_url_pergunta;
                 questionImageElement.classList.remove('hidden');
-            } else {
-                questionImageElement.classList.add('hidden');
-                questionImageElement.src = ''; 
             }
 
-            explanationTextElement.classList.add('hidden');
-            explanationTextElement.textContent = ''; 
-
+            questionTextElement.textContent = question.enunciado_pergunta;
+            postExplanationTextElement.classList.add('hidden'); // Esconde a explicação pós-resposta por padrão
+            postExplanationTextElement.textContent = ''; 
             alternativesContainer.innerHTML = ''; 
+
             question.respostas.forEach(alternative => { 
                 const label = document.createElement('label');
-                label.className = 'alternative-item';
+                label.className = 'alternative-item block p-3 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors';
                 label.innerHTML = `
-                    <input type="radio" name="alternative" value="${alternative.id_alternativa}" class="hidden" data-correct="${alternative.eh_correto ? '1' : '0'}">
-                    <span>${alternative.texto_resposta}</span>
+                    <input type="radio" name="alternative" value="${alternative.id_alternativa}" class="mr-3 leading-tight" data-correct="${alternative.eh_correto ? '1' : '0'}">
+                    <span class="text-gray-900">${alternative.texto_resposta}</span>
                 `;
                 alternativesContainer.appendChild(label);
             });
 
             submitButton.disabled = false;
             submitButton.textContent = 'Confirmar Resposta';
+            // Garante que o listener para submit/next question seja único
+            submitButton.removeEventListener('click', handleSubmitOrNextQuestion); 
+            submitButton.addEventListener('click', handleSubmitOrNextQuestion);
         }
 
-        submitButton.removeEventListener('click', handleSubmitOrNextQuestion); 
-        submitButton.addEventListener('click', handleSubmitOrNextQuestion);
-
+        // Handler para o botão "Confirmar Resposta" ou "Próxima Questão"
         function handleSubmitOrNextQuestion() {
             if (submitButton.textContent === 'Confirmar Resposta') {
                 const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
@@ -259,43 +392,45 @@
                     userScore++;
                 } else {
                     labelSelected.classList.add('wrong-answer');
+                    // Encontra a alternativa correta para dar feedback visual
                     const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
-                    correctAnswerLabel.classList.add('correct-answer-feedback');
+                    if (correctAnswerLabel) { // Verifica se encontrou a correta antes de adicionar a classe
+                        correctAnswerLabel.classList.add('correct-answer-feedback');
+                    }
 
+                    // Exibe a explicação pós-resposta apenas se o usuário errou
                     if (currentQuestion.explicacao_pergunta) {
-                        explanationTextElement.textContent = `Explicação: ${currentQuestion.explicacao_pergunta}`;
-                        explanationTextElement.classList.remove('hidden');
+                        postExplanationTextElement.textContent = `Explicação: ${currentQuestion.explicacao_pergunta}`;
+                        postExplanationTextElement.classList.remove('hidden');
                     }
                 }
 
+                // Desabilita todos os radio buttons após a resposta
                 alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
                 
                 submitButton.textContent = 'Próxima Questão';
             } else {
-                handleNextQuestion();
+                // Após a resposta, avança para a próxima questão
+                currentQuestionIndex++;
+                resetAlternativeStyles(); // Limpa estilos de feedback
+                startQuestionFlow(currentQuestionIndex); // Inicia o fluxo para a próxima questão
             }
         }
 
-        function handleNextQuestion() {
-            currentQuestionIndex++;
-            resetAlternativeStyles();
-            displayQuestion(currentQuestionIndex);
-            submitButton.textContent = 'Confirmar Resposta';
-            submitButton.disabled = false;
-        }
-
+        // Função para resetar os estilos das alternativas e esconder explicações pós-resposta
         function resetAlternativeStyles() {
             alternativesContainer.querySelectorAll('.alternative-item').forEach(label => {
                 label.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback');
                 label.querySelector('input').disabled = false;
                 label.querySelector('input').checked = false; 
             });
-            explanationTextElement.classList.add('hidden');
-            explanationTextElement.textContent = '';
+            postExplanationTextElement.classList.add('hidden');
+            postExplanationTextElement.textContent = '';
         }
 
+        // Função para exibir os resultados finais e salvar o progresso
         async function showResults() {
-            quizContent.classList.add('hidden');
+            hideAllContainers();
             resultsArea.classList.remove('hidden');
 
             const totalQuestions = questions.length;
@@ -304,12 +439,19 @@
             finalScoreElement.textContent = `${userScore} de ${totalQuestions} (${percentage.toFixed(0)}%)`;
 
             try {
+                if (currentModuleId === null) {
+                    console.error("Erro: currentModuleId não definido. Não é possível registrar o progresso.");
+                    alert("Erro interno ao registrar progresso: ID do módulo não encontrado.");
+                    return;
+                }
+
                 const response = await fetchAuthenticatedData(`/api/content/units/${unitId}/complete`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({ 
+                        id_modulo: currentModuleId, // <-- CORRIGIDO: Agora envia o id_modulo
                         pontuacao: userScore,
                         concluido: true 
                     }),
@@ -317,22 +459,18 @@
 
                 if (response) {
                     console.log('Unidade concluída e progresso salvo:', response);
-                    loadUserProfile(); 
+                    loadUserProfile(); // Atualiza o perfil do usuário (XP, etc.)
                     
-                    // =========================================================
-                    // AQUI: Pegar o id_modulo da resposta e redirecionar
-                    // =========================================================
-                    const moduleId = response.id_modulo; // Pega o id_modulo da resposta do backend
+                    // O backend agora retorna id_modulo diretamente no sucesso, mas estamos usando currentModuleId
+                    const moduleIdToRedirect = currentModuleId; // Usamos o que já temos
 
-                    // Remove o listener antigo para evitar múltiplos listeners se a função for chamada novamente
+                    // Remove listener anterior para evitar múltiplos
                     returnToModulesButton.removeEventListener('click', redirectToHome); 
                     
                     returnToModulesButton.addEventListener('click', () => {
-                        // Redireciona para a página do módulo específico
-                        if (moduleId) {
-                            window.location.href = `/html/modulo.html?id=${moduleId}`;
+                        if (moduleIdToRedirect) {
+                            window.location.href = `/html/modulo.html?id=${moduleIdToRedirect}`;
                         } else {
-                            // Fallback se por algum motivo o moduleId não for retornado
                             window.location.href = '/html/home.html'; 
                         }
                     });
@@ -344,24 +482,11 @@
             }
         }
 
-        // Funções auxiliares para redirecionamento, caso você mantenha um listener padrão
         function redirectToHome() {
             window.location.href = '/html/home.html';
         }
-        // É importante que o listener padrão seja adicionado apenas UMA VEZ
-        // e o novo listener seja adicionado APENAS QUANDO showResults é chamado.
-        // Se você tinha um listener direto em returnToModulesButton fora de showResults,
-        // ele foi movido/adaptado para dentro de showResults para controle dinâmico.
-        // Se a unidade for carregada mas o quiz não for concluído, o botão continua com o comportamento padrão
-        // (que neste caso é redirectToHome, mas foi substituído dinamicamente).
-        // Se você quer que ele volte para home.html por padrão se showResults não for chamado,
-        // você pode adicionar:
-        // returnToModulesButton.addEventListener('click', redirectToHome);
-        // FORA de showResults, mas ANTES do `if (response)` em showResults.
-        // Por enquanto, vou manter como está no `showResults` para clareza da solução.
 
-
-        // Event Listeners para o menu e perfil
+        // --- Event Listeners para o menu e perfil (Mantidos como estão) ---
         btnPerfil.addEventListener("click", () => {
             colunaEsquerda.classList.toggle("visivel");
         });
