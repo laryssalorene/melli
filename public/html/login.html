@@ -1,72 +1,32 @@
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login - Melli Hero</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/home.css" /> 
-    <link rel="stylesheet" href="/styles/login.css" /> </head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melli Hero - Login</title>
+    <link rel="stylesheet" href="../styles/login.css">
+</head>
 <body>
     <div class="login-container">
-        <h1>Login Melli Hero</h1>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" name="email" required autocomplete="email">
+        <form class="login-form" id="loginForm">
+            <img src="../assets/logo.png" alt="Melli Hero Logo" class="logo">
+            <h2>Bem-vindo de volta!</h2>
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
             </div>
-            <div class="form-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" name="senha" required autocomplete="current-password">
+            <div class="input-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" required>
             </div>
-            <button type="submit">Entrar</button>
-            <p id="errorMessage" class="error-message"></p>
+            <p id="loginMessage" class="message"></p> <button type="submit">Entrar</button>
+            <p class="register-link">Não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
+            
+            <p class="forgot-password-link"><a href="forgot-password.html">Esqueceu a senha?</a></p>
+
         </form>
-        <p class="link-cadastro">Ainda não tem uma conta? <a href="/html/cadastro.html">Cadastre-se aqui</a></p>
     </div>
 
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async function (event) {
-            event.preventDefault(); // Impede o recarregamento da página
-
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = ''; // Limpa mensagens de erro anteriores
-
-            try {
-                const response = await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email, senha }),
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Login bem-sucedido
-                    localStorage.setItem('melliHeroToken', data.token); // Armazena o token
-                    // Armazena dados básicos do usuário (opcional, pode ser buscado na home)
-                    localStorage.setItem('melliHeroUser', JSON.stringify({
-                        id_usuario: data.user.id_usuario,
-                        nome: data.user.nome,
-                        email: data.user.email,
-                        pontos: data.user.pontos,
-                        assiduidade_dias: data.user.assiduidade_dias
-                    }));
-                    window.location.href = '/html/home.html'; // Redireciona para a página inicial
-                } else {
-                    // Erro no login
-                    errorMessage.textContent = data.message || 'Erro ao fazer login. Verifique suas credenciais.';
-                }
-            } catch (error) {
-                console.error('Erro na requisição de login:', error);
-                errorMessage.textContent = 'Erro de conexão. Tente novamente mais tarde.';
-            }
-        });
-    </script>
+    <script src="../js/login.js"></script>
 </body>
 </html>

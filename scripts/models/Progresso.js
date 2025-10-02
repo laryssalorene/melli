@@ -12,7 +12,7 @@ class Progresso {
                 id_unidade INTEGER NOT NULL,
                 completo BOOLEAN DEFAULT 0,
                 pontuacao_unidade INTEGER DEFAULT 0,
-                data_conclusao TEXT,
+                data_conclusao DATETIME DEFAULT NULL, -- Alterado para DATETIME DEFAULT NULL
                 FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
                 UNIQUE(id_usuario, id_modulo, id_unidade)
             )
@@ -20,7 +20,8 @@ class Progresso {
     }
 
     static async setUnidadeConcluida(id_usuario, id_modulo, id_unidade, completo, pontuacao_unidade = 0) {
-        const data_conclusao = new Date().toISOString().split('T')[0];
+        // Usa o formato ISO string completo para DATETIME
+        const data_conclusao = completo ? new Date().toISOString() : null; 
 
         const result = await run(`
             INSERT INTO progresso_usuario (id_usuario, id_modulo, id_unidade, completo, pontuacao_unidade, data_conclusao)
@@ -69,7 +70,6 @@ class Progresso {
         return progressoFormatado;
     }
 
-    // Adicionado este método que faltava e era chamado no controller
     static async getProgressoByUnit(id_usuario, id_modulo, id_unidade) {
         const row = await get(`
             SELECT id_modulo, id_unidade, completo, pontuacao_unidade, data_conclusao

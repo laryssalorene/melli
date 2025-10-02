@@ -1,93 +1,166 @@
-/* public/styles/login.css */
+/* public/css/login.css */
+
+/* Resets básicos */
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; /* Considere usar uma fonte mais amigável */
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url('/img/background2.png'); /* Caminho ajustado */
+    background-image: url('/img/background2.png'); /* Caminho ajustado. Verifique se 'assets' é a pasta correta. */
     background-size: cover;
     background-position: center;
+    background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
 }
 
 .login-container {
-    background-color: rgba(255, 255, 255, 0.9);
-    padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    /* Removendo esta classe, pois o form é o container principal agora */
+    /* background-color: rgba(255, 255, 255, 0.9); */
+    /* padding: 40px; */
+    /* border-radius: 15px; */
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); */
+    /* width: 100%; */
+    /* max-width: 400px; */
+    /* text-align: center; */
+}
+
+.login-form { /* O form é o container principal */
+    background-color: rgba(255, 255, 255, 0.95); /* Um pouco menos transparente */
+    padding: 45px 40px; /* Um pouco mais de padding vertical */
+    border-radius: 18px; /* Borda mais arredondada */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); /* Sombra mais pronunciada */
     width: 100%;
-    max-width: 400px;
+    max-width: 420px; /* Levemente mais largo */
     text-align: center;
+    box-sizing: border-box; /* Garante que padding não aumente o tamanho total */
 }
 
-.login-container h1 {
-    color: #02416d;
-    font-size: 2.2rem;
-    margin-bottom: 25px;
+.login-form .logo {
+    width: 120px; /* Tamanho do logo ajustado para sua imagem */
+    height: auto;
+    margin-bottom: 25px; /* Mais espaço abaixo do logo */
+    display: block; /* Para centralizar com margin: auto */
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.form-group {
-    margin-bottom: 20px;
+.login-form h2 { /* Título "Bem-vindo de volta!" */
+    color: #02416d; /* Cor forte e escura */
+    font-size: 2.3rem; /* Tamanho maior para o título */
+    margin-bottom: 30px; /* Mais espaço abaixo do título */
+    font-weight: 700; /* Negrito */
+}
+
+.input-group { /* Corresponde ao HTML */
+    margin-bottom: 25px; /* Mais espaço entre os grupos de input */
     text-align: left;
 }
 
-.form-group label {
+.input-group label { /* Corresponde ao HTML */
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 10px; /* Mais espaço entre label e input */
     font-weight: bold;
-    color: #02416d;
+    color: #02416d; /* Cor do label */
+    font-size: 1.05rem;
 }
 
-.form-group input {
+.input-group input { /* Corresponde ao HTML */
     width: 100%;
-    padding: 12px;
+    padding: 14px; /* Mais padding para os inputs */
     border: 1px solid #cce7f0;
-    border-radius: 8px;
-    font-size: 1rem;
+    border-radius: 10px; /* Borda mais arredondada */
+    font-size: 1.05rem;
     color: #333;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
+    box-sizing: border-box; /* Impede que padding aumente a largura total */
 }
 
-.form-group input:focus {
+.input-group input:focus {
     outline: none;
-    border-color: #50c8c6;
-    box-shadow: 0 0 0 3px rgba(80, 200, 198, 0.3);
+    border-color: #50c8c6; /* Cor da borda focada */
+    box-shadow: 0 0 0 4px rgba(80, 200, 198, 0.4); /* Sombra de foco */
 }
 
-button[type="submit"] {
+.login-form button[type="submit"] { /* Corresponde ao HTML */
     width: 100%;
-    padding: 14px;
-    background-color: #aedd2b;
-    color: #02416d;
+    padding: 16px; /* Mais padding para o botão */
+    background-color: #aedd2b; /* Cor do botão verde claro */
+    color: #02416d; /* Cor do texto no botão */
     font-weight: bold;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px; /* Borda mais arredondada */
     cursor: pointer;
-    font-size: 1.1rem;
-    transition: background-color 0.3s ease;
+    font-size: 1.2rem; /* Texto maior no botão */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
+    margin-top: 15px; /* Espaço entre o último input e o botão */
 }
 
-button[type="submit"]:hover {
-    background-color: #8cc63f;
+.login-form button[type="submit"]:hover {
+    background-color: #8cc63f; /* Cor verde um pouco mais escura no hover */
+    transform: translateY(-2px); /* Efeito de "levantar" no hover */
 }
 
-.error-message {
-    color: #e53e3e;
+/* Estilo para a mensagem de login (sucesso/erro) */
+.login-form .message { /* Corresponde ao HTML: p#loginMessage.message */
     margin-top: 15px;
+    margin-bottom: 15px; /* Adicionado margem inferior */
+    padding: 10px;
+    border-radius: 5px;
     font-weight: bold;
+    font-size: 0.95em;
+    min-height: 20px; /* Garante que o espaço seja reservado */
 }
 
-.link-cadastro {
-    margin-top: 20px;
-    font-size: 0.95rem;
+.login-form .message.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.login-form .message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.register-link { /* Corresponde ao HTML */
+    margin-top: 25px; /* Mais espaço acima do link de cadastro */
+    font-size: 1rem;
     color: #02416d;
 }
 
-.link-cadastro a {
-    color: #50c8c6;
+.register-link a {
+    color: #50c8c6; /* Cor do link */
     text-decoration: none;
     font-weight: bold;
+    transition: color 0.2s ease;
 }
 
-.link-cadastro a:hover {
+.register-link a:hover {
     text-decoration: underline;
+    color: #3ea09f; /* Um pouco mais escuro no hover */
+}
+
+.forgot-password-link { /* Corresponde ao HTML */
+    margin-top: 15px; /* Espaço abaixo do link de cadastro */
+    font-size: 0.95rem;
+}
+
+.forgot-password-link a {
+    color: #50c8c6; /* Cor do link */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link a:hover {
+    text-decoration: underline;
+    color: #3ea09f; /* Um pouco mais escuro no hover */
 }
