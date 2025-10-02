@@ -19,7 +19,7 @@ const contentController = {
 
     getModuleById: async (req, res) => {
         try {
-            const moduleId = req.params.id_modulo; // <-- CORRIGIDO AQUI: Usa 'id_modulo' da rota
+            const moduleId = req.params.id_modulo; 
             const id_usuario = req.userId || null; 
 
             const module = await contentService.getModuleByIdWithUnitsAndProgress(moduleId, id_usuario);
@@ -29,7 +29,7 @@ const contentController = {
             }
             res.status(200).json(module);
         } catch (error) {
-            console.error(`Erro ao buscar módulo ${req.params.id_modulo}:`, error); // <-- CORRIGIDO AQUI
+            console.error(`Erro ao buscar módulo ${req.params.id_modulo}:`, error);
             res.status(500).json({ message: 'Erro interno do servidor ao buscar módulo.' });
         }
     },
@@ -39,7 +39,7 @@ const contentController = {
     // =========================================================
     getUnitsByModuleId: async (req, res) => {
         try {
-            const moduleId = req.params.id_modulo; // <-- CORRIGIDO AQUI: Usa 'id_modulo' da rota
+            const moduleId = req.params.id_modulo; 
             const id_usuario = req.userId || null; 
 
             const moduleDetails = await contentService.getModuleByIdWithUnitsAndProgress(moduleId, id_usuario);
@@ -49,14 +49,14 @@ const contentController = {
             }
             res.status(200).json(moduleDetails.unidades);
         } catch (error) {
-            console.error(`Erro ao buscar unidades do módulo ${req.params.id_modulo}:`, error); // <-- CORRIGIDO AQUI
+            console.error(`Erro ao buscar unidades do módulo ${req.params.id_modulo}:`, error);
             res.status(500).json({ message: 'Erro interno do servidor ao carregar as unidades.' });
         }
     },
 
     getUnitById: async (req, res) => {
         try {
-            const unitId = req.params.id_unidade; // <-- CORRIGIDO AQUI: Usa 'id_unidade' da rota
+            const unitId = req.params.id_unidade; // <<<--- AQUI ESTÁ A CORREÇÃO!
             const unitWithDetails = await contentService.getUnitByIdWithDetails(unitId);
 
             if (!unitWithDetails) {
@@ -64,7 +64,7 @@ const contentController = {
             }
             res.status(200).json(unitWithDetails);
         } catch (error) {
-            console.error(`Erro ao buscar unidade ${unitId}:`, error);
+            console.error(`Erro ao buscar unidade ${req.params.id_unidade}:`, error); // Usando req.params.id_unidade aqui para ser seguro.
             res.status(500).json({ message: 'Erro interno do servidor ao buscar unidade.' });
         }
     },
@@ -74,7 +74,7 @@ const contentController = {
     // =========================================================
     getQuestionsByUnitId: async (req, res) => {
         try {
-            const unitId = req.params.id_unidade; // <-- CORRIGIDO AQUI: Usa 'id_unidade' da rota
+            const unitId = req.params.id_unidade; 
             const questions = await contentService.getQuestionsForUnit(unitId);
 
             if (!questions || questions.length === 0) {
@@ -82,21 +82,21 @@ const contentController = {
             }
             res.status(200).json(questions);
         } catch (error) {
-            console.error(`Erro ao buscar questões da unidade ${unitId}:`, error);
+            console.error(`Erro ao buscar questões da unidade ${req.params.id_unidade}:`, error); // Usando req.params.id_unidade aqui.
             res.status(500).json({ message: 'Erro interno do servidor ao carregar as questões.' });
         }
     },
 
     getQuestionById: async (req, res) => {
         try {
-            const questionId = req.params.id_questao; // <-- CORRIGIDO AQUI: Usa 'id_questao' da rota
+            const questionId = req.params.id_questao; 
             const question = await contentService.getQuestionById(questionId);
             if (!question) {
                 return res.status(404).json({ message: 'Questão não encontrada.' });
             }
             res.status(200).json(question);
         } catch (error) {
-            console.error(`Erro ao buscar questão ${questionId}:`, error);
+            console.error(`Erro ao buscar questão ${req.params.id_questao}:`, error); // Usando req.params.id_questao aqui.
             res.status(500).json({ message: 'Erro interno do servidor ao carregar a questão.' });
         }
     },
@@ -106,8 +106,8 @@ const contentController = {
     // =========================================================
     updateUserProgress: async (req, res) => {
         try {
-            const id_usuario = req.userId;
-            const unitId = req.params.unitId; // <-- CORRIGIDO AQUI: Usa 'unitId' da rota /units/:unitId/complete
+            const id_usuario = req.userId; // <<-- Usando req.userId
+            const unitId = req.params.unitId; 
 
             // id_modulo, pontuacao e concluido vêm do corpo da requisição
             const { id_modulo, pontuacao, concluido } = req.body; 
@@ -123,8 +123,7 @@ const contentController = {
                 concluido,
                 pontuacao
             );
-            res.status(200).json({ message: 'Progresso atualizado com sucesso!', progress: updatedProgress });
-
+            res.status(200).json({ message: 'Progresso atualizado com sucesso!', progress: updatedProgress, id_modulo: parseInt(id_modulo, 10) }); // Retornando id_modulo também
         } catch (error) {
             console.error('Erro ao atualizar progresso do usuário:', error);
             res.status(500).json({ message: error.message || 'Erro interno do servidor ao atualizar progresso.' });
@@ -133,17 +132,14 @@ const contentController = {
 
     getUnitProgress: async (req, res) => {
         try {
-            const id_usuario = req.userId;
-            const unitId = req.params.unitId; // <-- CORRIGIDO AQUI: Usa 'unitId' da rota /progress/unit/:unitId
+            const id_usuario = req.userId; // <<-- Usando req.userId
+            const unitId = req.params.unitId; 
 
             if (id_usuario === undefined || isNaN(parseInt(unitId, 10))) {
                 return res.status(400).json({ message: 'Dados insuficientes ou inválidos para buscar o progresso da unidade.' });
             }
 
-            // Precisamos do id_modulo para buscar o progresso.
-            // O ProgressoModel.getProgressoByUnit espera id_modulo.
-            // Vamos buscar a unidade para inferir o id_modulo.
-            const unitDetails = await contentService.getUnitById(unitId); // Usar o novo método getUnitById
+            const unitDetails = await contentService.getUnitById(unitId); 
             if (!unitDetails || !unitDetails.id_modulo) {
                 return res.status(404).json({ message: 'Unidade não encontrada para inferir o módulo.' });
             }
@@ -151,7 +147,7 @@ const contentController = {
 
             const progress = await ProgressoModel.getProgressoByUnit(
                 id_usuario,
-                parseInt(id_modulo, 10), // id_modulo inferido
+                parseInt(id_modulo, 10), 
                 parseInt(unitId, 10)
             );
 
@@ -164,8 +160,8 @@ const contentController = {
     
     getModuleUnitsProgress: async (req, res) => {
         try {
-            const id_usuario = req.userId || null;
-            const moduleId = req.params.id_modulo; // <-- CORRIGIDO AQUI: Usa 'id_modulo' da rota
+            const id_usuario = req.userId || null; // <<-- Usando req.userId
+            const moduleId = req.params.id_modulo; 
 
             if (!id_usuario) {
                 return res.status(401).json({ message: 'Usuário não autenticado.' });

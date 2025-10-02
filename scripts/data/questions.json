@@ -4,7 +4,7 @@
     "id_unidade": 101,
     "enunciado_pergunta": "Qual é a capital da França?",
     "img_url_pergunta": null,
-    "explicacao_pergunta": "Paris é a capital da França e uma das cidades mais importantes da Europa.", 
+    "explicacao_pergunta": "Paris é a capital da França e uma das cidades mais importantes da Europa.",
     "respostas": [
       {
         "id_resposta": 1,
@@ -31,7 +31,7 @@
     "id_unidade": 101,
     "enunciado_pergunta": "Qual o principal componente do ar que respiramos?",
     "img_url_pergunta": null,
-    "explicacao_pergunta": "O nitrogênio é o gás mais abundante na atmosfera terrestre, compondo cerca de 78% do ar.", 
+    "explicacao_pergunta": "O nitrogênio é o gás mais abundante na atmosfera terrestre, compondo cerca de 78% do ar.",
     "respostas": [
       {
         "id_resposta": 4,

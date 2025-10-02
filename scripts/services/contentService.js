@@ -10,7 +10,7 @@ console.log('DATA_DIR (contentService):', DATA_DIR);
 const MODULES_FILE = path.join(DATA_DIR, 'modules.json');
 const UNITS_FILE = path.join(DATA_DIR, 'units.json');
 const QUESTIONS_FILE = path.join(DATA_DIR, 'questions.json');
-const EXPLICATIONS_FILE = path.join(DATA_DIR, 'explicacoes.json');
+const EXPLICATIONS_FILE = path.join(DATA_DIR, 'explicacoes.json'); // Corrigido para EXPLANATIONS_FILE (singular)
 
 let contentCache = {
     modules: [],
@@ -30,7 +30,7 @@ async function loadAllContent() {
                 fs.readFile(MODULES_FILE, 'utf8').then(JSON.parse),
                 fs.readFile(UNITS_FILE, 'utf8').then(JSON.parse),
                 fs.readFile(QUESTIONS_FILE, 'utf8').then(JSON.parse),
-                fs.readFile(EXPLICATIONS_FILE, 'utf8').then(JSON.parse)
+                fs.readFile(EXPLICATIONS_FILE, 'utf8').then(JSON.parse) // Usando EXPLICATIONS_FILE
             ]);
 
             contentCache = {
@@ -53,11 +53,12 @@ async function loadAllContent() {
 }
 
 // Chamar a função de carregamento para popular o cache quando o serviço é inicializado
-loadAllContent();
+// Não chamamos aqui, pois o _ensureContentLoaded fará isso sob demanda.
+// loadAllContent(); // <--- Remova esta chamada direta aqui. Deixe o _ensureContentLoaded gerenciar.
 
 const contentService = {
     _ensureContentLoaded: async () => {
-        if (contentCache.modules.length === 0) {
+        if (contentCache.modules.length === 0) { // Verifica se o cache está vazio
             await loadAllContent();
         }
     },
@@ -69,7 +70,6 @@ const contentService = {
         await contentService._ensureContentLoaded();
         const { modules, units } = contentCache;
 
-        // Se não houver userId, retorna módulos sem progresso detalhado
         if (!userId) {
             return modules.map(m => ({
                 ...m,
@@ -79,7 +79,6 @@ const contentService = {
             }));
         }
 
-        // Se houver userId, busca o progresso real
         const allUserProgress = await ProgressoModel.getProgressoUsuario(userId);
 
         return modules.map(module => {
@@ -115,7 +114,6 @@ const contentService = {
 
         let moduleUnits = units.filter(unit => unit.id_modulo === parseInt(moduleId, 10));
 
-        // Adiciona progresso às unidades se userId estiver presente
         if (userId) {
             const moduleProgress = await ProgressoModel.getProgressoUsuarioPorModulo(userId, parseInt(moduleId, 10));
             moduleUnits = moduleUnits.map(unit => {
@@ -127,7 +125,6 @@ const contentService = {
                 };
             });
         } else {
-            // Se não houver userId, retorna unidades com progresso padrão (não iniciado)
             moduleUnits = moduleUnits.map(unit => ({ ...unit, concluido: false, pontuacao: 0 }));
         }
 
@@ -140,13 +137,13 @@ const contentService = {
     // =========================================================
     // Métodos para Unidades
     // =========================================================
-    async getUnitById(unitId) { // Método para obter APENAS a unidade por ID
+    async getUnitById(unitId) { 
         await contentService._ensureContentLoaded();
         const { units } = contentCache;
         return units.find(u => u.id_unidade === parseInt(unitId, 10));
     },
 
-    async getUnitByIdWithDetails(unitId) { // Método para obter a unidade com questões e explicações
+    async getUnitByIdWithDetails(unitId) { 
         await contentService._ensureContentLoaded();
         const { units, questions, explanations } = contentCache;
 
@@ -155,20 +152,23 @@ const contentService = {
 
         let unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
 
-        // Anexar explicações pré-questão a cada questão na unidade
         unitQuestions = unitQuestions.map(question => {
-            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao);
+            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao');
+            
+            // CORREÇÃO AQUI: Acessar 'blocos' e verificar antes de sort
+            const explanationBlocks = preExplanationsEntry && preExplanationsEntry.blocos 
+                                        ? preExplanationsEntry.blocos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0)) // Garante que 'ordem' existe
+                                        : [];
+
             return {
                 ...question,
-                explicacoes_pre_questao: preExplanationsEntry ?
-                                         preExplanationsEntry.explicacoes_pre_questao.sort((a, b) => a.ordem - b.ordem) :
-                                         []
+                explicacoes_pre_questao: explanationBlocks
             };
         });
 
         return {
             ...unit,
-            questoes: unitQuestions // Inclui as questões com explicações
+            questoes: unitQuestions
         };
     },
 
@@ -181,14 +181,17 @@ const contentService = {
 
         let unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
 
-        // Anexar explicações pré-questão a cada questão
         unitQuestions = unitQuestions.map(question => {
-            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao);
+            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao');
+            
+            // CORREÇÃO AQUI: Acessar 'blocos' e verificar antes de sort
+            const explanationBlocks = preExplanationsEntry && preExplanationsEntry.blocos
+                                        ? preExplanationsEntry.blocos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0))
+                                        : [];
+
             return {
                 ...question,
-                explicacoes_pre_questao: preExplanationsEntry ?
-                                         preExplanationsEntry.explicacoes_pre_questao.sort((a, b) => a.ordem - b.ordem) :
-                                         []
+                explicacoes_pre_questao: explanationBlocks
             };
         });
         return unitQuestions;
@@ -201,11 +204,14 @@ const contentService = {
         let question = questions.find(q => q.id_questao === parseInt(questionId, 10));
         if (!question) return null;
 
-        // Anexar explicações pré-questão à questão única
-        const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao);
-        question.explicacoes_pre_questao = preExplanationsEntry ?
-                                         preExplanationsEntry.explicacoes_pre_questao.sort((a, b) => a.ordem - b.ordem) :
-                                         [];
+        const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao');
+        
+        // CORREÇÃO AQUI: Acessar 'blocos' e verificar antes de sort
+        const explanationBlocks = preExplanationsEntry && preExplanationsEntry.blocos
+                                    ? preExplanationsEntry.blocos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0))
+                                    : [];
+
+        question.explicacoes_pre_questao = explanationBlocks;
 
         return question;
     }

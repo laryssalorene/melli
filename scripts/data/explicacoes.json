@@ -1,56 +1,42 @@
 [
   {
-    "id_questao": 101, 
-    "explicacoes_pre_questao": [ 
+    "id_explicacao": 1,
+    "id_questao": 1,
+    "tipo": "pre_questao",
+    "blocos": [
       {
-        "ordem": 1, 
-        "texto": "Antes de responder sobre capitais, é importante refrescar a memória sobre a localização dos países europeus.",
-        "url_media": null,
-        "tipo_media": null 
+        "tipo_media": "texto",
+        "texto": "Olá, Hero! Antes de mergulharmos na capital da França, vamos ver algumas curiosidades. Você sabia que Paris é conhecida como a 'Cidade Luz'?"
       },
       {
-        "ordem": 2,
-        "texto": "A França é um país da Europa Ocidental, conhecido por sua arte e gastronomia.",
-        "url_media": "/img/mapa_franca.png", 
-        "tipo_media": "imagem" 
+        "tipo_media": "imagem",
+        "url_media": "/img/torre_eiffel.jpg"
       },
       {
-        "ordem": 3,
-        "texto": null, 
-        "url_media": "https://www.youtube.com/embed/some_video_id", 
-        "tipo_media": "video"
-      },
-      {
-        "ordem": 4,
-        "texto": "Confira o mapa para melhor visualização.", 
-        "url_media": null,
-        "tipo_media": null
+        "tipo_media": "texto",
+        "texto": "É um dos destinos turísticos mais populares do mundo. Agora sim, pronto para a pergunta!"
       }
     ]
   },
   {
-    "id_questao": 102, 
-    "explicacoes_pre_questao": [ 
+    "id_explicacao": 2,
+    "id_questao": 2,
+    "tipo": "pre_questao",
+    "blocos": [
       {
-        "ordem": 1,
-        "texto": "A atmosfera terrestre é uma camada de gases essencial para a vida, composta majoritariamente por dois gases: Nitrogênio e Oxigênio.",
-        "url_media": null,
-        "tipo_media": null
-      },
-      {
-        "ordem": 2,
-        "texto": "O Nitrogênio é o gás mais abundante, seguido pelo Oxigênio, que é vital para a respiração.",
-        "url_media": "/img/composicao_ar.png",
-        "tipo_media": "imagem"
+        "tipo_media": "texto",
+        "texto": "O ar que respiramos é uma mistura de vários gases. Qual deles é o mais abundante?"
       }
     ]
   },
   {
-    "id_questao": 103, 
-    "explicacoes_pre_questao": [
+    "id_explicacao": 3,
+    "id_questao": 1,
+    "tipo": "pos_resposta_correta",
+    "blocos": [
       {
-        "ordem": 1,
-        "texto": "Este é um bloco de explicação puramente textual para contextualizar a próxima questão. Preste atenção aos detalhes."
+        "tipo_media": "texto",
+        "texto": "Parabéns! Paris é realmente a capital da França. C'est magnifique!"
       }
     ]
   }
