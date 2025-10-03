@@ -1,12 +1,26 @@
 // scripts/models/Usuario.js
 // CORRIGIDO: Caminho do db.js
-const { get, run, all } = require('../db'); 
-const bcrypt = require('bcryptjs'); 
-const jwt = require('jsonwebtoken'); 
+const { get, run, all } = require('../db');
+const bcrypt = require('bcryptjs');
+// const jwt = require('jsonwebtoken'); // JWT não é necessário aqui no modelo, apenas no service
 
-const saltRounds = 10; 
+const saltRounds = 10;
 
 class Usuario {
+    constructor(data) {
+        this.id_usuario = data.id_usuario;
+        this.nome = data.nome;
+        this.email = data.email;
+        this.senha = data.senha; // A senha já deve ser o hash
+        this.pontos = data.pontos || 0;
+        this.assiduidade_dias = data.assiduidade_dias || 0;
+        this.data_registro = data.data_registro;
+        this.ultimo_login = data.ultimo_login;
+        this.mascote_id = data.mascote_id;
+        this.resetPasswordToken = data.resetPasswordToken;
+        this.resetPasswordExpires = data.resetPasswordExpires;
+    }
+
     /**
      * Cria a tabela 'Usuario' no banco de dados se ela não existir.
      * Inclui campos como nome, email, senha, pontos, assiduidade, data de registro,
@@ -16,14 +30,14 @@ class Usuario {
     static createTable() {
         return run(`
             CREATE TABLE IF NOT EXISTS Usuario (
-                id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,  
+                id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 senha TEXT NOT NULL,
                 pontos INTEGER DEFAULT 0,
                 assiduidade_dias INTEGER DEFAULT 0,
-                data_registro DATETIME DEFAULT CURRENT_TIMESTAMP, 
-                ultimo_login DATETIME DEFAULT CURRENT_TIMESTAMP,   
+                data_registro DATETIME DEFAULT CURRENT_TIMESTAMP,
+                ultimo_login DATETIME DEFAULT CURRENT_TIMESTAMP,
                 mascote_id INTEGER DEFAULT NULL,
                 -- NOVOS CAMPOS PARA REDEFINIÇÃO DE SENHA
                 resetPasswordToken TEXT,
@@ -36,41 +50,43 @@ class Usuario {
     /**
      * Encontra um usuário pelo seu endereço de e-mail.
      * @param {string} email O e-mail do usuário a ser procurado.
-     * @returns {Promise<Object|null>} O objeto do usuário ou null se não encontrado.
+     * @returns {Promise<Usuario|null>} A instância do usuário ou null se não encontrado.
      */
     static async findByEmail(email) {
-        return get(`SELECT * FROM Usuario WHERE email = ?`, [email]);
+        const row = await get(`SELECT * FROM Usuario WHERE email = ?`, [email]);
+        return row ? new Usuario(row) : null;
     }
 
     /**
      * Encontra um usuário pelo seu ID.
      * @param {number} id O ID do usuário a ser procurado.
-     * @returns {Promise<Object|null>} O objeto do usuário (sem a senha para segurança) ou null se não encontrado.
+     * @returns {Promise<Usuario|null>} A instância do usuário (sem a senha para segurança) ou null se não encontrado.
      */
     static async findById(id) {
-        return get(`
-            SELECT id_usuario, nome, email, pontos, assiduidade_dias, data_registro, ultimo_login, mascote_id
-            FROM Usuario
-            WHERE id_usuario = ?
-        `, [id]);
+        // Inclui a senha aqui para que possamos usá-la em operações internas,
+        // mas devemos ter cuidado ao retornar para o frontend.
+        const row = await get(`SELECT * FROM Usuario WHERE id_usuario = ?`, [id]);
+        return row ? new Usuario(row) : null;
     }
 
     /**
      * Cria um novo usuário no banco de dados.
      * @param {string} nome Nome do usuário.
      * @param {string} email E-mail do usuário (deve ser único).
-     * @param {string} senhaHash Senha do usuário já hashed.
+     * @param {string} senha Texto puro da senha do usuário.
      * @param {number|null} mascote_id ID do mascote escolhido (opcional).
-     * @returns {Promise<Object>} O objeto do novo usuário.
+     * @returns {Promise<Usuario>} A instância do novo usuário.
      * @throws {Error} Se o e-mail já estiver cadastrado ou ocorrer outro erro no DB.
      */
-    static async create(nome, email, senhaHash, mascote_id = null) {
+    static async create(nome, email, senha, mascote_id = null) {
         try {
+            const hashedPassword = await bcrypt.hash(senha, saltRounds); // Hash da senha aqui
             const result = await run(`
                 INSERT INTO Usuario (nome, email, senha, pontos, assiduidade_dias, mascote_id)
                 VALUES (?, ?, ?, 0, 0, ?)
-            `, [nome, email, senhaHash, mascote_id]);
+            `, [nome, email, hashedPassword, mascote_id]);
 
+            // Retorna uma instância completa do novo usuário
             return Usuario.findById(result.lastID);
 
         } catch (err) {
@@ -82,84 +98,95 @@ class Usuario {
     }
 
     /**
-     * Compara uma senha em texto puro com uma senha hashed.
+     * Compara uma senha em texto puro com a senha hashed desta instância de usuário.
      * @param {string} plainPassword Senha em texto puro.
-     * @param {string} hashedPassword Senha hashed do banco de dados.
      * @returns {Promise<boolean>} True se as senhas coincidirem, false caso contrário.
      */
-    static async comparePassword(plainPassword, hashedPassword) {
-        return bcrypt.compare(plainPassword, hashedPassword);
+    async comparePassword(plainPassword) {
+        return bcrypt.compare(plainPassword, this.senha);
     }
 
     /**
      * Atualiza os pontos e/ou assiduidade de um usuário.
-     * @param {number} userId ID do usuário.
      * @param {number} pointsToAdd Pontos a serem adicionados (pode ser negativo).
      * @param {number} assiduidadeDays Novo valor da assiduidade em dias.
      * @returns {Promise<Object>} Objeto com o número de alterações no DB.
      */
-    static async updatePointsAndAssiduidade(userId, pointsToAdd, assiduidadeDays) {
+    async updatePointsAndAssiduidade(pointsToAdd, assiduidadeDays) {
         const result = await run(`
-            UPDATE Usuario 
-            SET pontos = pontos + ?, assiduidade_dias = ? 
+            UPDATE Usuario
+            SET pontos = pontos + ?, assiduidade_dias = ?
             WHERE id_usuario = ?
-        `, [pointsToAdd, assiduidadeDays, userId]);
+        `, [pointsToAdd, assiduidadeDays, this.id_usuario]);
+        this.pontos += pointsToAdd; // Atualiza a instância também
+        this.assiduidade_dias = assiduidadeDays;
         return { changes: result.changes };
     }
 
     /**
      * Atualiza a data do último login e a assiduidade de um usuário.
-     * @param {number} userId ID do usuário.
      * @param {string} newLastLoginDate Nova data/hora do último login (ISO string).
      * @param {number} newAssiduidadeDays Novo valor da assiduidade em dias.
      * @returns {Promise<Object>} Objeto com o número de alterações no DB.
      */
-    static async updateLoginInfo(userId, newLastLoginDate, newAssiduidadeDays) {
-        return run(`
-            UPDATE Usuario 
-            SET ultimo_login = ?, assiduidade_dias = ? 
+    async updateLoginInfo(newLastLoginDate, newAssiduidadeDays) {
+        const result = await run(`
+            UPDATE Usuario
+            SET ultimo_login = ?, assiduidade_dias = ?
             WHERE id_usuario = ?
-        `, [newLastLoginDate, newAssiduidadeDays, userId]);
+        `, [newLastLoginDate, newAssiduidadeDays, this.id_usuario]);
+        this.ultimo_login = newLastLoginDate; // Atualiza a instância
+        this.assiduidade_dias = newAssiduidadeDays;
+        return { changes: result.changes };
     }
 
     /**
-     * Atualiza a senha de um usuário e limpa os campos de token de redefinição.
-     * @param {number} id_usuario ID do usuário.
-     * @param {string} novaSenhaHash Nova senha já hashed.
+     * Atualiza a senha deste usuário e limpa os campos de token de redefinição.
+     * Este é um método de instância.
+     * @param {string} newPassword Texto puro da nova senha.
      * @returns {Promise<Object>} Objeto com o número de alterações no DB.
      */
-    static async updatePassword(id_usuario, novaSenhaHash) {
-        return run(
+    async updatePassword(newPassword) {
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        const result = await run(
             'UPDATE Usuario SET senha = ?, resetPasswordToken = NULL, resetPasswordExpires = NULL WHERE id_usuario = ?',
-            [novaSenhaHash, id_usuario]
+            [hashedPassword, this.id_usuario]
         );
+        this.senha = hashedPassword; // Atualiza a instância
+        this.resetPasswordToken = null;
+        this.resetPasswordExpires = null;
+        return { changes: result.changes };
     }
 
     /**
-     * Salva o token de redefinição de senha e sua data de expiração para um usuário.
-     * @param {string} email O e-mail do usuário.
+     * Salva o token de redefinição de senha e sua data de expiração para ESTE usuário.
+     * Este é um método de instância.
      * @param {string} token O token de redefinição.
-     * @param {string} expires A data de expiração do token (ISO string).
+     * @param {Date} expires A data de expiração do token (objeto Date).
      * @returns {Promise<Object>} Objeto com o número de alterações no DB.
      */
-    static async saveResetToken(email, token, expires) {
-        return run(
-            'UPDATE Usuario SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?',
-            [token, expires, email]
+    async saveResetToken(token, expires) {
+        const result = await run(
+            'UPDATE Usuario SET resetPasswordToken = ?, resetPasswordExpires = ? WHERE id_usuario = ?',
+            [token, expires.toISOString(), this.id_usuario] // Converte Date para ISO string
         );
+        this.resetPasswordToken = token; // Atualiza a instância
+        this.resetPasswordExpires = expires.toISOString();
+        return { changes: result.changes };
     }
 
     /**
      * Encontra um usuário pelo seu token de redefinição de senha, verificando a validade.
      * @param {string} token O token de redefinição.
-     * @returns {Promise<Object|null>} O objeto do usuário ou null se o token for inválido/expirado.
+     * @returns {Promise<Usuario|null>} A instância do usuário ou null se o token for inválido/expirado.
      */
     static async findByResetToken(token) {
-        const now = new Date().toISOString(); 
-        return get(
+        const now = new Date().toISOString();
+        const row = await get(
             'SELECT * FROM Usuario WHERE resetPasswordToken = ? AND resetPasswordExpires > ?',
             [token, now]
         );
+        return row ? new Usuario(row) : null;
     }
 }
 
