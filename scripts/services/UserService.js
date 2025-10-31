@@ -5,9 +5,8 @@ const jwt = require('jsonwebtoken'); // Adicionado para gerar tokens JWT
 const ms = require('ms'); // Adicionado para parsear strings de tempo (ex: '5m')
 const emailService = require('./emailService'); // Importar o serviço de e-mail
 const progressService = require('./progressService'); // Já existente no seu código
-// const { run } = require('../db'); // Não precisamos mais de 'run' aqui, pois o UserModel faz isso
 
-const saltRounds = 10; // Custo de hash para bcrypt, pode ser configurado em .env se desejar
+const saltRounds = 10; 
 
 const userService = {
     // =======================================================
@@ -24,7 +23,7 @@ const userService = {
     },
 
     // =======================================================
-    // NOVO: MÉTODO DE LOGIN
+    // MÉTODO DE LOGIN
     // =======================================================
     loginUser: async (email, senha) => {
         const user = await UserModel.findByEmail(email);
@@ -118,8 +117,23 @@ const userService = {
         const user = await UserModel.findById(id_usuario);
         if (!user) return null;
         
+        // Retorna todos os dados da instância do usuário, incluindo pontos e assiduidade.
+        // Se você tiver um método .toJSON() no UserModel que filtra, ele seria útil aqui.
+        // Caso contrário, construa o objeto manualmente para não expor a senha, etc.
+        const userPublicData = {
+            id_usuario: user.id_usuario,
+            nome: user.nome,
+            email: user.email,
+            pontos: user.pontos,
+            assiduidade_dias: user.assiduidade_dias,
+            mascote_id: user.mascote_id,
+            data_registro: user.data_registro,
+            ultimo_login: user.ultimo_login,
+            // ... quaisquer outros campos públicos que você queira expor
+        };
+
         const userProgress = await progressService.getUserProgress(id_usuario); 
-        return { ...user, progresso: userProgress };
+        return { ...userPublicData, progresso: userProgress };
     },
 
     // =======================================================
@@ -129,37 +143,32 @@ const userService = {
         const user = await UserModel.findById(id_usuario);
         if (!user) throw new Error("Usuário não encontrado para atualizar pontos.");
         
-        // Chama o método da instância do usuário para atualizar pontos e assiduidade
-        await user.updatePointsAndAssiduidade(pointsToAdd, user.assiduidade_dias);
+        // Chama o método da instância do usuário para atualizar pontos
+        // A assiduidade é atualizada no login, não aqui.
+        await user.updatePoints(pointsToAdd); 
     },
 
     // =======================================================
-    // NOVO: MÉTODO para solicitar redefinição de senha
+    // MÉTODO para solicitar redefinição de senha
     // =======================================================
     requestPasswordReset: async (email) => {
         const user = await UserModel.findByEmail(email);
         if (!user) {
             console.warn(`Tentativa de redefinição de senha para e-mail não encontrado: ${email}`);
-            // POR SEGURANÇA: Sempre retornar uma mensagem de sucesso para não revelar se o e-mail existe ou não.
             return { message: 'Se o e-mail estiver cadastrado, um link de redefinição de senha foi enviado.' };
         }
 
-        // Gerar um token de redefinição único e com expiração
         const resetToken = jwt.sign(
             { id_usuario: user.id_usuario },
             process.env.RESET_PASSWORD_SECRET,
-            { expiresIn: process.env.RESET_PASSWORD_EXPIRES_IN } // Ex: '5m' do .env
+            { expiresIn: process.env.RESET_PASSWORD_EXPIRES_IN } 
         );
 
-        // Calcular a data de expiração para salvar no DB (como objeto Date)
         const expiresInMs = ms(process.env.RESET_PASSWORD_EXPIRES_IN);
-        const resetExpires = new Date(Date.now() + expiresInMs); // Agora é um objeto Date
+        const resetExpires = new Date(Date.now() + expiresInMs); 
 
-        // Salvar o token e a data de expiração no banco de dados usando o método da instância
         await user.saveResetToken(resetToken, resetExpires);
 
-        // Enviar o e-mail com o link de redefinição
-        // O emailService.sendResetPasswordEmail precisa do link completo, não apenas do token
         const resetLink = `${process.env.FRONTEND_URL}/html/reset-password.html?token=${resetToken}`;
         await emailService.sendResetPasswordEmail(email, resetLink);
 
@@ -167,24 +176,52 @@ const userService = {
     },
 
     // =======================================================
-    // NOVO: MÉTODO para redefinir a senha
+    // MÉTODO para redefinir a senha
     // =======================================================
     resetPassword: async (token, newPassword) => {
         if (!newPassword || newPassword.length < 6) { 
             throw new Error('A nova senha deve ter pelo menos 6 caracteres.');
         }
 
-        // findByResetToken já retorna uma instância de UserModel, se o token for válido e não expirado
         const user = await UserModel.findByResetToken(token);
 
         if (!user) {
             throw new Error('Token de redefinição inválido ou expirado.');
         }
+        
+        // Valida se o token não foi utilizado após a verificação de expiração
+        if (user.reset_token_expiracao < new Date()) { // Comparar com o tempo atual novamente para garantir
+            throw new Error('Token de redefinição expirado.');
+        }
+        if (user.reset_token !== token) { // Comparar o token para garantir que é o mesmo salvo
+             throw new Error('Token de redefinição inválido ou já utilizado.');
+        }
 
-        // Atualizar a senha do usuário e limpar o token de redefinição usando o método da instância
-        await user.updatePassword(newPassword); // user.updatePassword agora faz o hash internamente
+        await user.updatePassword(newPassword); 
 
         return { message: 'Sua senha foi redefinida com sucesso!' };
+    },
+
+    // =======================================================
+    // NOVO: MÉTODO PARA OBTER RANKING DE USUÁRIOS
+    // =======================================================
+    getUsersRanking: async () => {
+        try {
+            // Chama o método estático getRanking do UserModel
+            const ranking = await UserModel.getRanking(); 
+            
+            // Você pode querer filtrar ou formatar os dados aqui antes de retornar
+            // Por exemplo, para garantir que apenas campos públicos sejam expostos
+            return ranking.map(user => ({
+                id_usuario: user.id_usuario,
+                nome: user.nome,
+                pontos: user.pontos,
+                mascote_id: user.mascote_id // Incluir o mascote_id se for útil para o ranking
+            }));
+        } catch (error) {
+            console.error('Erro no serviço ao buscar ranking de usuários:', error);
+            throw new Error('Não foi possível obter o ranking de usuários.'); 
+        }
     }
 };
 

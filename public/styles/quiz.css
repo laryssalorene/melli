@@ -316,4 +316,116 @@
     #final-score {
         font-size: 2rem;
     }
+
+    /* -------------------------------------------------------------------------- */
+/* Estilos para a Área de Ranking (#ranking-area) */
+/* -------------------------------------------------------------------------- */
+#ranking-area {
+    padding: 2.5rem;
+    margin-top: 2rem;
+    border: 1px solid #cce7f0;
+    text-align: center;
+}
+
+#ranking-area h2 {
+    font-size: 2.5rem;
+    color: #02416d;
+    margin-bottom: 2rem;
+}
+
+#ranking-list {
+    width: 100%;
+    max-width: 600px; /* Limita a largura da lista de ranking */
+    margin: 0 auto;
+}
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    background-color: #f7fafd;
+    border: 2px solid #e0e7ee;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.75rem; /* Espaço entre os itens do ranking */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease-in-out;
+}
+
+.ranking-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ranking-item .ranking-badge {
+    width: 60px; /* Tamanho do ícone do badge */
+    height: 60px;
+    margin-right: 1rem;
+    flex-shrink: 0; /* Impede que o badge encolha */
+}
+
+.ranking-item .ranking-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.ranking-item .ranking-info .user-name {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #066699;
+}
+
+.ranking-item .ranking-info .user-points {
+    font-size: 1rem;
+    color: #555;
+}
+
+.ranking-item .ranking-position {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #aedd2b; /* Cor de destaque para a posição */
+    margin-left: auto; /* Alinha à direita */
+    min-width: 40px; /* Garante que o número não seja cortado */
+    text-align: right;
+}
+
+/* Estilos específicos para os top 3 */
+.ranking-item.top-1 {
+    background-color: #fffacd; /* Amarelo claro */
+    border-color: #ffd700; /* Dourado */
+    transform: scale(1.02);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+}
+
+.ranking-item.top-2 {
+    background-color: #f0f0f0; /* Cinza claro */
+    border-color: #c0c0c0; /* Prata */
+}
+
+.ranking-item.top-3 {
+    background-color: #f8ede3; /* Bronze claro */
+    border-color: #cd7f32; /* Bronze */
+}
+
+@media (max-width: 767px) {
+    #ranking-area h2 {
+        font-size: 2rem;
+    }
+    .ranking-item {
+        padding: 0.8rem;
+    }
+    .ranking-item .ranking-badge {
+        width: 50px;
+        height: 50px;
+        margin-right: 0.8rem;
+    }
+    .ranking-item .ranking-info .user-name {
+        font-size: 1.1rem;
+    }
+    .ranking-item .ranking-info .user-points {
+        font-size: 0.9rem;
+    }
+    .ranking-item .ranking-position {
+        font-size: 1.5rem;
+    }
+}
 }

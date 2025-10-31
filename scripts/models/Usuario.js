@@ -1,8 +1,8 @@
 // scripts/models/Usuario.js
 // CORRIGIDO: Caminho do db.js
-const { get, run, all } = require('../db');
+// A referência correta é ../db, pois ambos Usuario.js e db.js estão na pasta 'scripts'
+const { get, run, all } = require('../db'); 
 const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken'); // JWT não é necessário aqui no modelo, apenas no service
 
 const saltRounds = 10;
 
@@ -18,7 +18,7 @@ class Usuario {
         this.ultimo_login = data.ultimo_login;
         this.mascote_id = data.mascote_id;
         this.resetPasswordToken = data.resetPasswordToken;
-        this.resetPasswordExpires = data.resetPasswordExpires;
+        this.resetPasswordExpires = data.resetPasswordExpires ? new Date(data.resetPasswordExpires) : null; // Converte para Date
     }
 
     /**
@@ -60,11 +60,9 @@ class Usuario {
     /**
      * Encontra um usuário pelo seu ID.
      * @param {number} id O ID do usuário a ser procurado.
-     * @returns {Promise<Usuario|null>} A instância do usuário (sem a senha para segurança) ou null se não encontrado.
+     * @returns {Promise<Usuario|null>} A instância do usuário (com a senha para operações internas) ou null se não encontrado.
      */
     static async findById(id) {
-        // Inclui a senha aqui para que possamos usá-la em operações internas,
-        // mas devemos ter cuidado ao retornar para o frontend.
         const row = await get(`SELECT * FROM Usuario WHERE id_usuario = ?`, [id]);
         return row ? new Usuario(row) : null;
     }
@@ -98,6 +96,16 @@ class Usuario {
     }
 
     /**
+     * NOVO MÉTODO ESTÁTICO: Obter o ranking de usuários
+     * @returns {Promise<Array<Object>>} Uma lista de objetos de usuário com nome, pontos e mascote_id, ordenados por pontos.
+     */
+    static async getRanking() {
+        // Seleciona apenas os campos necessários para o ranking
+        const rows = await all('SELECT id_usuario, nome, pontos, mascote_id FROM Usuario ORDER BY pontos DESC, nome ASC');
+        return rows; 
+    }
+
+    /**
      * Compara uma senha em texto puro com a senha hashed desta instância de usuário.
      * @param {string} plainPassword Senha em texto puro.
      * @returns {Promise<boolean>} True se as senhas coincidirem, false caso contrário.
@@ -107,21 +115,21 @@ class Usuario {
     }
 
     /**
-     * Atualiza os pontos e/ou assiduidade de um usuário.
+     * Atualiza os pontos de um usuário.
+     * Este é um método de instância.
      * @param {number} pointsToAdd Pontos a serem adicionados (pode ser negativo).
-     * @param {number} assiduidadeDays Novo valor da assiduidade em dias.
      * @returns {Promise<Object>} Objeto com o número de alterações no DB.
      */
-    async updatePointsAndAssiduidade(pointsToAdd, assiduidadeDays) {
+    async updatePoints(pointsToAdd) {
         const result = await run(`
             UPDATE Usuario
-            SET pontos = pontos + ?, assiduidade_dias = ?
+            SET pontos = pontos + ?
             WHERE id_usuario = ?
-        `, [pointsToAdd, assiduidadeDays, this.id_usuario]);
+        `, [pointsToAdd, this.id_usuario]);
         this.pontos += pointsToAdd; // Atualiza a instância também
-        this.assiduidade_dias = assiduidadeDays;
         return { changes: result.changes };
     }
+
 
     /**
      * Atualiza a data do último login e a assiduidade de um usuário.
@@ -171,7 +179,7 @@ class Usuario {
             [token, expires.toISOString(), this.id_usuario] // Converte Date para ISO string
         );
         this.resetPasswordToken = token; // Atualiza a instância
-        this.resetPasswordExpires = expires.toISOString();
+        this.resetPasswordExpires = expires; // Mantém como Date
         return { changes: result.changes };
     }
 

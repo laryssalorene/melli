@@ -15,13 +15,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const postExplanationTextElement = document.getElementById('post-explanation-text'); 
 
     async function fetchAuthenticatedData(url, options = {}) {
-        // =========================================================
-        // CORREÇÃO: Usar 'jwtToken' como a chave do localStorage
-        // =========================================================
         const token = localStorage.getItem('jwtToken'); 
         if (!token) {
             alert('Sessão expirada ou não autorizado. Faça login novamente.');
-            localStorage.removeItem('jwtToken'); // <--- CORREÇÃO AQUI
+            localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
             localStorage.removeItem('userName'); 
             window.location.href = '/html/login.html';
@@ -33,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (response.status === 401 || response.status === 403) {
             alert('Sessão expirada ou não autorizada. Faça login novamente.');
-            localStorage.removeItem('jwtToken'); // <--- CORREÇÃO AQUI
+            localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
             localStorage.removeItem('userName');
             window.location.href = '/html/login.html';
@@ -64,7 +61,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 userNameSpan.textContent = user.nome;
                 userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
                 userPontosSpan.textContent = user.pontos;
-                // As chaves no localStorage para userId e userName já estavam OK.
                 localStorage.setItem('userId', user.id_usuario);
                 localStorage.setItem('userName', user.nome);
             }
@@ -74,16 +70,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function logout() {
-        // =========================================================
-        // CORREÇÃO: Usar 'jwtToken' e outras chaves corretas
-        // =========================================================
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userId'); 
         localStorage.removeItem('userName');
         alert('Você foi desconectado.');
         window.location.href = '/html/login.html';
     }
-
 
     // ----------------------------------------------------
     // Lógica Específica da Página de Quiz
@@ -93,10 +85,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentQuestionIndex = 0; 
     let userScore = 0; 
     let unitId = null; 
-    let currentModuleId = null; // Variável para armazenar o ID do módulo
-    let currentExplanationBlocks = []; // Array de blocos de explicação da questão atual
-    let currentExplanationBlockIndex = 0; // Índice do bloco de explicação atual sendo exibido
-
+    let currentModuleId = null; 
+    let currentExplanationBlocks = []; 
+    let currentExplanationBlockIndex = 0; 
 
     // Elementos do Quiz
     const unitTitleElement = document.getElementById('unit-title');
@@ -113,10 +104,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Elementos da Nova Área de Explicação Passo a Passo
     const explanationStepArea = document.getElementById('explanation-step-area'); 
     const currentExplanationBlockContent = document.getElementById('current-explanation-block-content');
-    const nextStepButton = document.getElementById('next-step-button'); // Botão "Próximo" para avançar em explicações
+    const nextStepButton = document.getElementById('next-step-button'); 
+
+    // NOVO: Elementos da área de Ranking
+    const rankingArea = document.getElementById('ranking-area');
+    const rankingList = document.getElementById('ranking-list');
+    const returnToModulesFromRankingButton = document.getElementById('return-to-modules-from-ranking-button');
 
 
-    loadUserProfile(); // Garante que o perfil seja carregado ao entrar na página
+    // Inicialização da página
+    loadUserProfile(); 
 
     const urlParams = new URLSearchParams(window.location.search);
     unitId = urlParams.get('unitId');
@@ -131,17 +128,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const unitInfo = await fetchAuthenticatedData(`/api/content/unidade/${unitId}`);
         if (unitInfo) {
             unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
-            currentModuleId = unitInfo.id_modulo; // Armazena o id_modulo
+            currentModuleId = unitInfo.id_modulo; 
         }
 
         const fetchedQuestions = await fetchAuthenticatedData(`/api/content/unidade/${unitId}/questions`);
         if (fetchedQuestions && fetchedQuestions.length > 0) {
             questions = fetchedQuestions;
             currentQuestionIndex = 0; 
-            
-            // Inicia o fluxo verificando as explicações da primeira questão
-            startQuestionFlow(currentQuestionIndex);
-
+            startQuestionFlow(currentQuestionIndex); // Inicia o fluxo
         } else {
             unitTitleElement.textContent = `Nenhuma questão encontrada para esta unidade.`;
             hideAllContainers();
@@ -152,11 +146,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         hideAllContainers();
     }
 
-    // Função para ocultar todos os containers principais (explicação, questão, resultados)
+    // Função para ocultar todos os containers principais (explicação, questão, resultados, ranking)
     function hideAllContainers() {
         explanationStepArea.classList.add('hidden');
         questionArea.classList.add('hidden');
         resultsArea.classList.add('hidden');
+        rankingArea.classList.add('hidden'); // Oculta a área de ranking
     }
 
     // Função para iniciar o fluxo de uma questão (explicações ou direto para a pergunta)
@@ -168,13 +163,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const question = questions[index];
         currentExplanationBlocks = question.explicacoes_pre_questao || [];
-        currentExplanationBlockIndex = 0; // Sempre começa do primeiro bloco de explicação
+        currentExplanationBlockIndex = 0; 
 
         if (currentExplanationBlocks.length > 0) {
-            // Se houver explicações, exibe a tela de explicações
             displayExplanationStep();
         } else {
-            // Se não houver explicações, vai direto para a pergunta
             displayQuestion();
         }
     }
@@ -186,14 +179,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         renderCurrentExplanationBlock();
         
-        // Remove o listener anterior para evitar múltiplos e adiciona o novo
         nextStepButton.removeEventListener('click', handleNextStep);
         nextStepButton.addEventListener('click', handleNextStep);
     }
 
     // Renderiza o bloco de explicação atual no container
     function renderCurrentExplanationBlock() {
-        currentExplanationBlockContent.innerHTML = ''; // Limpa o conteúdo anterior
+        currentExplanationBlockContent.innerHTML = ''; 
 
         if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
             const expBlock = currentExplanationBlocks[currentExplanationBlockIndex];
@@ -215,7 +207,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const iframeContainer = document.createElement('div');
                 iframeContainer.classList.add('iframe-container', 'max-w-full', 'mx-auto', 'my-4');
                 const iframe = document.createElement('iframe');
-                iframe.src = expBlock.url_media;
+                
+                // --- CORREÇÃO: Formata URL do YouTube para embed ---
+                let videoSrc = expBlock.url_media;
+                if (videoSrc.includes('youtube.com/watch?v=')) {
+                    const videoId = videoSrc.split('v=')[1].split('&')[0];
+                    videoSrc = `https://www.youtube.com/embed/${videoId}`;
+                } else if (videoSrc.includes('youtu.be/')) {
+                    const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
+                    videoSrc = `https://www.youtube.com/embed/${videoId}`;
+                }
+                // Se a URL já estiver no formato embed, ela será usada diretamente
+                // Se não for YouTube, será usada como está (pode não funcionar para outros players sem ajuste)
+                iframe.src = videoSrc;
+                // --- Fim da CORREÇÃO ---
+
                 iframe.classList.add('w-full', 'h-full', 'rounded-lg');
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -223,9 +229,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 iframeContainer.appendChild(iframe);
                 currentExplanationBlockContent.appendChild(iframeContainer);
             }
-            nextStepButton.textContent = 'Próximo'; // Mantém o texto "Próximo"
+            nextStepButton.textContent = 'Próximo'; 
         } else {
-            nextStepButton.textContent = 'Iniciar Questão'; // Última explicação, botão para a pergunta
+            nextStepButton.textContent = 'Iniciar Questão'; 
         }
     }
 
@@ -233,10 +239,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     function handleNextStep() {
         currentExplanationBlockIndex++;
         if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
-            // Ainda há blocos de explicação para mostrar
             renderCurrentExplanationBlock();
         } else {
-            // Todos os blocos de explicação foram mostrados. Agora, exibe a pergunta.
             displayQuestion();
         }
     }
@@ -258,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         questionTextElement.textContent = question.enunciado_pergunta;
-        postExplanationTextElement.classList.add('hidden'); // Esconde a explicação pós-resposta por padrão
+        postExplanationTextElement.classList.add('hidden'); 
         postExplanationTextElement.textContent = ''; 
         alternativesContainer.innerHTML = ''; 
 
@@ -274,7 +278,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         submitButton.disabled = false;
         submitButton.textContent = 'Confirmar Resposta';
-        // Garante que o listener para submit/next question seja único
         submitButton.removeEventListener('click', handleSubmitOrNextQuestion); 
         submitButton.addEventListener('click', handleSubmitOrNextQuestion);
     }
@@ -298,28 +301,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 userScore++;
             } else {
                 labelSelected.classList.add('wrong-answer');
-                // Encontra a alternativa correta para dar feedback visual
                 const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
                 if (correctAnswerLabel) { 
                     correctAnswerLabel.classList.add('correct-answer-feedback');
                 }
 
-                // Exibe a explicação pós-resposta apenas se o usuário errou
                 if (currentQuestion.explicacao_pergunta) {
                     postExplanationTextElement.textContent = `Explicação: ${currentQuestion.explicacao_pergunta}`;
                     postExplanationTextElement.classList.remove('hidden');
                 }
             }
 
-            // Desabilita todos os radio buttons após a resposta
             alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
             
             submitButton.textContent = 'Próxima Questão';
         } else {
-            // Após a resposta, avança para a próxima questão
             currentQuestionIndex++;
-            resetAlternativeStyles(); // Limpa estilos de feedback
-            startQuestionFlow(currentQuestionIndex); // Inicia o fluxo para a próxima questão
+            resetAlternativeStyles(); 
+            startQuestionFlow(currentQuestionIndex); 
         }
     }
 
@@ -337,7 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Função para exibir os resultados finais e salvar o progresso
     async function showResults() {
         hideAllContainers();
-        resultsArea.classList.remove('hidden');
+        resultsArea.classList.remove('hidden'); // Exibe a área de resultados temporariamente
 
         const totalQuestions = questions.length;
         const percentage = (userScore / totalQuestions) * 100;
@@ -357,23 +356,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ 
-                    id_modulo: currentModuleId, // Agora envia o id_modulo
-                    pontuacao: userScore,
+                    id_modulo: currentModuleId, 
+                    pontuacao: userScore, // Envia a pontuação total do quiz
                     concluido: true 
                 }),
             });
 
             if (response) {
                 console.log('Unidade concluída e progresso salvo:', response);
-                loadUserProfile(); // Atualiza o perfil do usuário (XP, etc.)
+                await loadUserProfile(); // Atualiza o perfil do usuário (XP, etc.)
                 
-                const moduleIdToRedirect = currentModuleId; // Usamos o que já temos
+                // Agora, chame a função para exibir o ranking
+                await displayRanking();
 
+                // Remove o event listener antigo e adiciona o novo para o botão do ranking
                 returnToModulesButton.removeEventListener('click', redirectToHome); 
-                
-                returnToModulesButton.addEventListener('click', () => {
-                    if (moduleIdToRedirect) {
-                        window.location.href = `/html/modulo.html?id=${moduleIdToRedirect}`;
+                returnToModulesFromRankingButton.addEventListener('click', () => { // Botão da tela de ranking
+                    if (currentModuleId) {
+                        window.location.href = `/html/modulo.html?id=${currentModuleId}`;
                     } else {
                         window.location.href = '/html/home.html'; 
                     }
@@ -385,6 +385,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Não foi possível registrar seu progresso. Tente novamente.');
         }
     }
+
+    // NOVO: Função para exibir o ranking
+    async function displayRanking() {
+        hideAllContainers();
+        rankingArea.classList.remove('hidden');
+        rankingList.innerHTML = ''; // Limpa a lista antes de preencher
+
+        try {
+            const rankingData = await fetchAuthenticatedData('/api/ranking');
+            
+            // Pega apenas os 5 primeiros
+            const top5 = rankingData.slice(0, 5); 
+
+            top5.forEach((user, index) => {
+                const rankPosition = index + 1;
+                const rankingItem = document.createElement('div');
+                rankingItem.className = `ranking-item`; // Tailwind classes já no CSS global
+
+                // Adiciona classes específicas para top 3
+                if (rankPosition === 1) rankingItem.classList.add('top-1');
+                if (rankPosition === 2) rankingItem.classList.add('top-2');
+                if (rankPosition === 3) rankingItem.classList.add('top-3');
+
+                rankingItem.innerHTML = `
+                    <img src="/img/ranking/ranking_${rankPosition}.png" alt="Badge Posição ${rankPosition}" class="ranking-badge">
+                    <div class="ranking-info">
+                        <span class="user-name">${user.nome}</span>
+                        <span class="user-points">⭐ ${user.pontos} XP</span>
+                    </div>
+                    <span class="ranking-position">${rankPosition}º</span>
+                `;
+                rankingList.appendChild(rankingItem);
+            });
+
+        } catch (error) {
+            console.error('Erro ao carregar o ranking:', error);
+            rankingList.innerHTML = '<p class="text-red-500">Não foi possível carregar o ranking no momento.</p>';
+        }
+    }
+
 
     function redirectToHome() {
         window.location.href = '/html/home.html';

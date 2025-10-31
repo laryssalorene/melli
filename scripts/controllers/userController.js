@@ -107,6 +107,9 @@ const userController = {
             if (!token || !newPassword) {
                 return res.status(400).json({ message: 'Token e nova senha são obrigatórios.' });
             }
+            if (newPassword.length < 6) { // Validação de senha forte também aqui
+                return res.status(400).json({ message: 'A nova senha deve ter pelo menos 6 caracteres.' });
+            }
 
             // Chama o novo método do userService
             const result = await userService.resetPassword(token, newPassword);
@@ -115,6 +118,19 @@ const userController = {
             console.error('Erro ao redefinir senha:', error);
             // Retorna 400 para erros de token inválido/expirado ou senha fraca
             res.status(400).json({ message: error.message || 'Erro interno do servidor ao redefinir senha.' });
+        }
+    },
+
+    // =======================================================
+    // OBTER RANKING DE USUÁRIOS (NOVO)
+    // =======================================================
+    getRanking: async (req, res) => {
+        try {
+            const ranking = await userService.getUsersRanking(); // Chama o novo método do userService
+            res.status(200).json(ranking);
+        } catch (error) {
+            console.error('Erro ao buscar ranking de usuários:', error);
+            res.status(500).json({ message: error.message || 'Erro interno do servidor ao buscar ranking.' });
         }
     }
 };

@@ -12,7 +12,7 @@ class Progresso {
                 id_unidade INTEGER NOT NULL,
                 completo BOOLEAN DEFAULT 0,
                 pontuacao_unidade INTEGER DEFAULT 0,
-                data_conclusao DATETIME DEFAULT NULL, -- Alterado para DATETIME DEFAULT NULL
+                data_conclusao DATETIME DEFAULT NULL,
                 FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE,
                 UNIQUE(id_usuario, id_modulo, id_unidade)
             )
@@ -40,6 +40,22 @@ class Progresso {
         ]);
 
         return { message: 'Progresso da unidade registrado/atualizado com sucesso.', id_progresso: result.lastID };
+    }
+
+    // =========================================================
+    // NOVO MÉTODO: Adiciona pontos ao saldo do usuário na tabela Usuario
+    // =========================================================
+    static async addUserPoints(id_usuario, pointsToAdd) {
+        if (pointsToAdd <= 0) return { changes: 0, message: "Nenhum ponto adicionado." };
+
+        // ATUALIZA A COLUNA 'pontos' NA TABELA 'Usuario'
+        const result = await run(`
+            UPDATE Usuario
+            SET pontos = pontos + ?
+            WHERE id_usuario = ?
+        `, [pointsToAdd, id_usuario]);
+
+        return { changes: result.changes, totalPointsAdded: pointsToAdd };
     }
 
     static async getProgressoUsuario(id_usuario) {

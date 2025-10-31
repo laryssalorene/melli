@@ -37,8 +37,9 @@ router.post('/reset-password/:token', userController.resetPassword);
 // Esta rota é protegida pelo middleware verifyToken
 router.get('/profile', verifyToken, userController.getProfile);
 
-// Você pode adicionar outras rotas protegidas aqui, por exemplo:
-// router.put('/profile', verifyToken, userController.updateProfile); 
-// router.delete('/profile', verifyToken, userController.deleteUser);
+// NOVA ROTA: Obter ranking de usuários
+// GET /api/users/ranking
+// Esta rota também será protegida, pois só usuários logados devem ver o ranking
+router.get('/ranking', verifyToken, userController.getRanking); // <--- ADICIONE ESTA LINHA
 
 module.exports = router;

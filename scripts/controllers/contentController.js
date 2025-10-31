@@ -56,7 +56,7 @@ const contentController = {
 
     getUnitById: async (req, res) => {
         try {
-            const unitId = req.params.id_unidade; // <<<--- AQUI ESTÁ A CORREÇÃO!
+            const unitId = req.params.id_unidade;
             const unitWithDetails = await contentService.getUnitByIdWithDetails(unitId);
 
             if (!unitWithDetails) {
@@ -64,7 +64,7 @@ const contentController = {
             }
             res.status(200).json(unitWithDetails);
         } catch (error) {
-            console.error(`Erro ao buscar unidade ${req.params.id_unidade}:`, error); // Usando req.params.id_unidade aqui para ser seguro.
+            console.error(`Erro ao buscar unidade ${req.params.id_unidade}:`, error);
             res.status(500).json({ message: 'Erro interno do servidor ao buscar unidade.' });
         }
     },
@@ -82,7 +82,7 @@ const contentController = {
             }
             res.status(200).json(questions);
         } catch (error) {
-            console.error(`Erro ao buscar questões da unidade ${req.params.id_unidade}:`, error); // Usando req.params.id_unidade aqui.
+            console.error(`Erro ao buscar questões da unidade ${req.params.id_unidade}:`, error);
             res.status(500).json({ message: 'Erro interno do servidor ao carregar as questões.' });
         }
     },
@@ -96,7 +96,7 @@ const contentController = {
             }
             res.status(200).json(question);
         } catch (error) {
-            console.error(`Erro ao buscar questão ${req.params.id_questao}:`, error); // Usando req.params.id_questao aqui.
+            console.error(`Erro ao buscar questão ${req.params.id_questao}:`, error);
             res.status(500).json({ message: 'Erro interno do servidor ao carregar a questão.' });
         }
     },
@@ -106,7 +106,7 @@ const contentController = {
     // =========================================================
     updateUserProgress: async (req, res) => {
         try {
-            const id_usuario = req.userId; // <<-- Usando req.userId
+            const id_usuario = req.userId; 
             const unitId = req.params.unitId; 
 
             // id_modulo, pontuacao e concluido vêm do corpo da requisição
@@ -116,14 +116,31 @@ const contentController = {
                 return res.status(400).json({ message: 'Dados insuficientes ou inválidos para atualizar o progresso.' });
             }
             
+            // Garante que pontuacao seja um número
+            const parsedPontuacao = parseInt(pontuacao, 10);
+            
+            // 1. REGISTRAR PROGRESSO NO BANCO DE DADOS (mantendo a unicidade)
             const updatedProgress = await ProgressoModel.setUnidadeConcluida(
                 id_usuario,
                 parseInt(id_modulo, 10), // id_modulo agora vem do body
                 parseInt(unitId, 10), // unitId do params
                 concluido,
-                pontuacao
+                parsedPontuacao // Passa a pontuação da unidade
             );
-            res.status(200).json({ message: 'Progresso atualizado com sucesso!', progress: updatedProgress, id_modulo: parseInt(id_modulo, 10) }); // Retornando id_modulo também
+
+            // 2. ADICIONAR PONTOS AO SALDO GERAL DO USUÁRIO
+            let pointsAddedResult = { changes: 0, totalPointsAdded: 0 };
+            if (concluido && parsedPontuacao > 0) { // Adiciona pontos apenas se a unidade for concluída e houver pontos
+                pointsAddedResult = await ProgressoModel.addUserPoints(id_usuario, parsedPontuacao); 
+            }
+
+            res.status(200).json({ 
+                message: 'Progresso atualizado com sucesso!', 
+                progress: updatedProgress, 
+                id_modulo: parseInt(id_modulo, 10),
+                points_awarded: pointsAddedResult.totalPointsAdded // Retorna os pontos que foram realmente adicionados
+            });
+
         } catch (error) {
             console.error('Erro ao atualizar progresso do usuário:', error);
             res.status(500).json({ message: error.message || 'Erro interno do servidor ao atualizar progresso.' });
@@ -132,7 +149,7 @@ const contentController = {
 
     getUnitProgress: async (req, res) => {
         try {
-            const id_usuario = req.userId; // <<-- Usando req.userId
+            const id_usuario = req.userId; 
             const unitId = req.params.unitId; 
 
             if (id_usuario === undefined || isNaN(parseInt(unitId, 10))) {
@@ -160,7 +177,7 @@ const contentController = {
     
     getModuleUnitsProgress: async (req, res) => {
         try {
-            const id_usuario = req.userId || null; // <<-- Usando req.userId
+            const id_usuario = req.userId || null; 
             const moduleId = req.params.id_modulo; 
 
             if (!id_usuario) {
