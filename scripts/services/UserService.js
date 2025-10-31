@@ -213,10 +213,9 @@ const userService = {
             // Você pode querer filtrar ou formatar os dados aqui antes de retornar
             // Por exemplo, para garantir que apenas campos públicos sejam expostos
             return ranking.map(user => ({
-                id_usuario: user.id_usuario,
                 nome: user.nome,
                 pontos: user.pontos,
-                mascote_id: user.mascote_id // Incluir o mascote_id se for útil para o ranking
+                // Incluir o mascote_id se for útil para o ranking
             }));
         } catch (error) {
             console.error('Erro no serviço ao buscar ranking de usuários:', error);
