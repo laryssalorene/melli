@@ -1,101 +1,95 @@
-const Usuario = require('../models/Usuario'); // Caminho CORRIGIDO para sua classe Usuario
-const bcrypt = require('bcryptjs'); // ou 'bcrypt'
+// scripts/services/authService.js
+const UserModel = require('../models/Usuario');
+const MascoteModel = require('../models/Mascote');
+const encryptionService = require('./encryptionService');
+// REMOVA A IMPORTAÇÃO DE bcryptjs AQUI. O UserModel fará o hash.
+// const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
 
+require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
+
 const authService = {
-    registerUser: async (nome, email, senha) => {
-        if (!nome || !email || !senha) {
-            throw new Error('Nome, e-mail e senha são obrigatórios.');
+    registerUser: async (nickname, email, password, mascote_id) => { // 'password' é a senha em texto puro
+        const existingUserByNickname = await UserModel.findByNickname(nickname);
+        if (existingUserByNickname) {
+            throw new Error('Nickname já está em uso.');
         }
 
-        const existingUser = await Usuario.findByEmail(email); // Usando sua classe Usuario
-        if (existingUser) {
+        const encryptedEmail = encryptionService.encrypt(email.toLowerCase());
+        if (!encryptedEmail) {
+            throw new Error('Falha na criptografia do e-mail durante o registro.');
+        }
+        const existingUserByEmail = await UserModel.findByEncryptedEmail(encryptedEmail);
+        if (existingUserByEmail) {
             throw new Error('E-mail já cadastrado.');
         }
 
-        const senhaHash = await bcrypt.hash(senha, 10);
-        const userId = await Usuario.create(nome, email, senhaHash); // Usando sua classe Usuario
+        // REMOVA ESTA LINHA. O UserModel fará o hash.
+        // const hashedPassword = await bcrypt.hash(password, 10);
 
-        return { message: 'Usuário registrado com sucesso!', userId };
+        let finalMascoteId = mascote_id;
+        if (finalMascoteId) {
+            const mascoteExists = await MascoteModel.findById(finalMascoteId);
+            if (!mascoteExists) {
+                throw new Error('Mascote escolhido inválido.');
+            }
+        } else {
+            const defaultMascote = await MascoteModel.findByName('Melli'); 
+            finalMascoteId = defaultMascote ? defaultMascote.id_mascote : null;
+            if (!finalMascoteId) { 
+                console.warn("Mascote padrão 'Melli' não encontrado. Registrando usuário sem mascote inicial.");
+            }
+        }
+
+        // CHAME UserModel.create PASSANDO A SENHA EM TEXTO PURO (password)
+        // E NÃO UM OBJETO, POIS O MÉTODO CREATE DO USUARIO MODEL ESPERA ARGUMENTOS POSICIONAIS
+        const newUser = await UserModel.create(
+            nickname,
+            encryptedEmail, 
+            password, // <--- AQUI DEVE SER A SENHA EM TEXTO PURO!
+            finalMascoteId
+        );
+
+        // Descriptografa o email para o objeto de retorno do serviço
+        newUser.email = encryptionService.decrypt(newUser.email); 
+        return newUser;
     },
 
-    loginUser: async (email, senha) => {
-        try {
-            // DEBUG 1: Recebimento das credenciais
-            console.log(`[AUTH SERVICE DEBUG] Tentativa de login para E-mail: "${email}"`);
-            console.log(`[AUTH SERVICE DEBUG] Senha recebida (plain text): "${senha}"`);
-
-            const user = await Usuario.findByEmail(email); // Usando sua classe Usuario
-
-            if (!user) {
-                console.log(`[AUTH SERVICE DEBUG] ERRO: Usuário com email "${email}" NÃO encontrado no DB.`);
-                throw new Error('Credenciais inválidas.');
-            }
-
-            // DEBUG 2: Usuário encontrado e hash do DB
-            console.log(`[AUTH SERVICE DEBUG] Usuário encontrado. Nome: ${user.nome}, ID: ${user.id_usuario}`);
-            console.log(`[AUTH SERVICE DEBUG] Senha HASHADA do DB: "${user.senha}"`);
-
-            // >>> TESTE DE DEPURAÇÃO IRREFUTÁVEL - REMOVER DEPOIS <<<
-            const testPassword = "1234"; // Senha que você tem certeza que é a correta
-            const testHashFromDB = user.senha; // O hash que veio do seu DB
-
-            console.log(`\n--- [DEBUGINHO] Teste de Senha '1234' vs Hash do DB ---`);
-            console.log(`[DEBUGINHO] Senha para testar: "${testPassword}"`);
-            console.log(`[DEBUGINHO] Hash do DB para testar: "${testHashFromDB}"`);
-
-            const resultTest = await bcrypt.compare(testPassword, testHashFromDB);
-            console.log(`[DEBUGINHO] Resultado de bcrypt.compare("${testPassword}", DB_HASH) = ${resultTest}`);
-
-            // Agora, para ter certeza absoluta de que "1234" gera o hash esperado:
-            // Use uma "salt round" (10) que deve ser a mesma usada no registro
-            const hashOf1234 = await bcrypt.hash(testPassword, 10); 
-            console.log(`[DEBUGINHO] Hash GERADO AGORA para "${testPassword}": "${hashOf1234}"`);
-
-            // Compare o hash recém-gerado de "1234" com o hash do DB
-            // Atenção: A comparação de hashes brutos (string === string) geralmente não funciona com bcrypt
-            // porque bcrypt gera um salt aleatório para cada hash.
-            // O objetivo aqui é ver se 'bcrypt.compare' retorna true para os mesmos inputs.
-            // Se 'resultTest' acima for false, este teste abaixo apenas visualiza a diferença dos hashes.
-            const areHashesLiterallyEqual = (hashOf1234 === testHashFromDB);
-            console.log(`[DEBUGINHO] O hash GERADO agora para "${testPassword}" é LITERALMENTE o mesmo do DB? ${areHashesLiterallyEqual} (isso é normal ser false)`);
-            console.log(`------------------------------------------------------\n`);
-            // >>> FIM DO TESTE DE DEPURAÇÃO IRREFUTÁVEL - REMOVER DEPOIS <<<
-
-
-            const isMatch = await bcrypt.compare(senha, user.senha); // ESTE É O PONTO CRÍTICO
-
-            if (!isMatch) {
-                console.log(`[AUTH SERVICE DEBUG] ERRO: Senhas NÃO correspondem para "${email}".`);
-                throw new Error('Credenciais inválidas.');
-            }
-
-            console.log(`[AUTH SERVICE DEBUG] SUCESSO: Senhas correspondem para "${email}".`);
-
-            const token = jwt.sign(
-                { id_usuario: user.id_usuario, email: user.email },
-                process.env.JWT_SECRET,
-                { expiresIn: '1h' }
-            );
-
-            return {
-                message: 'Login bem-sucedido!',
-                token,
-                user: {
-                    id_usuario: user.id_usuario,
-                    nome: user.nome,
-                    email: user.email,
-                    // Garante que pontos e assiduidade_dias sempre tenham um valor para o frontend
-                    pontos: user.pontos || 0,
-                    assiduidade_dias: user.assiduidade_dias || 0
-                }
-            };
-        } catch (error) {
-            console.error(`[AUTH SERVICE DEBUG] Erro no loginUser para ${email}:`, error.message);
-            // Re-lança o erro para ser tratado no controller (que já o faz)
-            throw error;
+    loginUser: async (email, password) => {
+        const encryptedEmail = encryptionService.encrypt(email.toLowerCase());
+        if (!encryptedEmail) {
+            throw new Error('Falha na criptografia do e-mail ao tentar login.');
         }
-    }
+
+        const user = await UserModel.findByEncryptedEmail(encryptedEmail); 
+        if (!user) {
+            throw new Error('Credenciais inválidas.');
+        }
+
+        // Aqui, sim, você compara a senha em texto puro com o hash salvo no banco
+        const isPasswordValid = await user.comparePassword(password); // Usando o método do modelo
+        if (!isPasswordValid) {
+            throw new Error('Credenciais inválidas.');
+        }
+
+        const token = jwt.sign(
+            { id_usuario: user.id_usuario, nickname: user.nickname, email: encryptionService.decrypt(user.email) }, 
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+        );
+
+        user.email = encryptionService.decrypt(user.email); 
+        return { token, user: {
+            id_usuario: user.id_usuario,
+            nickname: user.nickname,
+            email: user.email,
+            pontos: user.pontos,
+            assiduidade_dias: user.assiduidade_dias,
+            mascote_id: user.mascote_id
+        }};
+    },
 };
 
 module.exports = authService;

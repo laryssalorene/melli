@@ -2,29 +2,30 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
-    // Corrigido para pegar o elemento com ID 'nickname'
-    const nicknameInput = document.getElementById('nickname'); 
+    // Corrigido para pegar o elemento com ID 'email' (o campo de input para o e-mail)
+    const emailInput = document.getElementById('email'); 
     const passwordInput = document.getElementById('password'); 
     const loginMessage = document.getElementById('loginMessage');
 
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
-        // Corrigido para pegar o valor do campo 'nickname'
-        const nickname = nicknameInput.value;
+        // Agora coleta o valor do campo 'email'
+        const email = emailInput.value;
         const password = passwordInput.value; 
 
         loginMessage.textContent = ''; 
         loginMessage.className = 'message'; 
 
         try {
-            const response = await fetch('/api/users/login', { 
+            // CORREÇÃO 1: Mudar a URL para o endpoint correto de login de autenticação
+            const response = await fetch('/api/auth/login', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                // Corrigido para enviar 'nickname' e 'senha' (que o backend espera)
-                body: JSON.stringify({ nickname: nickname, senha: password }), 
+                // CORREÇÃO 2: Enviar 'email' e 'password' no corpo da requisição
+                body: JSON.stringify({ email: email, password: password }), 
             });
 
             const data = await response.json();
@@ -32,8 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 localStorage.setItem('jwtToken', data.token); 
                 localStorage.setItem('userId', data.user.id_usuario); 
-                // Armazena o nickname do usuário (consistente com o que é retornado do backend)
                 localStorage.setItem('userNickname', data.user.nickname); 
+                localStorage.setItem('userEmail', data.user.email); // Armazena o e-mail descriptografado no localStorage
 
                 loginMessage.textContent = 'Login realizado com sucesso! Redirecionando...';
                 loginMessage.classList.add('success');

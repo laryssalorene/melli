@@ -15,24 +15,19 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-image: url('/img/background2.png'); /* Caminho ajustado. Verifique se 'assets' é a pasta correta. */
+    /* Certifique-se de que o caminho da imagem está correto. */
+    /* Se background2.png estiver diretamente em public/img/, então o caminho está ok. */
+    background-image: url('/img/background2.png'); 
     background-size: cover;
     background-position: center;
     background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
 }
 
-.login-container {
-    /* Removendo esta classe, pois o form é o container principal agora */
-    /* background-color: rgba(255, 255, 255, 0.9); */
-    /* padding: 40px; */
-    /* border-radius: 15px; */
-    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); */
-    /* width: 100%; */
-    /* max-width: 400px; */
-    /* text-align: center; */
-}
-
-.login-form { /* O form é o container principal */
+/* AJUSTE AQUI: 
+   Mudamos de '.login-form' para '.login-container' para coincidir com o HTML.
+   Este será o seu cartão branco principal.
+*/
+.login-container { 
     background-color: rgba(255, 255, 255, 0.95); /* Um pouco menos transparente */
     padding: 45px 40px; /* Um pouco mais de padding vertical */
     border-radius: 18px; /* Borda mais arredondada */
@@ -43,7 +38,11 @@ body {
     box-sizing: border-box; /* Garante que padding não aumente o tamanho total */
 }
 
-.login-form .logo {
+/* AJUSTE AQUI: 
+   O logo, título e links estão DENTRO de .login-container e FORA do form#loginForm.
+   Então, o seletor precisa ser direto de .login-container para esses elementos.
+*/
+.login-container .logo {
     width: 120px; /* Tamanho do logo ajustado para sua imagem */
     height: auto;
     margin-bottom: 25px; /* Mais espaço abaixo do logo */
@@ -52,19 +51,24 @@ body {
     margin-right: auto;
 }
 
-.login-form h2 { /* Título "Bem-vindo de volta!" */
+.login-container h1 { /* Ajustado para h1, pois seu HTML usa h1 "Bem-vindo de volta!" */
     color: #02416d; /* Cor forte e escura */
     font-size: 2.3rem; /* Tamanho maior para o título */
     margin-bottom: 30px; /* Mais espaço abaixo do título */
     font-weight: 700; /* Negrito */
 }
 
-.input-group { /* Corresponde ao HTML */
+/*
+   AJUSTE AQUI: 
+   Os seletores para input-group, label, input e button precisam ser ajustados
+   para estarem dentro do form#loginForm, que por sua vez está dentro do .login-container.
+*/
+#loginForm .input-group { 
     margin-bottom: 25px; /* Mais espaço entre os grupos de input */
     text-align: left;
 }
 
-.input-group label { /* Corresponde ao HTML */
+#loginForm .input-group label { 
     display: block;
     margin-bottom: 10px; /* Mais espaço entre label e input */
     font-weight: bold;
@@ -72,7 +76,7 @@ body {
     font-size: 1.05rem;
 }
 
-.input-group input { /* Corresponde ao HTML */
+#loginForm .input-group input { 
     width: 100%;
     padding: 14px; /* Mais padding para os inputs */
     border: 1px solid #cce7f0;
@@ -83,13 +87,13 @@ body {
     box-sizing: border-box; /* Impede que padding aumente a largura total */
 }
 
-.input-group input:focus {
+#loginForm .input-group input:focus {
     outline: none;
     border-color: #50c8c6; /* Cor da borda focada */
     box-shadow: 0 0 0 4px rgba(80, 200, 198, 0.4); /* Sombra de foco */
 }
 
-.login-form button[type="submit"] { /* Corresponde ao HTML */
+#loginForm button[type="submit"] { 
     width: 100%;
     padding: 16px; /* Mais padding para o botão */
     background-color: #aedd2b; /* Cor do botão verde claro */
@@ -103,13 +107,13 @@ body {
     margin-top: 15px; /* Espaço entre o último input e o botão */
 }
 
-.login-form button[type="submit"]:hover {
+#loginForm button[type="submit"]:hover {
     background-color: #8cc63f; /* Cor verde um pouco mais escura no hover */
     transform: translateY(-2px); /* Efeito de "levantar" no hover */
 }
 
 /* Estilo para a mensagem de login (sucesso/erro) */
-.login-form .message { /* Corresponde ao HTML: p#loginMessage.message */
+#loginForm .message { /* Selecionador mais específico para p#loginMessage.message dentro do formulário */
     margin-top: 15px;
     margin-bottom: 15px; /* Adicionado margem inferior */
     padding: 10px;
@@ -119,48 +123,44 @@ body {
     min-height: 20px; /* Garante que o espaço seja reservado */
 }
 
-.login-form .message.success {
+#loginForm .message.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
-.login-form .message.error {
+#loginForm .message.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
-.register-link { /* Corresponde ao HTML */
+/* AJUSTE AQUI: Os links estão dentro de <div class="links"> que está dentro de .login-container */
+.login-container .links { /* Seletor corrigido para o div que contém os links */
     margin-top: 25px; /* Mais espaço acima do link de cadastro */
     font-size: 1rem;
     color: #02416d;
 }
 
-.register-link a {
+.login-container .links a {
     color: #50c8c6; /* Cor do link */
     text-decoration: none;
     font-weight: bold;
     transition: color 0.2s ease;
 }
 
-.register-link a:hover {
+.login-container .links a:hover {
     text-decoration: underline;
     color: #3ea09f; /* Um pouco mais escuro no hover */
 }
 
-.forgot-password-link { /* Corresponde ao HTML */
+/* AJUSTE AQUI: O link de esqueceu a senha não tem uma classe separada, mas está dentro de <p> dentro de .links */
+.login-container .links p:last-child { /* Seleciona o último parágrafo dentro de .links */
     margin-top: 15px; /* Espaço abaixo do link de cadastro */
     font-size: 0.95rem;
 }
 
-.forgot-password-link a {
-    color: #50c8c6; /* Cor do link */
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.forgot-password-link a:hover {
-    text-decoration: underline;
-    color: #3ea09f; /* Um pouco mais escuro no hover */
-}
+/* Não é necessário um seletor específico para 'forgot-password-link' se ele não tiver uma classe distinta */
+/* Use .login-container .links a para estilos gerais de links, ou adicione uma classe ao p ou a */
+/* Se quiser estilizar especificamente, o HTML precisaria de uma classe: <p class="forgot-password-link">...</p> */
+/* Por enquanto, o estilo de links genéricos já cobre. */

@@ -2,44 +2,28 @@
 const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { verifyToken } = require('../middleware/auth'); // Importe o middleware de autenticação
+const { verifyToken } = require('../middleware/auth'); // Importe o middleware de autenticação (CORRETO)
+
+// REMOVA as rotas de register e login daqui, elas pertencem a authRoutes.js
 
 // =======================================================
-// ROTAS DE AUTENTICAÇÃO E REGISTRO
-// =======================================================
-+
-// Rota para registrar um novo usuário
-// POST /api/users/register
-router.post('/register', userController.register);
-
-// Rota para login de usuário
-// POST /api/users/login
-router.post('/login', userController.login);
-
-// =======================================================
-// ROTAS DE REDEFINIÇÃO DE SENHA (NOVAS)
+// ROTAS DE REDEFINIÇÃO DE SENHA
 // =======================================================
 
-// Rota para solicitar o link de redefinição de senha
-// POST /api/users/forgot-password
-router.post('/forgot-password', userController.requestPasswordReset);
+router.post('/forgot-password', userController.requestPasswordReset); // Usando forgot-password para ser mais claro
+router.post('/reset-password/:token', userController.resetPassword); // Token na URL, usando o controller correto
 
-// Rota para redefinir a senha usando o token recebido no e-mail
-// POST /api/users/reset-password/:token
-router.post('/reset-password/:token', userController.resetPassword);
+// Rota de recuperação de nickname
+router.post('/recover-nickname', userController.requestNicknameRecovery);
 
 // =======================================================
 // ROTAS DE PERFIL DE USUÁRIO (PROTEGIDAS)
 // =======================================================
 
-// Rota para obter o perfil do usuário logado
-// GET /api/users/profile
-// Esta rota é protegida pelo middleware verifyToken
 router.get('/profile', verifyToken, userController.getProfile);
+router.get('/ranking', verifyToken, userController.getRanking); 
+router.put('/profile', verifyToken, userController.updateProfile);
+router.delete('/account', verifyToken, userController.deleteAccount);
 
-// NOVA ROTA: Obter ranking de usuários
-// GET /api/users/ranking
-// Esta rota também será protegida, pois só usuários logados devem ver o ranking
-router.get('/ranking', verifyToken, userController.getRanking); // <--- ADICIONE ESTA LINHA
 
 module.exports = router;
