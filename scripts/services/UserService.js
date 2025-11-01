@@ -1,69 +1,86 @@
-// scripts/services/userService.js
-const UserModel = require('../models/Usuario'); // Renomeado de Usuario para UserModel para consistência
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken'); // Adicionado para gerar tokens JWT
-const ms = require('ms'); // Adicionado para parsear strings de tempo (ex: '5m')
-const emailService = require('./emailService'); // Importar o serviço de e-mail
-const progressService = require('./progressService'); // Já existente no seu código
+const UserModel = require('../models/Usuario');
+const MascoteModel = require('../models/Mascote'); 
+const jwt = require('jsonwebtoken');
+const ms = require('ms');
+const emailService = require('./emailService');
+const progressService = require('./progressService');
 
-const saltRounds = 10; 
+// Validações iniciais para variáveis de ambiente
+if (!process.env.JWT_SECRET) {
+    console.error('ERRO: JWT_SECRET não definido no arquivo .env');
+    process.exit(1);
+}
+if (!process.env.RESET_PASSWORD_SECRET) {
+    console.warn('AVISO: RESET_PASSWORD_SECRET não definido no arquivo .env. Redefinição de senha pode não funcionar.');
+}
+if (!process.env.RESET_PASSWORD_EXPIRES_IN) {
+    console.warn('AVISO: RESET_PASSWORD_EXPIRES_IN não definido no arquivo .env. Usando padrão de 1 hora.');
+}
 
 const userService = {
     // =======================================================
     // MÉTODO DE REGISTRO
     // =======================================================
-    registerUser: async (nome, email, senha, mascote_id = null) => {
-        const existingUser = await UserModel.findByEmail(email);
-        if (existingUser) {
+    registerUser: async (nickname, email, password, mascote_id = null) => {
+        const existingUserByEmail = await UserModel.findByEmail(email);
+        if (existingUserByEmail) {
             throw new Error("E-mail já cadastrado.");
         }
-        // UserModel.create agora faz o hash internamente e retorna uma instância
-        const newUser = await UserModel.create(nome, email, senha, mascote_id); 
+        const existingUserByNickname = await UserModel.findByNickname(nickname);
+        if (existingUserByNickname) {
+            throw new Error("Nickname já está em uso.");
+        }
+
+        const newUser = await UserModel.create(nickname, email, password, mascote_id); 
         return newUser;
     },
 
     // =======================================================
-    // MÉTODO DE LOGIN
+    // MÉTODO DE LOGIN (AGORA COM NICKNAME E PASSWORD)
     // =======================================================
-    loginUser: async (email, senha) => {
-        const user = await UserModel.findByEmail(email);
+    loginUser: async (nickname, password) => { 
+        // Busca o usuário pelo nickname
+        const user = await UserModel.findByNickname(nickname); 
         if (!user) {
-            throw new Error('Credenciais inválidas.'); // Não informar se o usuário existe ou não por segurança
+            throw new Error('Credenciais inválidas.');
         }
 
-        // user.comparePassword é um método da instância agora
-        const isPasswordValid = await user.comparePassword(senha); 
+        // Compara a senha fornecida com o hash do DB
+        const isPasswordValid = await user.comparePassword(password); 
         if (!isPasswordValid) {
             throw new Error('Credenciais inválidas.');
         }
 
+        // Gera o token JWT para o usuário logado
         const token = jwt.sign(
-            { id_usuario: user.id_usuario, email: user.email },
+            { id_usuario: user.id_usuario, nickname: user.nickname }, 
             process.env.JWT_SECRET,
-            { expiresIn: '1h' } // Token expira em 1 hora
+            { expiresIn: process.env.JWT_EXPIRES_IN || '1h' } 
         );
 
-        // Atualiza a data do último login e assiduidade (usando a instância do usuário)
+        // Atualiza os dados de login (último login, assiduidade)
         await userService.updateLoginData(user.id_usuario); 
         
-        // Retorna apenas dados seguros do usuário, sem a senha
+        // Busca o usuário novamente para ter os dados mais atualizados (assiduidade, etc.)
+        const updatedUser = await UserModel.findById(user.id_usuario);
+
         return { 
             token, 
             user: { 
-                id_usuario: user.id_usuario, 
-                nome: user.nome, 
-                email: user.email, 
-                mascote_id: user.mascote_id,
-                pontos: user.pontos, 
-                assiduidade_dias: user.assiduidade_dias, 
-                data_registro: user.data_registro,
-                ultimo_login: user.ultimo_login
+                id_usuario: updatedUser.id_usuario, 
+                nickname: updatedUser.nickname, 
+                email: updatedUser.email, 
+                mascote_id: updatedUser.mascote_id,
+                pontos: updatedUser.pontos || 0, 
+                assiduidade_dias: updatedUser.assiduidade_dias || 0, 
+                data_registro: updatedUser.data_registro,
+                ultimo_login: updatedUser.ultimo_login
             } 
         };
     },
 
     // =======================================================
-    // MÉTODOS DE BUSCA (EXISTENTES)
+    // MÉTODOS DE BUSCA DE USUÁRIO
     // =======================================================
     findUserByEmail: async (email) => {
         return await UserModel.findByEmail(email);
@@ -73,63 +90,65 @@ const userService = {
         return await UserModel.findById(id_usuario);
     },
 
+    findUserByNickname: async (nickname) => {
+        return await UserModel.findByNickname(nickname);
+    },
+
     // =======================================================
-    // MÉTODO updateLoginData (AJUSTADO PARA USAR UserModel.updateLoginInfo)
+    // MÉTODO updateLoginData para gerenciar assiduidade
     // =======================================================
     updateLoginData: async (id_usuario) => {
         const user = await UserModel.findById(id_usuario);
         if (!user) {
             console.warn("Usuário não encontrado para atualização de login. ID:", id_usuario);
-            return; // Apenas loga e sai, não lança erro aqui para não interromper o login
+            return; 
         }
 
         const now = new Date();
-        const today = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        const today = now.toISOString().split('T')[0]; // Data atual no formato YYYY-MM-DD
         
-        // Se ultimo_login for null ou uma data inválida, trate-o como um novo dia de login
         const lastLoginDateTime = user.ultimo_login ? new Date(user.ultimo_login) : null;
         const lastLoginDay = lastLoginDateTime ? lastLoginDateTime.toISOString().split('T')[0] : null;
 
         let assiduidade = user.assiduidade_dias;
 
-        if (lastLoginDay !== today) { // Se o último login não foi hoje
-            if (lastLoginDateTime) { // Se houve um último login registrado
+        // Se o último login não foi hoje
+        if (lastLoginDay !== today) { 
+            if (lastLoginDateTime) {
                 const diffTime = Math.abs(now.getTime() - lastLoginDateTime.getTime());
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Diferença em dias
 
-                if (diffDays === 1) { // Se logou no dia seguinte consecutivo
+                // Se logou no dia seguinte ao último login (streak)
+                if (diffDays === 1) { 
                     assiduidade++;
-                } else { // Se houve uma lacuna, reinicia a assiduidade
+                } else { 
+                    // Se a diferença for maior que 1 dia, reseta a assiduidade
                     assiduidade = 1;
                 }
-            } else { // Primeiro login registrado, inicia assiduidade
+            } else { 
+                // Primeiro login, inicia a assiduidade
                 assiduidade = 1;
             }
-            // Chama o método da instância do usuário para atualizar informações de login
             await user.updateLoginInfo(now.toISOString(), assiduidade); 
         }
     },
 
     // =======================================================
-    // MÉTODO getUserProfile (EXISTENTE)
+    // MÉTODO getUserProfile para obter dados do perfil
     // =======================================================
     getUserProfile: async (id_usuario) => {
         const user = await UserModel.findById(id_usuario);
         if (!user) return null;
         
-        // Retorna todos os dados da instância do usuário, incluindo pontos e assiduidade.
-        // Se você tiver um método .toJSON() no UserModel que filtra, ele seria útil aqui.
-        // Caso contrário, construa o objeto manualmente para não expor a senha, etc.
         const userPublicData = {
             id_usuario: user.id_usuario,
-            nome: user.nome,
+            nickname: user.nickname, 
             email: user.email,
             pontos: user.pontos,
             assiduidade_dias: user.assiduidade_dias,
             mascote_id: user.mascote_id,
             data_registro: user.data_registro,
             ultimo_login: user.ultimo_login,
-            // ... quaisquer outros campos públicos que você queira expor
         };
 
         const userProgress = await progressService.getUserProgress(id_usuario); 
@@ -137,14 +156,12 @@ const userService = {
     },
 
     // =======================================================
-    // MÉTODO updateUserPoints (EXISTENTE)
+    // MÉTODO updateUserPoints para adicionar pontos
     // =======================================================
     updateUserPoints: async (id_usuario, pointsToAdd) => {
         const user = await UserModel.findById(id_usuario);
         if (!user) throw new Error("Usuário não encontrado para atualizar pontos.");
         
-        // Chama o método da instância do usuário para atualizar pontos
-        // A assiduidade é atualizada no login, não aqui.
         await user.updatePoints(pointsToAdd); 
     },
 
@@ -155,20 +172,24 @@ const userService = {
         const user = await UserModel.findByEmail(email);
         if (!user) {
             console.warn(`Tentativa de redefinição de senha para e-mail não encontrado: ${email}`);
+            // Por segurança, sempre retornar uma mensagem genérica para não revelar se o e-mail existe.
             return { message: 'Se o e-mail estiver cadastrado, um link de redefinição de senha foi enviado.' };
         }
 
+        // Gera um token JWT específico para redefinição de senha
         const resetToken = jwt.sign(
             { id_usuario: user.id_usuario },
             process.env.RESET_PASSWORD_SECRET,
-            { expiresIn: process.env.RESET_PASSWORD_EXPIRES_IN } 
+            { expiresIn: process.env.RESET_PASSWORD_EXPIRES_IN || '1h' } 
         );
 
-        const expiresInMs = ms(process.env.RESET_PASSWORD_EXPIRES_IN);
+        const expiresInMs = ms(process.env.RESET_PASSWORD_EXPIRES_IN || '1h');
         const resetExpires = new Date(Date.now() + expiresInMs); 
 
-        await user.saveResetToken(resetToken, resetExpires);
+        // Salva o token de redefinição e sua expiração no banco de dados do usuário
+        await user.saveResetToken(resetToken, resetExpires); 
 
+        // Constrói o link de redefinição e envia o e-mail
         const resetLink = `${process.env.FRONTEND_URL}/html/reset-password.html?token=${resetToken}`;
         await emailService.sendResetPasswordEmail(email, resetLink);
 
@@ -183,44 +204,94 @@ const userService = {
             throw new Error('A nova senha deve ter pelo menos 6 caracteres.');
         }
 
-        const user = await UserModel.findByResetToken(token);
+        // Busca o usuário pelo token de redefinição
+        const user = await UserModel.findByResetToken(token); 
 
         if (!user) {
             throw new Error('Token de redefinição inválido ou expirado.');
         }
         
-        // Valida se o token não foi utilizado após a verificação de expiração
-        if (user.reset_token_expiracao < new Date()) { // Comparar com o tempo atual novamente para garantir
-            throw new Error('Token de redefinição expirado.');
-        }
-        if (user.reset_token !== token) { // Comparar o token para garantir que é o mesmo salvo
-             throw new Error('Token de redefinição inválido ou já utilizado.');
-        }
-
+        // Atualiza a senha do usuário e limpa o token de redefinição
         await user.updatePassword(newPassword); 
 
         return { message: 'Sua senha foi redefinida com sucesso!' };
     },
 
     // =======================================================
-    // NOVO: MÉTODO PARA OBTER RANKING DE USUÁRIOS
+    // MÉTODO PARA OBTER RANKING DE USUÁRIOS (COM ANONIMIZAÇÃO)
     // =======================================================
     getUsersRanking: async () => {
         try {
-            // Chama o método estático getRanking do UserModel
             const ranking = await UserModel.getRanking(); 
             
-            // Você pode querer filtrar ou formatar os dados aqui antes de retornar
-            // Por exemplo, para garantir que apenas campos públicos sejam expostos
+            // Anonimiza os dados, retornando apenas nickname, pontos e mascote_id
             return ranking.map(user => ({
-                nome: user.nome,
+                nickname: user.nickname, 
                 pontos: user.pontos,
-                // Incluir o mascote_id se for útil para o ranking
+                mascote_id: user.mascote_id
             }));
         } catch (error) {
             console.error('Erro no serviço ao buscar ranking de usuários:', error);
             throw new Error('Não foi possível obter o ranking de usuários.'); 
         }
+    },
+
+    // =======================================================
+    // MÉTODO updateProfile para atualização de perfil
+    // =======================================================
+    updateProfile: async (userId, { nickname, email, mascote_id }) => {
+        const user = await UserModel.findById(userId);
+        if (!user) {
+            throw new Error('Usuário não encontrado.');
+        }
+
+        if (nickname && nickname !== user.nickname) {
+            const existingNickname = await UserModel.findByNickname(nickname);
+            if (existingNickname && existingNickname.id_usuario !== userId) {
+                throw new Error('Nickname já está em uso.');
+            }
+            user.nickname = nickname;
+        }
+
+        if (email && email !== user.email) {
+            const existingEmail = await UserModel.findByEmail(email);
+            if (existingEmail && existingEmail.id_usuario !== userId) {
+                throw new Error('E-mail já está em uso.');
+            }
+            user.email = email;
+        }
+
+        if (mascote_id !== undefined) {
+            const mascoteExists = await MascoteModel.findById(mascote_id); 
+            if (!mascoteExists) {
+                throw new Error('Mascote escolhido inválido.');
+            }
+            user.mascote_id = mascote_id; 
+        }
+
+        await user.save(); // Salva as alterações no banco de dados
+
+        // Retorna os dados atualizados do usuário
+        return {
+            id_usuario: user.id_usuario,
+            nickname: user.nickname,
+            email: user.email,
+            pontos: user.pontos,
+            mascote_id: user.mascote_id,
+            ultimo_login: user.ultimo_login,
+            assiduidade_dias: user.assiduidade_dias
+        };
+    },
+
+    // =======================================================
+    // MÉTODO deleteAccount para exclusão de conta
+    // =======================================================
+    deleteAccount: async (userId) => {
+        const result = await UserModel.delete(userId);
+        if (result.changes === 0) {
+            throw new Error('Usuário não encontrado para deletar.');
+        }
+        return { message: 'Conta deletada com sucesso.' };
     }
 };
 

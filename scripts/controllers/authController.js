@@ -1,119 +1,209 @@
-const userService = require('../services/userService'); // Seu serviço de usuário
-const bcrypt = require('bcryptjs'); // Para comparar senhas
-const jwt = require('jsonwebtoken'); // Para gerar tokens JWT
+// scripts/controllers/authController.js
+const userService = require('../services/userService'); // Importa o nosso UserService (renomeado)
+const jwt = require('jsonwebtoken'); 
 
-// <<-- NOVO: Define JWT_SECRET uma única vez no arquivo
-// Ele deve vir de process.env.JWT_SECRET que é carregado pelo dotenv no server.js
+// Pega diretamente do process.env (garantindo que .env foi carregado no server.js)
 const JWT_SECRET = process.env.JWT_SECRET; 
-
-// <<-- Importe MascoteModel se você estiver usando mascote_id no registro
-// const MascoteModel = require('../models/Mascote'); // Exemplo: Se precisar validar mascote_id
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
 
 const authController = {
+    /**
+     * Registra um novo usuário.
+     * Espera { nickname, email, password } no corpo da requisição.
+     */
     register: async (req, res) => {
         try {
-            const { nome, email, senha, mascote_id } = req.body; // Incluído mascote_id, se aplicável
+            // ** ATENÇÃO: Campos esperados do frontend agora são 'nickname' e 'password' **
+            const { nickname, email, password, mascote_id } = req.body; 
 
-            if (!nome || !email || !senha) {
-                return res.status(400).json({ message: 'Nome, email e senha são obrigatórios.' });
+            if (!nickname || !email || !password) {
+                return res.status(400).json({ message: 'Nickname, e-mail e senha são obrigatórios.' });
             }
-
-            // Verificar se o email já existe
-            const existingUser = await userService.findUserByEmail(email);
-            if (existingUser) {
-                return res.status(409).json({ message: 'Este email já está em uso.' });
-            }
-
-            // Você pode adicionar uma verificação para mascote_id aqui se for obrigatório
-            // Exemplo: if (mascote_id === undefined) return res.status(400).json({ message: 'Mascote é obrigatório.' });
-
-            // Registrar o usuário com o userService
-            // O userService deve cuidar do hash da senha e da criação no DB
-            const newUser = await userService.registerUser(nome, email, senha, mascote_id); 
             
-            // Verifica se o secret foi carregado
+            // O userService.registerUser já trata validação e hash
+            const newUser = await userService.registerUser(nickname, email, password, mascote_id); 
+            
             if (!JWT_SECRET) {
                 console.error("JWT_SECRET não está definido em authController.");
                 throw new Error("Chave secreta do JWT não configurada no servidor.");
             }
-
-            // Gerar token JWT imediatamente após o registro
-            const token = jwt.sign({ id_usuario: newUser.id_usuario }, JWT_SECRET, { expiresIn: '1h' });
             
+            // Gerar token JWT após o registro
+            const token = jwt.sign(
+                { id_usuario: newUser.id_usuario, nickname: newUser.nickname },
+                JWT_SECRET,
+                { expiresIn: JWT_EXPIRES_IN }
+            );
+
             res.status(201).json({ 
                 message: 'Usuário registrado com sucesso!', 
                 token, 
                 user: { 
                     id_usuario: newUser.id_usuario, 
-                    nome: newUser.nome, 
+                    nickname: newUser.nickname, 
                     email: newUser.email,
-                    pontos: newUser.pontos, // Adicione outros campos que o registro pode retornar
-                    assiduidade_dias: newUser.assiduidade_dias
+                    pontos: newUser.pontos,
+                    assiduidade_dias: newUser.assiduidade_dias,
+                    mascote_id: newUser.mascote_id
                 } 
             });
         } catch (error) {
             console.error('Erro no registro do usuário:', error);
-            // Melhora a mensagem de erro para o cliente se for um erro específico (ex: unique constraint)
-            if (error.message.includes('unique constraint failed')) {
-                return res.status(409).json({ message: 'Erro: Dados duplicados (ex: email já cadastrado).' });
+            if (error.message.includes('já cadastrado') || error.message.includes('já está em uso')) {
+                return res.status(409).json({ message: error.message }); // 409 Conflict
             }
             res.status(500).json({ message: error.message || 'Erro interno do servidor ao registrar usuário.' });
         }
     },
 
+    /**
+     * Autentica um usuário existente.
+     * Espera { nickname, password } no corpo da requisição.
+     */
     login: async (req, res) => {
         try {
-            const { email, senha } = req.body;
+            // ** ATENÇÃO: Campos esperados do frontend agora são 'nickname' e 'password' **
+            const { nickname, password } = req.body; 
 
-            if (!email || !senha) {
-                return res.status(400).json({ message: 'Email e senha são obrigatórios.' });
+            if (!nickname || !password) {
+                return res.status(400).json({ message: 'Nickname e senha são obrigatórios.' });
             }
-
-            const user = await userService.findUserByEmail(email);
-            if (!user) {
-                return res.status(400).json({ message: 'Email ou senha incorretos.' });
-            }
-
-            const isMatch = await bcrypt.compare(senha, user.senha);
-            if (!isMatch) {
-                return res.status(400).json({ message: 'Email ou senha incorretos.' });
-            }
-
-            // Lógica de atualização de último login e assiduidade (movida para o userService)
-            // O userService.updateLoginData já deve lidar com a lógica de assiduidade
-            await userService.updateLoginData(user.id_usuario); 
             
-            // Recarrega o usuário para pegar dados atualizados (como assiduidade_dias e ultimo_login)
-            const updatedUser = await userService.findUserById(user.id_usuario);
+            // O userService.loginUser já valida credenciais, atualiza login e gera o token
+            const result = await userService.loginUser(nickname, password); 
             
-            if (!updatedUser) {
-                // Isso não deveria acontecer, mas é uma verificação de segurança
-                console.error("Usuário não encontrado após atualização de login.");
-                return res.status(500).json({ message: 'Erro interno ao recuperar dados do usuário.' });
-            }
-
-            // Verifica se o secret foi carregado
             if (!JWT_SECRET) {
                 console.error("JWT_SECRET não está definido em authController.");
                 throw new Error("Chave secreta do JWT não configurada no servidor.");
             }
-
-            const token = jwt.sign({ id_usuario: updatedUser.id_usuario }, JWT_SECRET, { expiresIn: '1h' });
             
+            // O token e os dados do usuário já são retornados pelo userService.loginUser
             res.json({ 
-                token, 
-                user: { 
-                    id_usuario: updatedUser.id_usuario, 
-                    nome: updatedUser.nome, 
-                    email: updatedUser.email,
-                    pontos: updatedUser.pontos,
-                    assiduidade_dias: updatedUser.assiduidade_dias,
-                    ultimo_login: updatedUser.ultimo_login // Incluir se for relevante para o front
-                } 
+                token: result.token, 
+                user: result.user 
             });
         } catch (error) {
             console.error('Erro no login do usuário:', error);
+            if (error.message.includes('Credenciais inválidas')) {
+                return res.status(401).json({ message: error.message }); // 401 Unauthorized
+            }
             res.status(500).json({ message: error.message || 'Erro interno do servidor ao fazer login.' });
+        }
+    },
+
+    /**
+     * Solicita redefinição de senha.
+     * Espera { email } no corpo da requisição.
+     */
+    requestPasswordReset: async (req, res) => {
+        try {
+            const { email } = req.body;
+            if (!email) {
+                return res.status(400).json({ message: 'O e-mail é obrigatório para redefinir a senha.' });
+            }
+
+            const result = await userService.requestPasswordReset(email);
+            res.status(200).json(result); // O serviço já retorna { message: '...' }
+        } catch (error) {
+            console.error('Erro ao solicitar redefinição de senha:', error);
+            // Use 200 OK mesmo em caso de e-mail não encontrado para não vazar informações
+            res.status(200).json({ message: error.message || 'Se o seu e-mail estiver cadastrado, um link de redefinição será enviado.' });
+        }
+    },
+
+    /**
+     * Redefine a senha do usuário.
+     * Espera { token, newPassword } no corpo da requisição.
+     */
+    resetPassword: async (req, res) => {
+        try {
+            const { token, newPassword } = req.body;
+            if (!token || !newPassword) {
+                return res.status(400).json({ message: 'Token e nova senha são obrigatórios.' });
+            }
+
+            const result = await userService.resetPassword(token, newPassword);
+            res.status(200).json(result); // O serviço já retorna { message: '...' }
+        } catch (error) {
+            console.error('Erro ao redefinir senha:', error);
+            if (error.message.includes('inválido ou expirado')) {
+                return res.status(400).json({ message: error.message }); // 400 Bad Request
+            }
+            if (error.message.includes('pelo menos 6 caracteres')) {
+                return res.status(400).json({ message: error.message });
+            }
+            res.status(500).json({ message: error.message || 'Erro interno do servidor ao redefinir senha.' });
+        }
+    },
+
+    /**
+     * Retorna os dados do perfil do usuário logado.
+     * Requer autenticação (req.userId é definido pelo middleware verifyToken).
+     */
+    getProfile: async (req, res) => {
+        try {
+            const userId = req.userId; // Vem do middleware verifyToken
+            if (!userId) {
+                return res.status(401).json({ message: 'Usuário não autenticado.' });
+            }
+
+            const userProfile = await userService.getUserProfile(userId); // Usa getUserProfile
+            if (!userProfile) {
+                return res.status(404).json({ message: 'Perfil do usuário não encontrado.' });
+            }
+
+            res.status(200).json(userProfile);
+        } catch (error) {
+            console.error('Erro ao buscar perfil do usuário:', error);
+            res.status(500).json({ message: 'Erro interno do servidor ao buscar perfil.' });
+        }
+    },
+
+    /**
+     * Atualiza o perfil do usuário logado.
+     * Requer autenticação.
+     * Espera { nickname, email, mascote_id } no corpo da requisição (apenas os que serão atualizados).
+     */
+    updateProfile: async (req, res) => {
+        try {
+            const userId = req.userId; // Vem do middleware verifyToken
+            const { nickname, email, mascote_id } = req.body;
+
+            if (!userId) {
+                return res.status(401).json({ message: 'Usuário não autenticado.' });
+            }
+
+            const updatedUser = await userService.updateProfile(userId, { nickname, email, mascote_id }); 
+            res.status(200).json({ message: 'Perfil atualizado com sucesso!', user: updatedUser });
+        } catch (error) {
+            console.error('Erro ao atualizar perfil do usuário:', error);
+            if (error.message.includes('já está em uso') || error.message.includes('já cadastrado')) {
+                return res.status(409).json({ message: error.message });
+            }
+            if (error.message.includes('Mascote escolhido inválido')) {
+                return res.status(400).json({ message: error.message });
+            }
+            res.status(500).json({ message: error.message || 'Erro interno do servidor ao atualizar perfil.' });
+        }
+    },
+
+    /**
+     * Deleta o usuário logado.
+     * Requer autenticação.
+     */
+    deleteAccount: async (req, res) => {
+        try {
+            const userId = req.userId; // Vem do middleware verifyToken
+
+            if (!userId) {
+                return res.status(401).json({ message: 'Usuário não autenticado.' });
+            }
+
+            await userService.deleteAccount(userId); 
+            res.status(200).json({ message: 'Conta deletada com sucesso.' });
+        } catch (error) {
+            console.error('Erro ao deletar conta do usuário:', error);
+            res.status(500).json({ message: error.message || 'Erro interno do servidor ao deletar conta.' });
         }
     }
 };

@@ -7,7 +7,7 @@ const { verifyToken } = require('../middleware/auth'); // Importe o middleware d
 // =======================================================
 // ROTAS DE AUTENTICAÇÃO E REGISTRO
 // =======================================================
-
++
 // Rota para registrar um novo usuário
 // POST /api/users/register
 router.post('/register', userController.register);

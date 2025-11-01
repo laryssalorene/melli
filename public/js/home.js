@@ -1,4 +1,3 @@
-
 // public/js/home.js
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,21 +8,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
     const modulesContainer = document.getElementById("modules-container");
-    const userNameSpan = document.getElementById("user-name");
+    // MUDADO AQUI: userNicknameSpan para consistência
+    const userNicknameSpan = document.getElementById("user-nickname");
     const userAssiduidadeSpan = document.getElementById("user-assiduidade");
     const userPontosSpan = document.getElementById("user-pontos");
-    const welcomeNameSpan = document.getElementById("welcome-name");
+    // MUDADO AQUI: welcomeNicknameSpan para consistência
+    const welcomeNicknameSpan = document.getElementById("welcome-nickname");
     const btnLogout = document.getElementById('btn-logout');
     const btnLogoutMobile = document.getElementById('btn-logout-mobile');
 
     // Função auxiliar para fazer requisições autenticadas
     async function fetchAuthenticatedData(url, options = {}) {
-        const token = localStorage.getItem('jwtToken'); // Chave padronizada: 'jwtToken'
+        const token = localStorage.getItem('jwtToken'); 
         if (!token) {
             alert('Sessão expirada ou não autorizado. Faça login novamente.');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            localStorage.removeItem('userName'); 
+            // MUDADO AQUI: Remove userNickname do localStorage
+            localStorage.removeItem('userNickname'); 
             window.location.href = '/html/login.html';
             return null;
         }
@@ -35,7 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Sessão expirada ou não autorizada. Faça login novamente.');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            localStorage.removeItem('userName');
+            // MUDADO AQUI: Remove userNickname do localStorage
+            localStorage.removeItem('userNickname');
             window.location.href = '/html/login.html';
             return null;
         }
@@ -45,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 errorData = await response.json();
             } catch (e) {
-                // Se a resposta não for JSON, trate como erro genérico
                 throw new Error(`Erro na requisição: ${response.statusText} (${response.status})`);
             }
             throw new Error(errorData.message || `Erro na requisição: ${response.statusText}`);
@@ -59,19 +61,20 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const user = await fetchAuthenticatedData('/api/users/profile'); 
             if (user) {
-                userNameSpan.textContent = user.nome;
+                // MUDADO AQUI: Altera para user.nickname
+                userNicknameSpan.textContent = user.nickname;
                 userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
                 userPontosSpan.textContent = user.pontos;
-                welcomeNameSpan.textContent = user.nome.split(' ')[0];
+                // MUDADO AQUI: Exibe o nickname na mensagem de boas-vindas
+                welcomeNicknameSpan.textContent = user.nickname; 
                 
-                // Opcional: Você já salvou o nome e ID no login, mas pode atualizar/garantir aqui
+                // Atualiza/garante o userId e userNickname no localStorage
                 localStorage.setItem('userId', user.id_usuario);
-                localStorage.setItem('userName', user.nome);
+                // MUDADO AQUI: Armazena o nickname no localStorage
+                localStorage.setItem('userNickname', user.nickname);
             }
         } catch (error) {
             console.error('Erro ao carregar perfil do usuário:', error);
-            // O fetchAuthenticatedData já lida com redirecionamento em caso de 401/403
-            // Mas outros erros (rede, 500) podem ser exibidos aqui
         }
     }
 
@@ -81,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const modules = await fetchAuthenticatedData('/api/content/modulos');
             
             if (modulesContainer) {
-                modulesContainer.innerHTML = ''; // Limpa o conteúdo existente
+                modulesContainer.innerHTML = ''; 
             }
 
             if (modules && modules.length > 0) {
@@ -112,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Erro ao carregar módulos:', error);
-             // O fetchAuthenticatedData já lida com redirecionamento em caso de 401/403
         }
     }
 
@@ -120,7 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function logout() {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userId'); 
-        localStorage.removeItem('userName'); 
+        // MUDADO AQUI: Remove userNickname do localStorage
+        localStorage.removeItem('userNickname'); 
         alert('Você foi desconectado.');
         window.location.href = '/html/login.html';
     }

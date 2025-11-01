@@ -1,4 +1,26 @@
-/* styles/quiz.css */
+/* public/styles/quiz.css */
+
+.hidden { 
+    display: none !important; 
+}
+
+/* Estilo para o container responsivo do vídeo (geral para iframes de vídeo) */
+.iframe-container { 
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    background: #000;
+}
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 
 .quiz-container {
     max-width: 800px;
@@ -262,62 +284,10 @@
     font-size: 2.5rem;
 }
 
-#return-to-modules-button {
-    font-size: 1.1rem;
-    padding: 0.8rem 1.8rem;
-}
+/* O botão de "Voltar para Módulos" na área de resultados foi removido,
+   pois a lógica agora é direto para a tela de ranking. */
 
 /* -------------------------------------------------------------------------- */
-/* Responsividade */
-/* -------------------------------------------------------------------------- */
-@media (max-width: 767px) {
-    .quiz-container {
-        padding: 1rem;
-        margin: 1rem auto;
-    }
-    .quiz-container h1 {
-        font-size: 1.8rem;
-    }
-    #explanation-step-area h2 {
-        font-size: 1.5rem;
-    }
-    #current-explanation-block-content p {
-        font-size: 1rem;
-    }
-    #next-step-button {
-        font-size: 1rem;
-        padding: 0.75rem 1.5rem;
-    }
-    #question-text {
-        font-size: 1.2rem;
-    }
-    .alternative-item {
-        padding: 0.8rem 1rem;
-    }
-    .alternative-item span {
-        font-size: 1rem;
-    }
-    .alternative-item span::before {
-        width: 16px;
-        height: 16px;
-    }
-    .alternative-item input[type="radio"]:checked + span::after {
-        left: 3px;
-        width: 8px;
-        height: 8px;
-    }
-    #submit-button, #return-to-modules-button {
-        font-size: 1rem;
-        padding: 0.75rem 1.5rem;
-    }
-    #results-area h2 {
-        font-size: 2rem;
-    }
-    #final-score {
-        font-size: 2rem;
-    }
-
-    /* -------------------------------------------------------------------------- */
 /* Estilos para a Área de Ranking (#ranking-area) */
 /* -------------------------------------------------------------------------- */
 #ranking-area {
@@ -406,7 +376,63 @@
     border-color: #cd7f32; /* Bronze */
 }
 
+#return-to-modules-from-ranking-button {
+    font-size: 1.1rem;
+    padding: 0.8rem 1.8rem;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/* Responsividade */
+/* -------------------------------------------------------------------------- */
 @media (max-width: 767px) {
+    .quiz-container {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+    .quiz-container h1 {
+        font-size: 1.8rem;
+    }
+    #explanation-step-area h2 {
+        font-size: 1.5rem;
+    }
+    #current-explanation-block-content p {
+        font-size: 1rem;
+    }
+    #next-step-button {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+    #question-text {
+        font-size: 1.2rem;
+    }
+    .alternative-item {
+        padding: 0.8rem 1rem;
+    }
+    .alternative-item span {
+        font-size: 1rem;
+    }
+    .alternative-item span::before {
+        width: 16px;
+        height: 16px;
+    }
+    .alternative-item input[type="radio"]:checked + span::after {
+        left: 3px;
+        width: 8px;
+        height: 8px;
+    }
+    #submit-button, #return-to-modules-from-ranking-button { /* Ajustado para o botão do ranking */
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+    #results-area h2 {
+        font-size: 2rem;
+    }
+    #final-score {
+        font-size: 2rem;
+    }
+
+    /* Responsividade para o Ranking */
     #ranking-area h2 {
         font-size: 2rem;
     }
@@ -427,5 +453,4 @@
     .ranking-item .ranking-position {
         font-size: 1.5rem;
     }
-}
 }

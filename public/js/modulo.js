@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const colunaEsquerda = document.getElementById("coluna-esquerda");
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
-    const userNameSpan = document.getElementById("user-name");
+    // MUDADO AQUI: userNicknameSpan em vez de userNameSpan
+    const userNicknameSpan = document.getElementById("user-nickname");
     const userAssiduidadeSpan = document.getElementById("user-assiduidade");
     const userPontosSpan = document.getElementById("user-pontos");
     const btnLogout = document.getElementById('btn-logout');
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Sessão expirada ou não autorizado. Faça login novamente.');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            localStorage.removeItem('userName'); 
+            localStorage.removeItem('userNickname'); // MUDADO AQUI: Remove userNickname
             window.location.href = '/html/login.html';
             return null;
         }
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             alert('Sessão expirada ou não autorizada. Faça login novamente.');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            localStorage.removeItem('userName');
+            localStorage.removeItem('userNickname'); // MUDADO AQUI: Remove userNickname
             window.location.href = '/html/login.html';
             return null;
         }
@@ -58,11 +59,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const user = await fetchAuthenticatedData('/api/users/profile');
             if (user) {
-                userNameSpan.textContent = user.nome;
+                // MUDADO AQUI: Altera para user.nickname
+                userNicknameSpan.textContent = user.nickname;
                 userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
                 userPontosSpan.textContent = user.pontos;
                 localStorage.setItem('userId', user.id_usuario);
-                localStorage.setItem('userName', user.nome);
+                // MUDADO AQUI: Armazena o nickname no localStorage
+                localStorage.setItem('userNickname', user.nickname);
             }
         } catch (error) {
             console.error('Erro ao carregar perfil do usuário:', error);
@@ -72,7 +75,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function logout() {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userId'); 
-        localStorage.removeItem('userName');
+        localStorage.removeItem('userNickname'); // MUDADO AQUI: Remove userNickname
         alert('Você foi desconectado.');
         window.location.href = '/html/login.html';
     }
@@ -84,7 +87,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentModuleId = null; 
     let userProgress = {}; // Guardará o progresso do usuário para as unidades deste módulo
 
-    loadUserProfile(); // Carrega o perfil do usuário
+    // A lógica de inicialização foi movida para o DOMContentLoaded para garantir a ordem
+    loadUserProfile(); 
     
     const urlParams = new URLSearchParams(window.location.search);
     currentModuleId = urlParams.get('id'); // Pega o ID do módulo da URL
