@@ -4,34 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Área do Herói - Melli Hero</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/styles/home.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-[#f8f8ec] text-[#02416d]">
-
-    <nav class="menu">
+<body> <nav class="menu">
         <div class="logo">🍬 Melli Hero</div>
         <ul class="menu-desktop menu-links">
-            <li><button id="btn-perfil" class="hover:text-[#aedd2b]">👤 Perfil</button></li>
-            <li><a href="/html/home.html" class="ativo">🎓 Aprender</a></li>
-            <li><a href="#" class="hover:text-[#aedd2b]">⚡ Prática</a></li>
-            <li><a href="#" class="hover:text-[#aedd2b]">🏆 Conquistas</a></li>
-            <li><button id="btn-logout" class="ml-4 px-3 py-1 bg-red-500 rounded hover:bg-red-600 text-white">Sair</button></li>
+            <li>
+                <button id="btn-perfil" class="menu-button">
+                    <i class="fas fa-user"></i> Perfil
+                </button>
+            </li>
+            <li>
+                <a href="/html/home.html" class="ativo">
+                    <i class="fas fa-graduation-cap"></i> Aprender
+                </a>
+            </li>
+            <li>
+                <a href="#" class="menu-link"> <i class="fas fa-bolt"></i> Prática
+                </a>
+            </li>
+            <li>
+                <a href="#" class="menu-link">
+                    <i class="fas fa-trophy"></i> Conquistas
+                </a>
+            </li>
+            <li>
+                <button id="btn-logout" class="menu-button">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </li>
         </ul>
         <button id="menu-toggle" class="mobile-toggle-btn">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"
-                viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
+            <i class="fas fa-bars fa-2x"></i> </button>
     </nav>
     
     <ul id="mobile-menu" class="mobile-menu-items">
-        <li><button id="btn-perfil-mobile" class="block w-full text-left hover:text-[#aedd2b]">👤 Perfil</button></li>
-        <li><a href="/html/home.html" class="block hover:text-[#aedd2b]">🎓 Vamos Aprender</a></li>
-        <li><a href="#" class="block hover:text-[#aedd2b]">⚡ Prática</a></li>
-        <li><a href="#" class="block hover:text-[#aedd2b]">🏆 Conquistas</a></li>
-        <li><button id="btn-logout-mobile" class="mt-2 block w-full text-left px-3 py-1 bg-red-500 rounded hover:bg-red-600">Sair</button></li>
+        <li>
+            <button id="btn-perfil-mobile" class="menu-button">
+                <i class="fas fa-user"></i> Perfil
+            </button>
+        </li>
+        <li>
+            <a href="/html/home.html" class="menu-link ativo">
+                <i class="fas fa-graduation-cap"></i> Aprender
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-link">
+                <i class="fas fa-bolt"></i> Prática
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-link">
+                <i class="fas fa-trophy"></i> Conquistas
+            </a>
+        </li>
+        <li>
+            <button id="btn-logout-mobile" class="menu-button">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </li>
     </ul>
 
     <div class="conteudo">
@@ -51,6 +84,7 @@
             <h1>Bem-vindo, <span id="welcome-nickname">herói do açúcar</span>! 🍭</h1>
             <p>Escolha um módulo para continuar sua jornada.</p>
             <div class="modulos" id="modules-container"> 
+                <div class="module-path path-1-2"></div>
                 <p class="text-gray-700">Carregando módulos...</p> 
             </div>
         </main>

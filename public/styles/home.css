@@ -1,6 +1,6 @@
 /* styles/home.css */
 
-/* RESET (Mantenha) */
+/* RESET */
 * {
     margin: 0;
     padding: 0;
@@ -9,8 +9,10 @@
 
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
-    background-color: #f8f8ec;
-    background-image: url('/img/background2.png'); /* Caminho ajustado */
+    /* NOVO BACKGROUND: Branco puro #FFFFFF */
+    background-color: #ffffff; 
+    
+    background-image: none; /* Remove qualquer imagem de fundo */
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
@@ -27,11 +29,12 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('/img/background1.png'); /* Caminho ajustado */
-    background-repeat: repeat;
-    background-size: contain;
-    opacity: 0.05;
-    filter: brightness(1.1) blur(1px);
+    background-image: none; /* Remove o gradiente */
+    background-color: #ffffff; /* Garante que o pseudo-elemento também seja branco */
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 1; 
+    filter: none;
     z-index: -1;
 }
 
@@ -45,10 +48,12 @@ body::before {
     justify-content: space-between;
     align-items: center;
     padding: 15px 30px;
-    background-color: #066699;
+    background-color: #508ee6;
     color: white;
     border-bottom: 3px solid #aedd2b;
     z-index: 999;
+    min-height: 64px;
+    box-sizing: border-box;
 }
 
 .logo {
@@ -61,6 +66,7 @@ body::before {
     list-style: none;
     display: flex;
     gap: 30px;
+    align-items: center; /* Centraliza verticalmente todos os itens do menu */
 }
 
 .menu-links li {
@@ -68,33 +74,75 @@ body::before {
     color: #f9f2e7;
     cursor: pointer;
     transition: color 0.3s ease;
+    text-decoration: none; /* Remove sublinhado para todos os itens da lista */
 }
 
-.menu-links li:hover {
+/* Estilo para links dentro do menu (Aprender, Prática, Conquistas) */
+.menu-links li a {
+    color: #f9f2e7; /* Cor do texto original */
+    text-decoration: none; /* Remove o sublinhado dos links */
+    transition: color 0.3s ease;
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    gap: 8px; /* Espaço entre ícone e texto */
+}
+
+.menu-links li a:hover {
     color: #aedd2b;
 }
 
 .menu-links li .ativo {
     color: #aedd2b;
-    border-bottom: 2px solid #aedd2b;
+    /* border-bottom: 2px solid #aedd2b; */ /* Remova ou comente esta linha */
+    border-bottom: none; /* Adicione esta linha para garantir que não haja borda */
     padding-bottom: 2px;
 }
 
-/* Esconde o botão de hambúrguer por padrão em desktop */
+/* Estilo para ícones dentro dos links do menu */
+.menu-links li a i {
+    font-size: 1.2em; /* Tamanho do ícone */
+}
+
+/* NOVO: Estilo para os botões "Perfil" e "Sair" para se parecerem com os links */
+.menu-links .menu-button {
+    background: none; /* Remove o fundo padrão do botão */
+    border: none; /* Remove a borda padrão do botão */
+    color: #f9f2e7; /* Cor do texto similar aos links */
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    padding: 0; /* Remove padding padrão do botão */
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center;
+    gap: 8px; /* Espaço entre ícone e texto */
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* Garante a mesma fonte */
+    font-size: 1rem; /* Garante o mesmo tamanho de fonte */
+}
+
+.menu-links .menu-button:hover {
+    color: #aedd2b;
+}
+
+/* Ícones dentro dos botões */
+.menu-links .menu-button i {
+    font-size: 1.2em;
+}
+
 .mobile-toggle-btn {
     display: none;
     cursor: pointer;
+    color: white; /* Para o ícone do hambúrguer */
 }
 
 /* Estilo do menu mobile (escondido por padrão) */
 .mobile-menu-items {
-    display: none; 
+    display: none;
     list-style: none;
     position: fixed;
-    top: 64px; 
+    top: 64px;
     left: 0;
     width: 100%;
-    background-color: #066699;
+    background-color: #508ee6;
     z-index: 998;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     padding: 10px 20px;
@@ -102,9 +150,10 @@ body::before {
     gap: 10px;
 }
 
-/* mobile-menu-items.visivel é o que o JS vai alternar para mostrar */
+
+
 .mobile-menu-items.visivel {
-    display: flex; 
+    display: flex;
 }
 
 .mobile-menu-items li {
@@ -119,6 +168,13 @@ body::before {
     color: white;
     font-weight: bold;
     transition: color 0.3s;
+    background: none; /* Reset para o botão */
+    border: none; /* Reset para o botão */
+    cursor: pointer;
+    text-decoration: none; /* Garante que os links e botões no menu mobile também não sublinhem */
+    display: flex; /* Alinha ícone e texto */
+    align-items: center;
+    gap: 8px;
 }
 
 .mobile-menu-items a:hover, .mobile-menu-items button:hover {
@@ -129,10 +185,10 @@ body::before {
 .conteudo {
     display: flex;
     width: 100%;
-    min-height: calc(100vh - 64px);
-    margin-top: 64px; 
     position: relative;
     z-index: 10;
+    padding-top: 64px; /* Empurra o conteúdo abaixo da navbar fixa */
+    min-height: 100vh;
 }
 
 /* COLUNA ESQUERDA (perfil) */
@@ -140,7 +196,7 @@ body::before {
     width: 25%;
     max-width: 280px;
     background-color: #ffffff;
-    display: none; 
+    display: none;
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
@@ -152,6 +208,7 @@ body::before {
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
+    overflow-y: auto; /* Para permitir rolagem se o conteúdo for grande */
 }
 
 .coluna-esquerda.visivel {
@@ -177,17 +234,19 @@ body::before {
     color: #02416d;
 }
 
-/* COLUNA CENTRAL */
+/* COLUNA CENTRAL - PRINCIPAL ÁREA DE MÓDULOS */
 .coluna-centro {
     flex: 1;
     padding: 50px;
     background-color: transparent;
-    background-position: bottom right;
-    background-repeat: no-repeat;
-    background-size: 180px;
     position: relative;
     margin-left: 0;
     transition: margin-left 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o conteúdo horizontalmente */
+    text-align: center; /* Centraliza texto */
+    padding-bottom: 100px; /* Espaço extra para o rodapé ou elementos flutuantes */
 }
 
 /* Empurra a coluna central quando a coluna esquerda está visível */
@@ -195,156 +254,270 @@ body::before {
     margin-left: 280px;
 }
 
-.coluna-centro h1,
-.coluna-centro p,
-.coluna-centro .modulos {
-    position: relative;
-    z-index: 1;
-}
-
 .coluna-centro h1 {
-    font-size: 1.8rem;
+    font-size: 2.2rem; /* Aumenta o tamanho */
     color: #02416d;
     margin-bottom: 10px;
-    text-align: center;
+    font-weight: 800; /* Mais negrito */
 }
 
 .coluna-centro p {
-    font-size: 1rem;
-    color: #333;
-    margin-bottom: 30px;
-    text-align: center;
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 40px; /* Mais espaço antes dos módulos */
+    max-width: 700px; /* Limita largura do parágrafo */
 }
 
-/* MÓDULOS - APLICANDO ESTILOS NA CLASSE 'modules-container' e 'module-custom-style' */
-.modulos { /* Este é o contêiner dos cards */
+/* CONTAINER DOS MÓDULOS - ONDE A MÁGICA ACONTECE */
+.modulos { /* id="modules-container" */
+    display: grid;
+    grid-template-columns: repeat(2, 280px); /* Duas colunas para os cards */
+    grid-template-rows: repeat(2, 200px); /* Altura das linhas para permitir o zigue-zague */
+    gap: 0; /* O espaçamento é controlado pelo posicionamento e linhas */
+    position: relative; /* Para posicionar as linhas com absolute */
+    max-width: 600px; /* Largura máxima do grid */
+    margin: 0 auto; /* Centraliza o grid */
+    padding: 20px; /* Padding para que as linhas não saiam da borda */
+}
+
+/* Esconde o texto "Carregando módulos..." quando os módulos são renderizados */
+.modulos .text-gray-700:not(:only-child) {
+    display: none;
+}
+
+/* ESTILO DOS CARDS INDIVIDUAIS */
+.module-card {
+    width: 250px; /* Largura dos cards */
+    height: 140px; /* Altura dos cards */
+    padding: 18px;
+    border-radius: 18px;
     display: flex;
     flex-direction: column;
-    gap: 25px;
-    align-items: center;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra mais forte */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    z-index: 10; /* Sempre acima das linhas */
+    text-align: left;
+    transform: translateZ(0); /* Para suavizar a transição em alguns navegadores */
+    text-decoration: none; /* Adicionado: Remove o sublinhado do próprio link */
 }
 
-/* Estilos adicionais para o card em si (module-custom-style) */
-.module-custom-style { /* A classe customizada adicionada no JS */
-    padding: 16px 14px; /* Tailwind já tem p-4, mas este aqui pode sobrepor/complementar */
-    border-radius: 14px; /* Tailwind tem rounded-lg, este pode ser mais específico */
+.module-card:hover {
+    transform: translateY(-8px) scale(1.03); /* Efeito de "levantar" e aumentar um pouco */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.module-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px; /* Mais espaço entre número e título */
+}
+
+.module-card .module-number {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-decoration: none; /* Adicionado: Remove qualquer sublinhado herdado ou padrão */
+}
+
+.module-card .module-title {
+    font-size: 1.25em; /* Aumenta o título */
     font-weight: bold;
-    font-size: 1rem;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); /* Tailwind tem shadow-md, este é um fallback/complemento */
-    transition: all 0.3s;
-    text-align: center;
-    display: flex; /* Já tem flex no Tailwind, mas reforça */
-    justify-content: center;
-    align-items: center;
-    max-width: 280px;
-    width: 100%;
-    backdrop-filter: blur(4px);
-    opacity: 0.85;
+    color: #fff;
+    line-height: 1.3;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Pequena sombra no texto */
+    text-decoration: none; /* Adicionado: Remove qualquer sublinhado herdado ou padrão */
 }
 
-.module-custom-style:hover {
-    opacity: 1;
-    transform: scale(1.02);
+.module-card .module-icon {
+    position: absolute;
+    bottom: 15px;
+    right: 18px;
+    font-size: 2.5em; /* Tamanho maior para os ícones */
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 0.8;
 }
 
-/* Estilos para estados desbloqueado/bloqueado */
-.module-custom-style.desbloqueado {
-    background-color: #aedd2b;
-    color: #02416d;
-    cursor: pointer;
+/* POSICIONAMENTO DOS CARDS NO GRID */
+.module-1 {
+    background-color: #508ee6; /* Azul */
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+    justify-self: start;
+    align-self: start;
 }
 
-.module-custom-style.completed { /* Se o módulo estiver completo, você pode dar um estilo diferente */
-    background-color: #50c8c6; /* Um verde/azul mais forte para completo */
-    color: #f8f8ec;
-    cursor: pointer;
+.module-2 {
+    background-color: #5dc886; /* Verde */
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    justify-self: end;
+    align-self: end;
+    transform: translateY(60px); /* Empurra para baixo para o zigue-zague */
 }
 
-/* O '.bloqueado' no seu JS não é adicionado, mas se for, seria assim */
-.module-custom-style.bloqueado { 
-    background-color: #cee891;
-    color: #666;
+.module-3 {
+    background-color: #ff9933; /* Laranja */
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    justify-self: start;
+    align-self: start;
+    transform: translateY(-60px); /* Empurra para cima para o zigue-zague */
+}
+
+.module-4 {
+    background-color: #9b59b6; /* Roxo */
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+    justify-self: end;
+    align-self: end;
+}
+
+/* STATUS DOS MÓDULOS (desbloqueado, bloqueado, completed) */
+.module-card.desbloqueado {
+    /* Cores já definidas acima */
+}
+
+.module-card.bloqueado {
+    background-color: #aeb1b8; /* Cor mais neutra para bloqueado */
     cursor: not-allowed;
+    filter: grayscale(80%); /* Efeito de escala de cinza */
+    opacity: 0.7;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.module-card.bloqueado:hover {
+    transform: none; /* Sem efeito de hover para bloqueados */
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+}
+
+.module-card.completed {
+    background-color: #50c8c6; /* Um verde/azul mais forte para completo */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+}
+.module-card.completed .module-icon {
+    color: rgba(255, 255, 255, 0.8); /* Ícone mais visível para completos */
+}
+
+/* LINHAS DE CONEXÃO (Trilha) */
+.module-path {
+    position: absolute;
+    /* Remover bordas por padrão, a trilha específica vai definir qual borda usar */
+    border: none;
+    z-index: 5; /* Fica abaixo dos cards */
+}
+
+/* Linha entre Módulo 1 e Módulo 2 */
+.path-1-2 {
+    top: 100px; /* Ajuste para sair mais perto do centro vertical do M1 */
+    left: 215px; /* Ponto de partida do lado direito do M1 */
+    width: 130px; /* Comprimento da linha */
+    height: 0; /* Para ser uma linha horizontal antes da rotação */
+    transform: rotate(20deg); /* Ajustar ângulo para conectar ao M2 */
+    transform-origin: left center; /* O ponto de rotação é o início da linha */
+    border-top: 2px dashed rgba(80, 200, 198, 0.7); /* Apenas uma borda para fazer a linha */
+    border-color: rgba(80, 200, 198, 0.7); /* Cor da trilha */
+}
+
+/* As outras trilhas (path-2-3 e path-3-4) estão ocultas via HTML ou serão geradas pelo JS se precisar */
+.path-2-3, .path-3-4 {
+    display: none;
 }
 
 
 /* RESPONSIVIDADE */
 @media (min-width: 768px) {
-    /* Mostra o menu desktop e esconde o toggle em telas maiores */
-    .menu-desktop {
-        display: flex;
-    }
-    .mobile-toggle-btn {
-        display: none;
-    }
-    /* O menu mobile deve estar escondido sempre em desktop */
-    .mobile-menu-items,
-    .mobile-menu-items.visivel {
-        display: none !important;
-    }
+    .menu-desktop { display: flex; }
+    .mobile-toggle-btn { display: none; }
+    .mobile-menu-items, .mobile-menu-items.visivel { display: none !important; }
 }
 
 @media (max-width: 767px) {
-    /* Estilos para telas menores que 768px (mobile) */
-    .menu-desktop {
-        display: none; 
-    }
-    .mobile-toggle-btn {
-        display: block; 
-    }
-    
-    .mobile-menu-items {
-        display: none;
-        list-style: none;
-        position: fixed;
-        top: 64px; 
-        left: 0;
-        width: 100%;
-        background-color: #066699;
-        z-index: 998;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        padding: 10px 20px;
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .mobile-menu-items.visivel {
-        display: flex;
-    }
-
+    /* Navbar */
+    .menu-desktop { display: none; }
+    .mobile-toggle-btn { display: block; }
     .conteudo {
-        flex-direction: column; 
-        margin-top: 0; 
+        flex-direction: column;
+        margin-top: 0;
         min-height: auto;
+        padding-top: 64px; /* Mantém o padding para a navbar principal */
     }
 
+    /* Coluna Esquerda (Perfil) */
     .coluna-esquerda {
         width: 100%;
         max-width: none;
-        position: static; 
+        position: static; /* Flui no documento */
         height: auto;
-        transform: translateX(0); 
+        transform: translateX(0);
         box-shadow: none;
         border-bottom: 1px solid #cce7f0;
         margin-bottom: 20px;
-        display: none; 
+        display: none;
     }
-
     .coluna-esquerda.visivel {
         display: flex;
     }
 
-    .coluna-esquerda.visivel ~ .coluna-centro {
-        margin-left: 0; 
-    }
-
+    /* Coluna Central */
     .coluna-centro {
         padding: 30px 20px;
         margin-left: 0;
+        align-items: center; /* Centraliza o conteúdo principal */
     }
 
-    /* Ajuste para os cards em telas menores, se necessário */
-    .module-custom-style {
-        max-width: 100%; /* Permite que os cards ocupem toda a largura disponível */
+    .coluna-centro h1 {
+        font-size: 1.8rem;
+    }
+    .coluna-centro p {
+        font-size: 1rem;
+        margin-bottom: 30px;
+    }
+
+    /* Módulos (empilhados em mobile) */
+    .modulos {
+        grid-template-columns: 1fr; /* Uma coluna */
+        grid-template-rows: auto; /* Altura automática */
+        max-width: 300px; /* Largura máxima para os cards */
+        padding: 0; /* Remove padding do grid container */
+        margin: 0 auto; /* Centraliza */
+    }
+
+    .module-card {
+        width: 100%;
+        margin-bottom: 25px; /* Espaçamento entre os cards */
+        transform: none !important; /* Remove transformações de zigue-zague */
+        grid-column: auto !important;
+        grid-row: auto !important;
+        justify-self: center !important;
+        align-self: center !important;
+        height: auto; /* Altura flexível */
+        min-height: 120px; /* Altura mínima */
+        text-decoration: none; /* Mantido para mobile */
+    }
+
+    .module-card .module-icon {
+        position: static; /* Volta à posição normal */
+        margin-top: 10px; /* Espaço acima do ícone */
+        text-align: right; /* Alinha à direita */
+        width: 100%; /* Ocupa a largura total para alinhamento */
+        font-size: 2em; /* Ícone menor em mobile */
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .module-card .module-number,
+    .module-card .module-title {
+        text-decoration: none; /* Mantido para mobile */
+    }
+
+    /* Esconde as linhas de conexão em mobile */
+    .module-path {
+        display: none;
     }
 }

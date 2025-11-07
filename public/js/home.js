@@ -8,14 +8,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
     const modulesContainer = document.getElementById("modules-container");
-    // MUDADO AQUI: userNicknameSpan para consistência
     const userNicknameSpan = document.getElementById("user-nickname");
     const userAssiduidadeSpan = document.getElementById("user-assiduidade");
     const userPontosSpan = document.getElementById("user-pontos");
-    // MUDADO AQUI: welcomeNicknameSpan para consistência
     const welcomeNicknameSpan = document.getElementById("welcome-nickname");
     const btnLogout = document.getElementById('btn-logout');
     const btnLogoutMobile = document.getElementById('btn-logout-mobile');
+
+    // Mapeamento de ícones para cada tipo de módulo (adapte conforme seus dados)
+    const moduleIcons = {
+        'Introdução à Programação': 'fas fa-microchip',
+        'Estruturas de Dados': 'fas fa-sitemap',
+        'Desenvolvimento Web': 'fas fa-globe',
+        'Banco de Dados': 'fas fa-database',
+        // Adicione outros mapeamentos conforme necessário para seus módulos
+        'default': 'fas fa-graduation-cap' // Ícone padrão
+    };
 
     // Função auxiliar para fazer requisições autenticadas
     async function fetchAuthenticatedData(url, options = {}) {
@@ -24,7 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Sessão expirada ou não autorizado. Faça login novamente.');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            // MUDADO AQUI: Remove userNickname do localStorage
             localStorage.removeItem('userNickname'); 
             window.location.href = '/html/login.html';
             return null;
@@ -37,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Sessão expirada ou não autorizada. Faça login novamente.');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            // MUDADO AQUI: Remove userNickname do localStorage
             localStorage.removeItem('userNickname');
             window.location.href = '/html/login.html';
             return null;
@@ -61,16 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const user = await fetchAuthenticatedData('/api/users/profile'); 
             if (user) {
-                // MUDADO AQUI: Altera para user.nickname
                 userNicknameSpan.textContent = user.nickname;
                 userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
                 userPontosSpan.textContent = user.pontos;
-                // MUDADO AQUI: Exibe o nickname na mensagem de boas-vindas
                 welcomeNicknameSpan.textContent = user.nickname; 
                 
-                // Atualiza/garante o userId e userNickname no localStorage
                 localStorage.setItem('userId', user.id_usuario);
-                // MUDADO AQUI: Armazena o nickname no localStorage
                 localStorage.setItem('userNickname', user.nickname);
             }
         } catch (error) {
@@ -84,30 +86,55 @@ document.addEventListener('DOMContentLoaded', () => {
             const modules = await fetchAuthenticatedData('/api/content/modulos');
             
             if (modulesContainer) {
-                modulesContainer.innerHTML = ''; 
+                // Guarda as divs das trilhas para recolocá-las
+                const existingPaths = Array.from(modulesContainer.querySelectorAll('.module-path'));
+                modulesContainer.innerHTML = ''; // Limpa o conteúdo, incluindo a mensagem "Carregando módulos..."
+                existingPaths.forEach(path => modulesContainer.appendChild(path)); // Adiciona as trilhas de volta
             }
 
             if (modules && modules.length > 0) {
-                modules.forEach(module => {
+                modules.forEach((module, index) => {
                     const moduleCard = document.createElement('a');
                     moduleCard.href = `/html/modulo.html?id=${module.id_modulo}`;
-                    moduleCard.className = 'module-card flex items-center p-4 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow module-custom-style'; 
-                    
+                    // Adiciona as classes necessárias para o novo design
+                    moduleCard.className = `module-card module-${index + 1}`; // module-1, module-2, etc.
+
+                    // Adiciona classes de status
                     if (module.completo) {
                         moduleCard.classList.add('completed');
+                    } else if (module.bloqueado) { // Assumindo que seu backend pode retornar 'bloqueado'
+                        moduleCard.classList.add('bloqueado');
+                    } else {
+                        moduleCard.classList.add('desbloqueado');
                     }
 
+                    // Obtenha o ícone com base no nome do módulo, se possível, ou use um padrão
+                    const iconClass = moduleIcons[module.nome_modulo] || moduleIcons['default'];
+
                     moduleCard.innerHTML = `
-                        <div>
-                            <h3 class="text-xl font-semibold text-[#02416d]">${module.nome_modulo}</h3>
-                            <p class="text-gray-600">${module.descricao}</p>
-                            ${module.progresso_unidades !== undefined ? `<p class="text-sm text-gray-500">${module.progresso_unidades.concluidas}/${module.progresso_unidades.total} unidades</p>` : ''}
+                        <div class="module-content">
+                            <span class="module-number">MÓDULO ${index + 1}:</span>
+                            <h3 class="module-title">${module.nome_modulo}</h3>
+                        </div>
+                        <div class="module-icon">
+                            <i class="${iconClass}"></i>
                         </div>
                     `;
+                    
                     if (modulesContainer) {
+                        // Inserir o card antes da próxima trilha ou no final se não houver mais trilhas
+                        // Esta lógica simples apenas adiciona no final. Se a ordem das trilhas precisar ser intercalada,
+                        // uma lógica de inserção mais complexa seria necessária.
                         modulesContainer.appendChild(moduleCard);
                     }
                 });
+
+                // Remove a mensagem "Carregando módulos..." se ainda estiver lá
+                const loadingMessage = modulesContainer.querySelector('.text-gray-700');
+                if (loadingMessage) {
+                    loadingMessage.remove();
+                }
+
             } else {
                 if (modulesContainer) {
                     modulesContainer.innerHTML = '<p class="text-gray-700">Nenhum módulo encontrado.</p>';
@@ -115,6 +142,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Erro ao carregar módulos:', error);
+            if (modulesContainer) {
+                modulesContainer.innerHTML = '<p class="text-red-500">Erro ao carregar módulos. Tente novamente mais tarde.</p>';
+            }
         }
     }
 
@@ -122,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function logout() {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userId'); 
-        // MUDADO AQUI: Remove userNickname do localStorage
         localStorage.removeItem('userNickname'); 
         alert('Você foi desconectado.');
         window.location.href = '/html/login.html';

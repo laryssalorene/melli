@@ -1,100 +1,454 @@
 /* melli/public/styles/modulo.css */
 
-/* Estilo para o botão de voltar */
+/* --- Layout Geral e Resets --- */
+body {
+    background-color: #f2f7f9; /* Fundo suave */
+    font-family: 'Open Sans', sans-serif; /* Consistente com home.css */
+    margin: 0;
+    padding: 0;
+}
+
+.conteudo {
+    display: flex;
+    justify-content: center;
+    padding-top: 80px; /* Ajuste para a altura da navbar */
+    min-height: calc(100vh - 80px); /* Garante que o conteúdo ocupe a tela */
+}
+
+.coluna-centro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 30px 20px;
+    position: relative;
+    max-width: 1200px; /* Limita a largura para melhor leitura */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.coluna-centro h1 {
+    font-size: 2.8rem;
+    color: #02416d; /* Cor do título principal */
+    margin-bottom: 10px;
+    font-weight: 800;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.coluna-centro p#module-description {
+    font-size: 1.3rem;
+    color: #555;
+    margin-bottom: 50px;
+    max-width: 700px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* --- Botão de Voltar --- */
 .voltar-btn {
-    display: inline-block;
-    margin-bottom: 2rem;
-    padding: 0.5rem 1rem;
-    background-color: #066699;
-    color: white;
-    border-radius: 4px;
+    display: inline-flex; /* Use inline-flex para não ocupar toda a largura */
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    padding: 12px 25px;
+    background-color: #066699; /* Azul da navbar */
+    color: #ffffff;
+    border-radius: 25px; /* Mais arredondado */
     text-decoration: none;
-    transition: background-color 0.2s ease-in-out;
+    font-weight: bold;
+    font-size: 1.1em;
+    transition: background-color 0.2s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
 .voltar-btn:hover {
     background-color: #044b73;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
-/* Estilo para a lista de unidades */
-.unidades {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1rem;
+.voltar-btn i {
+    font-size: 1.2em;
 }
 
-/* Estilo para o cartão de cada unidade */
-.unidade-card {
-    display: block;
+/* --- Container da Trilha de Unidades --- */
+.units-grid {
+    display: flex;
+    flex-direction: column; /* Vertical por padrão */
+    align-items: center; /* Centraliza tudo verticalmente no eixo X */
+    position: relative;
+    padding: 40px 0;
+    width: 100%; /* Ocupa a largura total para posicionamento */
+    max-width: 900px; /* Limite para a trilha em desktop */
+}
+
+.units-grid .loading-message {
+    font-size: 1.5em;
+    color: #777;
+    margin-top: 50px;
+}
+
+/* --- Linha principal da trilha (sempre presente, passa por trás) --- */
+.unit-path-line-main {
+    position: absolute;
+    width: 4px; /* Largura da linha */
+    height: 100%; /* Ocupa toda a altura do container */
+    background: linear-gradient(to bottom, #aedd2b, #50c8c6); /* Gradiente para a linha */
+    z-index: 1; /* Abaixo dos círculos e itens */
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+}
+
+
+/* --- Estilo para cada Item da Trilha (Contém círculo + info lateral) --- */
+.unit-item {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Centraliza o círculo e info em mobile */
+    position: relative;
+    z-index: 10; /* Garante que os itens fiquem acima das linhas */
+    margin: 30px 0; /* Espaçamento entre os itens */
+    width: 100%;
+}
+
+/* --- Estilo para o Círculo da Unidade --- */
+.unit-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
     background-color: #ffffff;
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 4px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    color: inherit;
-}
-
-.unidade-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.unidade-card h3 {
-    font-size: 1.25rem;
+    font-size: 2.2em;
     font-weight: bold;
     color: #02416d;
-    margin-bottom: 0.5rem;
+    position: relative; /* Ajustado para ser relativo ao unit-item */
+    z-index: 15; /* Acima de tudo */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    flex-shrink: 0; /* Não permite que o círculo encolha */
 }
 
-.unidade-card p {
-    font-size: 1rem;
-    color: #555;
-    margin-bottom: 1rem;
+.unit-circle:hover:not(.bloqueada) {
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
-.unidade-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.875rem;
-    color: #888;
-    border-top: 1px solid #eee;
-    padding-top: 0.75rem;
-    margin-top: 0.75rem;
+.unit-circle i {
+    color: #066699;
+    transition: color 0.3s ease;
 }
 
-/* Estilos para a coluna central do conteúdo */
-.coluna-centro {
-    flex: 1;
-    padding: 2rem;
-}
-
-/* =========================================================
-   Estilos para unidades concluídas (do seu <style> anterior)
-   ========================================================= */
-.unit-card.completed {
-    background-color: #d1f7d1; /* Um verde claro ou a cor que você preferir */
-    border: 2px solid #50c8c6; /* Borda da cor do seu tema */
-    color: #02416d; /* Cor do texto principal */
-}
-.unit-card.completed .unit-icon {
-    filter: grayscale(0%); /* Se o ícone for cinza para não concluído, desfaz o cinza */
-}
-.unit-card.completed::after {
-    content: '✓'; /* Um checkmark simples */
+/* Animação e texto "START" para a primeira unidade desbloqueada */
+.unit-circle.desbloqueada.primeira::before {
+    content: "START";
     position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 1.5rem;
-    color: #28a745; /* Verde para o checkmark */
+    top: -30px; /* Posição acima do círculo */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translateX(-50%); /* Ajuste fino para centralização */
+    font-size: 0.8em;
     font-weight: bold;
+    color: #ffffff;
+    background-color: #aedd2b; /* Verde vibrante */
+    padding: 4px 10px;
+    border-radius: 5px;
+    white-space: nowrap;
+    animation: bounce 1s infinite alternate;
+    z-index: 20;
 }
 
-/* Ajustando/Garantindo estilos para os cards das unidades, se necessário */
-.unit-card { /* Usando 'unit-card' como sua classe JS, alinhando com 'unidade-card' */
-    position: relative; /* Necessário para o posicionamento do checkmark */
+@keyframes bounce {
+    from { transform: translateY(0) translateX(-50%); }
+    to { transform: translateY(-8px) translateX(-50%); }
 }
-.unit-icon {
-    display: none; /* Esconde a imagem/ícone da unidade, já que não queremos imagens */
+
+
+/* --- Info Lateral da Unidade --- */
+.unit-info {
+    max-width: 280px; /* Largura máxima para o bloco de informações */
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 15px 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 80px; /* Altura mínima para alinhar com o círculo */
+    border: 1px solid #eee;
+    box-sizing: border-box; /* Garante que padding não estoure a largura */
+}
+
+.unit-info h3 {
+    font-size: 1.25em;
+    color: #02416d;
+    margin: 0 0 5px 0;
+    font-weight: 700;
+}
+
+.unit-info p.status-text {
+    font-size: 0.95em;
+    color: #777;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* --- Cores e Estados dos Círculos e Ícones (Sem alterações aqui) --- */
+
+/* Concluída */
+.unit-circle.completed {
+    background-color: #aedd2b;
+    border-color: #50c8c6;
+    box-shadow: 0 4px 15px rgba(80, 200, 198, 0.4);
+}
+.unit-circle.completed i {
+    color: #ffffff;
+}
+.unit-info.completed p.status-text {
+    color: #aedd2b;
+}
+.unit-info.completed .status-icon {
+    color: #aedd2b;
+}
+
+/* Desbloqueada (Próxima, com anel de progresso e "START") */
+.unit-circle.desbloqueada.ativa {
+    border: 4px solid #ffc107;
+    box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.25), 0 6px 15px rgba(0,0,0,0.1);
+}
+.unit-circle.desbloqueada.ativa i {
+    color: #066699;
+}
+.unit-info.desbloqueada.ativa p.status-text {
+    color: #ffc107;
+}
+.unit-info.desbloqueada.ativa .status-icon {
+    color: #ffc107;
+}
+
+/* Desbloqueada (Ainda não ativa, apenas pronta) */
+.unit-circle.desbloqueada:not(.ativa) {
+    border-color: #d1e0f0;
+}
+.unit-info.desbloqueada:not(.ativa) p.status-text {
+    color: #066699;
+}
+.unit-info.desbloqueada:not(.ativa) .status-icon {
+    color: #066699;
+}
+
+/* Bloqueada */
+.unit-circle.bloqueada {
+    background-color: #f0f0f0;
+    border-color: #dcdcdc;
+    cursor: not-allowed;
+    filter: grayscale(80%);
+    opacity: 0.8;
+}
+.unit-circle.bloqueada i {
+    color: #aaa;
+}
+.unit-circle.bloqueada:hover {
+    transform: scale(1);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+.unit-info.bloqueada {
+    background-color: #f8f8f8;
+    border-color: #e8e8e8;
+    opacity: 0.7;
+    filter: grayscale(50%);
+}
+.unit-info.bloqueada h3 {
+    color: #999;
+}
+.unit-info.bloqueada p.status-text {
+    color: #bbb;
+}
+.unit-info.bloqueada .status-icon {
+    color: #bbb;
+}
+
+
+/* --- Responsividade --- */
+
+/* Desktop / Tablet Grande */
+@media (min-width: 768px) {
+    .units-grid {
+        align-items: center; /* Centraliza a trilha de unidades no container */
+    }
+
+    /* Cada unit-item será uma linha que alterna de lado */
+    .unit-item {
+        width: 100%; /* Ocupa a largura total para alternar */
+        display: flex; /* Garante flexbox */
+        align-items: center;
+        position: relative;
+    }
+
+    /* Itens ímpares: info à esquerda, círculo à direita */
+    .unit-item:nth-child(odd) {
+        justify-content: flex-start; /* Alinha o grupo círculo+info à esquerda da linha principal */
+        padding-right: 150px; /* Empurra para o lado */
+    }
+    .unit-item:nth-child(odd) .unit-info {
+        order: 1; /* Info primeiro */
+        margin-right: 20px; /* Espaço entre info e círculo */
+        text-align: right;
+    }
+    .unit-item:nth-child(odd) .unit-circle {
+        order: 2; /* Círculo segundo */
+    }
+    .unit-item:nth-child(odd) .unit-info p.status-text {
+        justify-content: flex-end;
+    }
+
+
+    /* Itens pares: círculo à esquerda, info à direita */
+    .unit-item:nth-child(even) {
+        justify-content: flex-end; /* Alinha o grupo círculo+info à direita da linha principal */
+        padding-left: 150px; /* Empurra para o lado */
+    }
+    .unit-item:nth-child(even) .unit-info {
+        order: 2; /* Info segundo */
+        margin-left: 20px; /* Espaço entre info e círculo */
+        text-align: left;
+    }
+    .unit-item:nth-child(even) .unit-circle {
+        order: 1; /* Círculo primeiro */
+    }
+    .unit-item:nth-child(even) .unit-info p.status-text {
+        justify-content: flex-start;
+    }
+}
+
+
+/* Mobile e Tablets Pequenos */
+@media (max-width: 767px) {
+    .conteudo {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .coluna-centro {
+        padding: 15px;
+        margin-left: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .coluna-centro h1 {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+
+    .coluna-centro p#module-description {
+        font-size: 1rem;
+        margin-bottom: 30px;
+        max-width: 90%;
+    }
+
+    .voltar-btn {
+        margin-bottom: 25px;
+        padding: 10px 20px;
+        font-size: 1em;
+    }
+
+    .units-grid {
+        align-items: center; /* Centraliza a trilha na tela */
+        padding: 20px 0;
+        max-width: 100%;
+    }
+
+    .unit-item {
+        flex-direction: column; /* Empilha círculo e info */
+        margin: 25px 0; /* Espaçamento vertical ajustado */
+        width: auto; /* Deixa o conteúdo definir a largura */
+        padding: 0; /* Remove paddings laterais */
+        justify-content: center; /* Centraliza no eixo X */
+    }
+
+    /* Reset para mobile para evitar problemas de ordem/alinhamento de desktop */
+    .unit-item:nth-child(odd),
+    .unit-item:nth-child(even) {
+        justify-content: center;
+        padding: 0;
+    }
+    .unit-item:nth-child(odd) .unit-info, .unit-item:nth-child(even) .unit-info {
+        order: unset; /* Remove order para mobile */
+        margin: 10px 0 0 0; /* Espaço entre círculo e info */
+        text-align: center;
+    }
+    .unit-item:nth-child(odd) .unit-circle, .unit-item:nth-child(even) .unit-circle {
+        order: unset; /* Remove order para mobile */
+        margin: 0;
+    }
+    .unit-item:nth-child(odd) .unit-info p.status-text, .unit-item:nth-child(even) .unit-info p.status-text {
+        justify-content: center;
+    }
+
+    .unit-circle {
+        width: 75px; /* Tamanho do círculo em mobile */
+        height: 75px;
+        font-size: 1.8em;
+    }
+
+    .unit-circle.desbloqueada.primeira::before {
+        top: -25px; /* Ajusta a posição do START */
+        font-size: 0.65em;
+        animation: bounce-mobile 1s infinite alternate;
+    }
+
+    @keyframes bounce-mobile {
+        from { transform: translateY(0) translateX(-50%); }
+        to { transform: translateY(-5px) translateX(-50%); }
+    }
+
+    .unit-info {
+        width: 90%; /* Ocupa a maior parte da largura */
+        max-width: 250px; /* Limita largura em mobile */
+    }
+}
+
+/* Tablet Médio (Paisagem) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .coluna-centro h1 {
+        font-size: 2.2rem;
+    }
+
+    .coluna-centro p#module-description {
+        font-size: 1.1rem;
+    }
+
+    .unit-circle {
+        width: 80px;
+        height: 80px;
+        font-size: 2em;
+    }
+
+    .unit-info {
+        max-width: 220px;
+    }
+
+    /* Ajusta paddings para tablets */
+    .unit-item:nth-child(odd) {
+        padding-right: 80px;
+    }
+    .unit-item:nth-child(even) {
+        padding-left: 80px;
+    }
+
+    .unit-item:nth-child(odd) .unit-info {
+        margin-right: 15px;
+    }
+    .unit-item:nth-child(even) .unit-info {
+        margin-left: 15px;
+    }
 }
