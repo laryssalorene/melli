@@ -39,5 +39,87 @@
         "texto": "Parabéns! Paris é realmente a capital da França. C'est magnifique!"
       }
     ]
+  },
+  {
+    "id_explicacao": 4,
+    "id_questao": 3,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Bem-vindo à unidade 'Navegando na Interface'! Para te ajudar a se localizar, vamos explorar como você pode acompanhar seu progresso no Melli Hero."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/interface_modulo_exemplo.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "A página de módulos e unidades é o seu mapa principal. Preste atenção aos círculos e textos para saber onde você está e o que vem a seguir!"
+      }
+    ]
+  },
+  {
+    "id_explicacao": 5,
+    "id_questao": 3,
+    "tipo": "pos_resposta_correta",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Isso mesmo! A seção 'Aprender' ou as páginas específicas de módulo são onde você vê sua trilha de unidades. Continue assim!"
+      }
+    ]
+  },
+  {
+    "id_explicacao": 6,
+    "id_questao": 3,
+    "tipo": "pos_resposta_incorreta",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quase lá! Lembre-se que o progresso em unidades é visualizado principalmente na página do módulo em 'Aprender'."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 7,
+    "id_questao": 4,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Agora que você sabe onde ver as unidades, vamos testar seu conhecimento sobre as informações do seu perfil na tela."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/perfil_info_exemplo.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Onde estão essas informações vitais que te ajudam a monitorar seu desempenho e status como Hero?"
+      }
+    ]
+  },
+  {
+    "id_explicacao": 8,
+    "id_questao": 4,
+    "tipo": "pos_resposta_correta",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Perfeito! A coluna lateral esquerda é o seu painel pessoal de status. Você está dominando a interface!"
+      }
+    ]
+  },
+  {
+    "id_explicacao": 9,
+    "id_questao": 4,
+    "tipo": "pos_resposta_incorreta",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "A informação do perfil é bastante visível! Dê uma olhada na barra lateral esquerda da tela do módulo."
+      }
+    ]
   }
 ]

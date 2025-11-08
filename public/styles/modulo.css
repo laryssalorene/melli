@@ -77,10 +77,11 @@ body {
     display: flex;
     flex-direction: column; /* Vertical por padrão */
     align-items: center; /* Centraliza tudo verticalmente no eixo X */
-    position: relative;
+    position: relative; /* ESSENCIAL para o posicionamento absoluto do mascote */
     padding: 40px 0;
     width: 100%; /* Ocupa a largura total para posicionamento */
     max-width: 900px; /* Limite para a trilha em desktop */
+    border: 2px dashed red; /* <-- ADICIONADO PARA DEPURAR A BORDA DO CONTAINER */
 }
 
 .units-grid .loading-message {
@@ -201,7 +202,7 @@ body {
 }
 
 
-/* --- Cores e Estados dos Círculos e Ícones (Sem alterações aqui) --- */
+/* --- Cores e Estados dos Círculos e Ícones --- */
 
 /* Concluída */
 .unit-circle.completed {
@@ -221,7 +222,7 @@ body {
 
 /* Desbloqueada (Próxima, com anel de progresso e "START") */
 .unit-circle.desbloqueada.ativa {
-    border: 4px solid #ffc107;
+    border: 44px solid #ffc107;
     box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.25), 0 6px 15px rgba(0,0,0,0.1);
 }
 .unit-circle.desbloqueada.ativa i {
@@ -274,6 +275,63 @@ body {
 }
 .unit-info.bloqueada .status-icon {
     color: #bbb;
+}
+
+/* --- Mascote --- */
+#pet-mascote {
+    position: absolute;
+    width: 180px; /* Tamanho do sprite */
+    height: 180px;
+    z-index: 20; /* Acima dos círculos e linhas */
+    transition: transform 1s ease-in-out; /* Suaviza o movimento */
+    background-image: url('/img/pets/sprites/pet2/idle.png'); /* Imagem inicial */
+    background-size: cover; /* Garante que a imagem preencha */
+    pointer-events: none; /* Não interfere com cliques */
+    
+    /* AS LINHAS LEFT E TRANSFORM: TRANSLATEX FORAM REMOVIDAS DAQUI */
+    /* top e o transform completo (x e y) serão controlados pelo JavaScript */
+}
+
+/* Animações de caminhada - Usaremos as 4 direções para maior realismo */
+.pet-walking-north {
+    animation: walkNorth 0.4s steps(1) infinite;
+}
+@keyframes walkNorth {
+    0% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
+    50% { background-image: url('/img/pets/sprites/pet2/north2.png'); }
+    100% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
+}
+
+.pet-walking-south {
+    animation: walkSouth 0.4s steps(1) infinite;
+}
+@keyframes walkSouth {
+    0% { background-image: url('/img/pets/sprites/pet2/south1.png'); }
+    50% { background-image: url('/img/pets/sprites/pet2/south2.png'); }
+    100% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
+}
+
+.pet-walking-east {
+    animation: walkEast 0.4s steps(1) infinite;
+}
+@keyframes walkEast {
+    0% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
+    50% { background-image: url('/img/pets/sprites/pet2/east2.png'); }
+    100% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
+}
+
+.pet-walking-west {
+    animation: walkWest 0.4s steps(1) infinite;
+}
+@keyframes walkWest {
+    0% { background-image: url('/img/pets/sprites/pet2/west1.png'); }
+    50% { background-image: url('/img/pets/sprites/pet2/west2.png'); }
+    100% { background-image: url('/img/pets/sprites/pet2/west1.png'); }
+}
+
+.pet-idle {
+    animation: none; /* Remove animação de caminhada */
+    background-image: url('/img/pets/sprites/pet2/idle.png') !important;
 }
 
 
@@ -414,6 +472,12 @@ body {
     .unit-info {
         width: 90%; /* Ocupa a maior parte da largura */
         max-width: 250px; /* Limita largura em mobile */
+    }
+
+    /* Mascote em mobile */
+    #pet-mascote {
+        /* As propriedades left e transform serão controladas pelo JavaScript. */
+        /* Nenhuma sobrescrição CSS aqui para mobile é necessária. */
     }
 }
 

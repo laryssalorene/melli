@@ -52,5 +52,71 @@
         "id_questao": 2
       }
     ]
+  },
+  {
+    "id_questao": 3,
+    "id_unidade": 102,
+    "enunciado_pergunta": "Qual seção da plataforma Melli Hero você usa para acompanhar seu progresso em um módulo?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A seção 'Aprender' ou a página do módulo específico, como esta, é onde você encontra a trilha de unidades e o status de cada uma.",
+    "respostas": [
+      {
+        "id_resposta": 7,
+        "texto_resposta": "Conquistas",
+        "eh_correto": false,
+        "id_questao": 3
+      },
+      {
+        "id_resposta": 8,
+        "texto_resposta": "Perfil",
+        "eh_correto": false,
+        "id_questao": 3
+      },
+      {
+        "id_resposta": 9,
+        "texto_resposta": "Módulos de Aprendizagem (Aprender)",
+        "eh_correto": true,
+        "id_questao": 3
+      },
+      {
+        "id_resposta": 10,
+        "texto_resposta": "Prática",
+        "eh_correto": false,
+        "id_questao": 3
+      }
+    ]
+  },
+  {
+    "id_questao": 4,
+    "id_unidade": 102,
+    "enunciado_pergunta": "Onde você encontraria suas informações de nickname, sequência de dias e pontos XP na interface principal?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "No layout padrão do Melli Hero, essas informações são exibidas na coluna lateral esquerda, visível na página de módulos.",
+    "respostas": [
+      {
+        "id_resposta": 11,
+        "texto_resposta": "No rodapé da página",
+        "eh_correto": false,
+        "id_questao": 4
+      },
+      {
+        "id_resposta": 12,
+        "texto_resposta": "Na barra de navegação superior",
+        "eh_correto": false,
+        "id_questao": 4
+      },
+      {
+        "id_resposta": 13,
+        "texto_resposta": "Na coluna lateral esquerda",
+        "eh_correto": true,
+        "id_questao": 4
+      },
+      {
+        "id_resposta": 14,
+        "texto_resposta": "Dentro da seção 'Prática'",
+        "eh_correto": false,
+        "id_questao": 4
+      }
+    ]
   }
 ]
