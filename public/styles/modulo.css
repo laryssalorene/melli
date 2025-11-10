@@ -3,7 +3,7 @@
 /* --- Layout Geral e Resets --- */
 body {
     background-color: #f2f7f9; /* Fundo suave */
-    font-family: 'Open Sans', sans-serif; /* Consistente com home.css */
+ font-family: 'Open Sans', sans-serif; /* Consistente com home.css */
     margin: 0;
     padding: 0;
 }
@@ -81,7 +81,7 @@ body {
     padding: 40px 0;
     width: 100%; /* Ocupa a largura total para posicionamento */
     max-width: 900px; /* Limite para a trilha em desktop */
-    border: 2px dashed red; /* <-- ADICIONADO PARA DEPURAR A BORDA DO CONTAINER */
+    border: 2px dashed red;
 }
 
 .units-grid .loading-message {
@@ -222,7 +222,7 @@ body {
 
 /* Desbloqueada (Próxima, com anel de progresso e "START") */
 .unit-circle.desbloqueada.ativa {
-    border: 44px solid #ffc107;
+    border: 4px solid #ffc107; /* Corrigido de 44px para 4px */
     box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.25), 0 6px 15px rgba(0,0,0,0.1);
 }
 .unit-circle.desbloqueada.ativa i {
@@ -283,18 +283,17 @@ body {
     width: 180px; /* Tamanho do sprite */
     height: 180px;
     z-index: 20; /* Acima dos círculos e linhas */
-    transition: transform 1s ease-in-out; /* Suaviza o movimento */
+    transition: transform 2s ease-in-out; /* Velocidade do movimento (100s) */
     background-image: url('/img/pets/sprites/pet2/idle.png'); /* Imagem inicial */
     background-size: cover; /* Garante que a imagem preencha */
-    pointer-events: none; /* Não interfere com cliques */
-    
-    /* AS LINHAS LEFT E TRANSFORM: TRANSLATEX FORAM REMOVIDAS DAQUI */
-    /* top e o transform completo (x e y) serão controlados pelo JavaScript */
+    pointer-events: none; /* Não interfere com cliques *
+    left: 50%; /* Âncora horizontal (corrigido) */
 }
 
-/* Animações de caminhada - Usaremos as 4 direções para maior realismo */
+/* --- CORREÇÃO DAS ANIMAÇÕES DE SPRITE --- */
+
 .pet-walking-north {
-    animation: walkNorth 0.4s steps(1) infinite;
+    animation: walkNorth 0.6s infinite; /* Corrigido: sem 'steps' */
 }
 @keyframes walkNorth {
     0% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
@@ -303,25 +302,26 @@ body {
 }
 
 .pet-walking-south {
-    animation: walkSouth 0.4s steps(1) infinite;
+    animation: walkSouth 0.6s infinite; /* Corrigido: sem 'steps' */
 }
 @keyframes walkSouth {
-    0% { background-image: url('/img/pets/sprites/pet2/south1.png'); }
-    50% { background-image: url('/img/pets/sprites/pet2/south2.png'); }
+    /* Corrigido: Usando sprites 'north' conforme seu pedido (para andar de costas) */
+    0% { background-image: url('/img/pets/sprites/pet2/idle.png'); }
+    50% { background-image: url('/img/pets/sprites/pet2/north2.png'); }
     100% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
 }
 
 .pet-walking-east {
-    animation: walkEast 0.4s steps(1) infinite;
+    animation: walkEast 0.6s infinite; /* Corrigido: sem 'steps' */
 }
 @keyframes walkEast {
-    0% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
-    50% { background-image: url('/img/pets/sprites/pet2/east2.png'); }
-    100% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
+       0% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
+       50% { background-image: url('/img/pets/sprites/pet2/east2.png'); }
+       100% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
 }
 
 .pet-walking-west {
-    animation: walkWest 0.4s steps(1) infinite;
+    animation: walkWest 0.6s infinite; /* Corrigido: sem 'steps' */
 }
 @keyframes walkWest {
     0% { background-image: url('/img/pets/sprites/pet2/west1.png'); }
@@ -340,50 +340,50 @@ body {
 /* Desktop / Tablet Grande */
 @media (min-width: 768px) {
     .units-grid {
-        align-items: center; /* Centraliza a trilha de unidades no container */
+    align-items: center; /* Centraliza a trilha de unidades no container */
     }
 
     /* Cada unit-item será uma linha que alterna de lado */
     .unit-item {
-        width: 100%; /* Ocupa a largura total para alternar */
-        display: flex; /* Garante flexbox */
-        align-items: center;
-        position: relative;
+    width: 100%; /* Ocupa a largura total para alternar */
+    display: flex; /* Garante flexbox */
+    align-items: center;
+    position: relative;
     }
 
     /* Itens ímpares: info à esquerda, círculo à direita */
     .unit-item:nth-child(odd) {
-        justify-content: flex-start; /* Alinha o grupo círculo+info à esquerda da linha principal */
-        padding-right: 150px; /* Empurra para o lado */
+    justify-content: flex-start; /* Alinha o grupo círculo+info à esquerda da linha principal */
+    padding-right: 150px; /* Empurra para o lado */
     }
     .unit-item:nth-child(odd) .unit-info {
-        order: 1; /* Info primeiro */
-        margin-right: 20px; /* Espaço entre info e círculo */
-        text-align: right;
+    order: 1; /* Info primeiro */
+    margin-right: 20px; /* Espaço entre info e círculo */
+    text-align: right;
     }
     .unit-item:nth-child(odd) .unit-circle {
-        order: 2; /* Círculo segundo */
+    order: 2; /* Círculo segundo */
     }
     .unit-item:nth-child(odd) .unit-info p.status-text {
-        justify-content: flex-end;
+    justify-content: flex-end;
     }
 
 
     /* Itens pares: círculo à esquerda, info à direita */
     .unit-item:nth-child(even) {
-        justify-content: flex-end; /* Alinha o grupo círculo+info à direita da linha principal */
-        padding-left: 150px; /* Empurra para o lado */
+    justify-content: flex-end; /* Alinha o grupo círculo+info à direita da linha principal */
+    padding-left: 150px; /* Empurra para o lado */
     }
     .unit-item:nth-child(even) .unit-info {
-        order: 2; /* Info segundo */
-        margin-left: 20px; /* Espaço entre info e círculo */
-        text-align: left;
+    order: 2; /* Info segundo */
+    margin-left: 20px; /* Espaço entre info e círculo */
+    text-align: left;
     }
     .unit-item:nth-child(even) .unit-circle {
-        order: 1; /* Círculo primeiro */
+    order: 1; /* Círculo primeiro */
     }
     .unit-item:nth-child(even) .unit-info p.status-text {
-        justify-content: flex-start;
+    justify-content: flex-start;
     }
 }
 
@@ -391,128 +391,122 @@ body {
 /* Mobile e Tablets Pequenos */
 @media (max-width: 767px) {
     .conteudo {
-        flex-direction: column;
-        align-items: center;
+    flex-direction: column;
+    align-items: center;
     }
 
     .coluna-centro {
-        padding: 15px;
-        margin-left: 0;
-        width: 100%;
-        max-width: 100%;
+    padding: 15px;
+    margin-left: 0;
+    width: 100%;
+    max-width: 100%;
     }
 
     .coluna-centro h1 {
-        font-size: 2rem;
-        margin-bottom: 8px;
+    font-size: 2rem;
+    margin-bottom: 8px;
     }
 
     .coluna-centro p#module-description {
-        font-size: 1rem;
-        margin-bottom: 30px;
-        max-width: 90%;
+    font-size: 1rem;
+    margin-bottom: 30px;
+    max-width: 90%;
     }
 
     .voltar-btn {
-        margin-bottom: 25px;
-        padding: 10px 20px;
-        font-size: 1em;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+    font-size: 1em;
     }
 
     .units-grid {
-        align-items: center; /* Centraliza a trilha na tela */
-        padding: 20px 0;
-        max-width: 100%;
+    align-items: center; /* Centraliza a trilha na tela */
+    padding: 20px 0;
+    max-width: 100%;
     }
 
     .unit-item {
-        flex-direction: column; /* Empilha círculo e info */
-        margin: 25px 0; /* Espaçamento vertical ajustado */
-        width: auto; /* Deixa o conteúdo definir a largura */
-        padding: 0; /* Remove paddings laterais */
-        justify-content: center; /* Centraliza no eixo X */
-    }
+    flex-direction: column; /* Empilha círculo e info */
+    margin: 25px 0; /* Espaçamento vertical ajustado */
+    width: auto; /* Deixa o conteúdo definir a largura */
+    padding: 0; /* Remove paddings laterais */
+    justify-content: center; /* Centraliza no eixo X */
+ }
 
     /* Reset para mobile para evitar problemas de ordem/alinhamento de desktop */
     .unit-item:nth-child(odd),
     .unit-item:nth-child(even) {
-        justify-content: center;
-        padding: 0;
+    justify-content: center;
+    padding: 0;
     }
     .unit-item:nth-child(odd) .unit-info, .unit-item:nth-child(even) .unit-info {
-        order: unset; /* Remove order para mobile */
-        margin: 10px 0 0 0; /* Espaço entre círculo e info */
-        text-align: center;
+    order: unset; /* Remove order para mobile */
+    margin: 10px 0 0 0; /* Espaço entre círculo e info */
+    text-align: center;
     }
     .unit-item:nth-child(odd) .unit-circle, .unit-item:nth-child(even) .unit-circle {
-        order: unset; /* Remove order para mobile */
-        margin: 0;
+    order: unset; /* Remove order para mobile */
+    margin: 0;
     }
     .unit-item:nth-child(odd) .unit-info p.status-text, .unit-item:nth-child(even) .unit-info p.status-text {
-        justify-content: center;
+    justify-content: center;
     }
 
     .unit-circle {
-        width: 75px; /* Tamanho do círculo em mobile */
-        height: 75px;
-        font-size: 1.8em;
+    width: 75px; /* Tamanho do círculo em mobile */
+    height: 75px;
+    font-size: 1.8em;
     }
 
     .unit-circle.desbloqueada.primeira::before {
-        top: -25px; /* Ajusta a posição do START */
-        font-size: 0.65em;
-        animation: bounce-mobile 1s infinite alternate;
+    top: -25px; /* Ajusta a posição do START */
+    font-size: 0.65em;
+    animation: bounce-mobile 1s infinite alternate;
     }
 
     @keyframes bounce-mobile {
-        from { transform: translateY(0) translateX(-50%); }
-        to { transform: translateY(-5px) translateX(-50%); }
+    from { transform: translateY(0) translateX(-50%); }
+    to { transform: translateY(-5px) translateX(-50%); }
     }
 
     .unit-info {
-        width: 90%; /* Ocupa a maior parte da largura */
-        max-width: 250px; /* Limita largura em mobile */
+    width: 90%; /* Ocupa a maior parte da largura */
+    max-width: 250px; /* Limita largura em mobile */
     }
 
-    /* Mascote em mobile */
-    #pet-mascote {
-        /* As propriedades left e transform serão controladas pelo JavaScript. */
-        /* Nenhuma sobrescrição CSS aqui para mobile é necessária. */
-    }
-}
 
 /* Tablet Médio (Paisagem) */
 @media (min-width: 768px) and (max-width: 1024px) {
     .coluna-centro h1 {
-        font-size: 2.2rem;
+    font-size: 2.2rem;
     }
 
     .coluna-centro p#module-description {
-        font-size: 1.1rem;
+    font-size: 1.1rem;
     }
 
     .unit-circle {
-        width: 80px;
-        height: 80px;
-        font-size: 2em;
+    width: 80px;
+    height: 80px;
+    font-size: 2em;
     }
 
     .unit-info {
-        max-width: 220px;
+    max-width: 220px;
     }
 
     /* Ajusta paddings para tablets */
     .unit-item:nth-child(odd) {
-        padding-right: 80px;
+    padding-right: 80px;
     }
     .unit-item:nth-child(even) {
-        padding-left: 80px;
+    padding-left: 80px;
     }
 
     .unit-item:nth-child(odd) .unit-info {
-        margin-right: 15px;
+    margin-right: 15px;
     }
     .unit-item:nth-child(even) .unit-info {
-        margin-left: 15px;
+    margin-left: 15px;
     }
-}
+}}
