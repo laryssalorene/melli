@@ -3,7 +3,7 @@
 /* --- Layout Geral e Resets --- */
 body {
     background-color: #f2f7f9; /* Fundo suave */
- font-family: 'Open Sans', sans-serif; /* Consistente com home.css */
+    font-family: 'Open Sans', sans-serif; /* Consistente com home.css */
     margin: 0;
     padding: 0;
 }
@@ -16,249 +16,253 @@ body {
 }
 
 .coluna-centro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 30px 20px;
-    position: relative;
-    max-width: 1200px; /* Limita a largura para melhor leitura */
-    width: 100%;
-    box-sizing: border-box;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: flex-start;
+ padding: 30px 20px;
+ position: relative;
+ max-width: 1200px; /* Limita a largura para melhor leitura */
+ width: 100%;
+ box-sizing: border-box;
 }
 
 .coluna-centro h1 {
-    font-size: 2.8rem;
-    color: #02416d; /* Cor do título principal */
-    margin-bottom: 10px;
-    font-weight: 800;
-    text-align: center;
-    line-height: 1.2;
+ font-size: 2.8rem;
+ color: #02416d; /* Cor do título principal */
+ margin-bottom: 10px;
+ font-weight: 800;
+ text-align: center;
+ line-height: 1.2;
 }
 
 .coluna-centro p#module-description {
-    font-size: 1.3rem;
-    color: #555;
-    margin-bottom: 50px;
-    max-width: 700px;
-    text-align: center;
-    line-height: 1.5;
+ font-size: 1.3rem;
+ color: #555;
+ margin-bottom: 50px;
+ max-width: 700px;
+ text-align: center;
+ line-height: 1.5;
 }
 
 /* --- Botão de Voltar --- */
 .voltar-btn {
-    display: inline-flex; /* Use inline-flex para não ocupar toda a largura */
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 40px;
-    padding: 12px 25px;
-    background-color: #066699; /* Azul da navbar */
-    color: #ffffff;
-    border-radius: 25px; /* Mais arredondado */
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1.1em;
-    transition: background-color 0.2s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+ display: inline-flex; /* Use inline-flex para não ocupar toda a largura */
+ align-items: center;
+ gap: 10px;
+ margin-bottom: 40px;
+ padding: 12px 25px;
+ background-color: #066699; /* Azul da navbar */
+ color: #ffffff;
+ border-radius: 25px; /* Mais arredondado */
+ text-decoration: none;
+ font-weight: bold;
+ font-size: 1.1em;
+ transition: background-color 0.2s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
+ box-shadow: 0 5px 15px rgba(0,0,0,0.15);
 }
 
 .voltar-btn:hover {
-    background-color: #044b73;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+ background-color: #044b73;
+ transform: translateY(-3px);
+ box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
 .voltar-btn i {
-    font-size: 1.2em;
+ font-size: 1.2em;
 }
 
 /* --- Container da Trilha de Unidades --- */
 .units-grid {
-    display: flex;
-    flex-direction: column; /* Vertical por padrão */
-    align-items: center; /* Centraliza tudo verticalmente no eixo X */
-    position: relative; /* ESSENCIAL para o posicionamento absoluto do mascote */
-    padding: 40px 0;
-    width: 100%; /* Ocupa a largura total para posicionamento */
-    max-width: 900px; /* Limite para a trilha em desktop */
-    border: 2px dashed red;
+ display: flex;
+ flex-direction: column; /* Vertical por padrão */
+ align-items: center; /* Centraliza tudo verticalmente no eixo X */
+ position: relative; /* ESSENCIAL para o posicionamento absoluto do mascote */
+ padding: 40px 0;
+ width: 100%; /* Ocupa a largura total para posicionamento */
+ max-width: 900px; /* Limite para a trilha em desktop */
+ border: 2px dashed red;
 }
 
 .units-grid .loading-message {
-    font-size: 1.5em;
-    color: #777;
-    margin-top: 50px;
+ font-size: 1.5em;
+ color: #777;
+ margin-top: 50px;
 }
 
 /* --- Linha principal da trilha (sempre presente, passa por trás) --- */
 .unit-path-line-main {
-    position: absolute;
-    width: 4px; /* Largura da linha */
-    height: 100%; /* Ocupa toda a altura do container */
-    background: linear-gradient(to bottom, #aedd2b, #50c8c6); /* Gradiente para a linha */
-    z-index: 1; /* Abaixo dos círculos e itens */
-    left: 50%;
-    transform: translateX(-50%);
-    top: 0;
+ position: absolute;
+ width: 4px; /* Largura da linha */
+ height: 100%; /* Ocupa toda a altura do container */
+ background: linear-gradient(to bottom, #aedd2b, #50c8c6); /* Gradiente para a linha */
+ z-index: 1; /* Abaixo dos círculos e itens */
+ left: 50%;
+ transform: translateX(-50%);
+ top: 0;
 }
 
 
 /* --- Estilo para cada Item da Trilha (Contém círculo + info lateral) --- */
 .unit-item {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Centraliza o círculo e info em mobile */
-    position: relative;
-    z-index: 10; /* Garante que os itens fiquem acima das linhas */
-    margin: 30px 0; /* Espaçamento entre os itens */
-    width: 100%;
+ display: flex;
+ align-items: center;
+ justify-content: center; /* Centraliza o círculo e info em mobile */
+ position: relative;
+ z-index: 10; /* Garante que os itens fiquem acima das linhas */
+ margin: 30px 0; /* Espaçamento entre os itens */
+ width: 100%;
 }
 
 /* --- Estilo para o Círculo da Unidade --- */
 .unit-circle {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background-color: #ffffff;
-    border: 4px solid #e0e0e0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 2.2em;
-    font-weight: bold;
-    color: #02416d;
-    position: relative; /* Ajustado para ser relativo ao unit-item */
-    z-index: 15; /* Acima de tudo */
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    cursor: pointer;
-    flex-shrink: 0; /* Não permite que o círculo encolha */
+ width: 90px;
+ height: 90px;
+ border-radius: 50%;
+ background-color: #ffffff;
+ border: 4px solid #e0e0e0;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ text-decoration: none;
+ font-size: 2.2em;
+ font-weight: bold;
+ color: #02416d;
+ position: relative; /* Ajustado para ser relativo ao unit-item */
+ z-index: 15; /* Acima de tudo */
+ box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+ transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+ cursor: pointer;
+ flex-shrink: 0; /* Não permite que o círculo encolha */
 }
 
 .unit-circle:hover:not(.bloqueada) {
-    transform: scale(1.1);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+ transform: scale(1.1);
+ box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
 
 .unit-circle i {
-    color: #066699;
-    transition: color 0.3s ease;
+ color: #066699;
+ transition: color 0.3s ease;
 }
 
 /* Animação e texto "START" para a primeira unidade desbloqueada */
 .unit-circle.desbloqueada.primeira::before {
-    content: "START";
-    position: absolute;
-    top: -30px; /* Posição acima do círculo */
-    left: 50%; /* Centraliza horizontalmente */
-    transform: translateX(-50%); /* Ajuste fino para centralização */
-    font-size: 0.8em;
-    font-weight: bold;
-    color: #ffffff;
-    background-color: #aedd2b; /* Verde vibrante */
-    padding: 4px 10px;
-    border-radius: 5px;
-    white-space: nowrap;
-    animation: bounce 1s infinite alternate;
-    z-index: 20;
+ content: "START";
+ position: absolute;
+ top: -30px; /* Posição acima do círculo */
+ left: 50%; /* Centraliza horizontalmente */
+ transform: translateX(-50%); /* Ajuste fino para centralização */
+ font-size: 0.8em;
+ font-weight: bold;
+ color: #ffffff;
+ background-color: #aedd2b; /* Verde vibrante */
+ padding: 4px 10px;
+ border-radius: 5px;
+ white-space: nowrap;
+ animation: bounce 1s infinite alternate;
+ z-index: 20;
 }
 
 @keyframes bounce {
-    from { transform: translateY(0) translateX(-50%); }
-    to { transform: translateY(-8px) translateX(-50%); }
+ from { transform: translateY(0) translateX(-50%); }
+ to { transform: translateY(-8px) translateX(-50%); }
 }
 
 
 /* --- Info Lateral da Unidade --- */
 .unit-info {
-    max-width: 280px; /* Largura máxima para o bloco de informações */
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 80px; /* Altura mínima para alinhar com o círculo */
-    border: 1px solid #eee;
-    box-sizing: border-box; /* Garante que padding não estoure a largura */
+ max-width: 280px; /* Largura máxima para o bloco de informações */
+ background-color: #ffffff;
+ border-radius: 12px;
+ padding: 15px 20px;
+ box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+ transition: all 0.3s ease;
+ display: flex;
+ flex-direction: column;
+ justify-content: center;
+ min-height: 80px; /* Altura mínima para alinhar com o círculo */
+ border: 1px solid #eee;
+ box-sizing: border-box; /* Garante que padding não estoure a largura */
 }
 
 .unit-info h3 {
-    font-size: 1.25em;
-    color: #02416d;
-    margin: 0 0 5px 0;
-    font-weight: 700;
+ font-size: 1.25em;
+ color: #02416d;
+ margin: 0 0 5px 0;
+ font-weight: 700;
 }
 
+/* --- INÍCIO DA MODIFICAÇÃO --- */
 .unit-info p.status-text {
-    font-size: 0.95em;
-    color: #777;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+ font-size: 0.95em;
+ color: #777;
+ display: flex;
+ align-items: center; /* Adicionado para alinhar ícone e texto */
+ justify-content: flex-start; /* Adicionado para forçar alinhamento à esquerda */
+ gap: 5px;
+ margin: 0; /* Garante que o parágrafo não tenha margem padrão */
 }
+/* --- FIM DA MODIFICAÇÃO --- */
 
 
 /* --- Cores e Estados dos Círculos e Ícones --- */
 
 /* Concluída */
 .unit-circle.completed {
-    background-color: #aedd2b;
-    border-color: #50c8c6;
-    box-shadow: 0 4px 15px rgba(80, 200, 198, 0.4);
+ background-color: #aedd2b;
+ border-color: #50c8c6;
+ box-shadow: 0 4px 15px rgba(80, 200, 198, 0.4);
 }
 .unit-circle.completed i {
-    color: #ffffff;
+ color: #ffffff;
 }
 .unit-info.completed p.status-text {
-    color: #aedd2b;
+ color: #aedd2b;
 }
 .unit-info.completed .status-icon {
-    color: #aedd2b;
+ color: #aedd2b;
 }
 
 /* Desbloqueada (Próxima, com anel de progresso e "START") */
 .unit-circle.desbloqueada.ativa {
-    border: 4px solid #ffc107; /* Corrigido de 44px para 4px */
-    box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.25), 0 6px 15px rgba(0,0,0,0.1);
+ border: 4px solid #ffc107; /* Corrigido de 44px para 4px */
+ box-shadow: 0 0 0 7px rgba(255, 193, 7, 0.25), 0 6px 15px rgba(0,0,0,0.1);
 }
 .unit-circle.desbloqueada.ativa i {
-    color: #066699;
+ color: #066699;
 }
 .unit-info.desbloqueada.ativa p.status-text {
-    color: #ffc107;
+ color: #ffc107;
 }
 .unit-info.desbloqueada.ativa .status-icon {
-    color: #ffc107;
+ color: #ffc107;
 }
 
 /* Desbloqueada (Ainda não ativa, apenas pronta) */
 .unit-circle.desbloqueada:not(.ativa) {
-    border-color: #d1e0f0;
+ border-color: #d1e0f0;
 }
 .unit-info.desbloqueada:not(.ativa) p.status-text {
-    color: #066699;
+ color: #066699;
 }
 .unit-info.desbloqueada:not(.ativa) .status-icon {
-    color: #066699;
+ color: #066699;
 }
 
 /* Bloqueada */
 .unit-circle.bloqueada {
-    background-color: #f0f0f0;
-    border-color: #dcdcdc;
-    cursor: not-allowed;
-    filter: grayscale(80%);
-    opacity: 0.8;
+ background-color: #f0f0f0;
+ border-color: #dcdcdc;
+ cursor: not-allowed;
+ filter: grayscale(80%);
+ opacity: 0.8;
 }
 .unit-circle.bloqueada i {
-    color: #aaa;
+ color: #aaa;
 }
 .unit-circle.bloqueada:hover {
-    transform: scale(1);
+ transform: scale(1);
     box-shadow: 0 6px 15px rgba(0,0,0,0.1);
 }
 .unit-info.bloqueada {
@@ -283,11 +287,11 @@ body {
     width: 180px; /* Tamanho do sprite */
     height: 180px;
     z-index: 20; /* Acima dos círculos e linhas */
-    transition: transform 2s ease-in-out; /* Velocidade do movimento (100s) */
+    transition: transform 100s ease-in-out; /* Velocidade do movimento (100s) */
     background-image: url('/img/pets/sprites/pet2/idle.png'); /* Imagem inicial */
     background-size: cover; /* Garante que a imagem preencha */
-    pointer-events: none; /* Não interfere com cliques *
-    left: 50%; /* Âncora horizontal (corrigido) */
+    pointer-events: none; /* Não interfere com cliques */
+    /* left: 50%; Âncora horizontal (corrigido) */
 }
 
 /* --- CORREÇÃO DAS ANIMAÇÕES DE SPRITE --- */
@@ -306,7 +310,7 @@ body {
 }
 @keyframes walkSouth {
     /* Corrigido: Usando sprites 'north' conforme seu pedido (para andar de costas) */
-    0% { background-image: url('/img/pets/sprites/pet2/idle.png'); }
+    0% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
     50% { background-image: url('/img/pets/sprites/pet2/north2.png'); }
     100% { background-image: url('/img/pets/sprites/pet2/north1.png'); }
 }
@@ -315,9 +319,9 @@ body {
     animation: walkEast 0.6s infinite; /* Corrigido: sem 'steps' */
 }
 @keyframes walkEast {
-       0% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
-       50% { background-image: url('/img/pets/sprites/pet2/east2.png'); }
-       100% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
+    0% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
+    50% { background-image: url('/img/pets/sprites/pet2/east2.png'); }
+    100% { background-image: url('/img/pets/sprites/pet2/east1.png'); }
 }
 
 .pet-walking-west {
@@ -359,14 +363,17 @@ body {
     .unit-item:nth-child(odd) .unit-info {
     order: 1; /* Info primeiro */
     margin-right: 20px; /* Espaço entre info e círculo */
-    text-align: right;
+    text-align: right; /* O H3 vai herdar isso */
     }
     .unit-item:nth-child(odd) .unit-circle {
     order: 2; /* Círculo segundo */
     }
+    /* --- INÍCIO DA MODIFICAÇÃO --- */
     .unit-item:nth-child(odd) .unit-info p.status-text {
-    justify-content: flex-end;
+    justify-content: flex-start; /* Alinha à esquerda (já estava) */
+    text-align: left; /* Sobrescreve o text-align: right do pai */
     }
+    /* --- FIM DA MODIFICAÇÃO --- */
 
 
     /* Itens pares: círculo à esquerda, info à direita */
@@ -388,7 +395,7 @@ body {
 }
 
 
-/* Mobile e Tablets Pequenos */
+/* --- ADIÇÃO: Mobile e Tablets Pequenos - AGORA COM LAYOUT LATERALIZADO --- */
 @media (max-width: 767px) {
     .conteudo {
     flex-direction: column;
@@ -426,41 +433,72 @@ body {
     }
 
     .unit-item {
-    flex-direction: column; /* Empilha círculo e info */
+    /* MANTÉM flex para layout horizontal, mas ajusta larguras */
+    display: flex;
+    align-items: center;
+    position: relative;
     margin: 25px 0; /* Espaçamento vertical ajustado */
-    width: auto; /* Deixa o conteúdo definir a largura */
-    padding: 0; /* Remove paddings laterais */
-    justify-content: center; /* Centraliza no eixo X */
- }
+    width: 100%; /* Ocupa a largura total para alternar */
+    padding: 0 10px; /* Adiciona um padding para as bordas da tela */
+    box-sizing: border-box; /* Inclui padding na largura */
+    }
 
-    /* Reset para mobile para evitar problemas de ordem/alinhamento de desktop */
-    .unit-item:nth-child(odd),
+    /* Recria a lógica de alternância para mobile, mas com paddings menores */
+    /* Itens ímpares: info à esquerda, círculo à direita */
+    .unit-item:nth-child(odd) {
+    justify-content: flex-start;
+    padding-right: 60px; /* Ajuste para o espaçamento do mascote/linha */
+    }
+    .unit-item:nth-child(odd) .unit-info {
+    order: 1;
+    margin-right: 10px; /* Espaço entre info e círculo */
+    text-align: left;
+    max-width: 160px; /* Limita a largura da info */
+    min-height: auto; /* <-- CORREÇÃO: Remove altura mínima */
+    padding: 8px 12px; /* <-- CORREÇÃO: Reduz padding */
+    border-bottom: none; /* <-- CORREÇÃO: Remove linha de baixo */
+    }
+    .unit-item:nth-child(odd) .unit-circle {
+    order: 2;
+    }
+    /* --- INÍCIO DA MODIFICAÇÃO --- */
+    .unit-item:nth-child(odd) .unit-info p.status-text {
+    justify-content: flex-start; /* MUDADO: de flex-end para flex-start */
+    }
+    /* --- FIM DA MODIFICAÇÃO --- */
+
+    /* Itens pares: círculo à esquerda, info à direita */
     .unit-item:nth-child(even) {
-    justify-content: center;
-    padding: 0;
+    justify-content: flex-end;
+    padding-left: 60px; /* Ajuste para o espaçamento do mascote/linha */
     }
-    .unit-item:nth-child(odd) .unit-info, .unit-item:nth-child(even) .unit-info {
-    order: unset; /* Remove order para mobile */
-    margin: 10px 0 0 0; /* Espaço entre círculo e info */
-    text-align: center;
+    .unit-item:nth-child(even) .unit-info {
+    order: 2;
+    margin-left: 10px; /* Espaço entre info e círculo */
+    text-align: left;
+    max-width: 160px; /* Limita a largura da info */
+    min-height: auto; /* <-- CORREÇÃO: Remove altura mínima */
+    padding: 8px 12px; /* <-- CORREÇÃO: Reduz padding */
+    border-bottom: none; /* <-- CORREÇÃO: Remove linha de baixo */
     }
-    .unit-item:nth-child(odd) .unit-circle, .unit-item:nth-child(even) .unit-circle {
-    order: unset; /* Remove order para mobile */
-    margin: 0;
+    .unit-item:nth-child(even) .unit-circle {
+    order: 1;
     }
-    .unit-item:nth-child(odd) .unit-info p.status-text, .unit-item:nth-child(even) .unit-info p.status-text {
-    justify-content: center;
+    .unit-item:nth-child(even) .unit-info p.status-text {
+    justify-content: flex-start;
     }
 
     .unit-circle {
-    width: 75px; /* Tamanho do círculo em mobile */
-    height: 75px;
-    font-size: 1.8em;
+    width: 60px; /* Tamanho do círculo em mobile */
+    height: 60px;
+    font-size: 1.5em; /* Reduz o tamanho do ícone */
+    border-width: 3px; /* Borda um pouco mais fina */
     }
 
     .unit-circle.desbloqueada.primeira::before {
-    top: -25px; /* Ajusta a posição do START */
-    font-size: 0.65em;
+    top: -20px; /* Ajusta a posição do START */
+    font-size: 0.6em; /* Reduz o tamanho do START */
+    padding: 3px 8px; /* Ajusta padding do START */
     animation: bounce-mobile 1s infinite alternate;
     }
 
@@ -469,13 +507,28 @@ body {
     to { transform: translateY(-5px) translateX(-50%); }
     }
 
+    /* --- CORREÇÃO: Ajustes de altura/margem para info --- */
     .unit-info {
-    width: 90%; /* Ocupa a maior parte da largura */
-    max-width: 250px; /* Limita largura em mobile */
+    /* Remove o padding duplicado se existir */
+    /* Esta regra pode ser removida se os paddings acima forem suficientes */
+    }
+    .unit-info h3 {
+    font-size: 1em;
+    margin-bottom: 2px; /* <-- CORREÇÃO: Reduz margem */
+    }
+    .unit-info p.status-text {
+    font-size: 0.8em;
+    margin: 0; /* <-- CORREÇÃO: Remove margem */
+    }
+
+    /* Mascote em mobile */
+    #pet-mascote {
+    width: 100px; /* Reduz o tamanho do mascote em mobile */
+    height: 100px;
     }
 
 
-/* Tablet Médio (Paisagem) */
+/* Tablet Médio (Paisagem) - Ajustado para o novo comportamento mobile */
 @media (min-width: 768px) and (max-width: 1024px) {
     .coluna-centro h1 {
     font-size: 2.2rem;
@@ -486,21 +539,21 @@ body {
     }
 
     .unit-circle {
-    width: 80px;
-    height: 80px;
-    font-size: 2em;
+    width: 70px; /* Tamanho do círculo para tablets */
+    height: 70px;
+    font-size: 1.8em;
     }
 
     .unit-info {
-    max-width: 220px;
+    max-width: 200px; /* Limita a largura da info para tablets */
     }
 
-    /* Ajusta paddings para tablets */
+    /* Ajusta paddings para tablets para a alternância */
     .unit-item:nth-child(odd) {
-    padding-right: 80px;
+    padding-right: 100px; /* Empurra mais */
     }
     .unit-item:nth-child(even) {
-    padding-left: 80px;
+    padding-left: 100px; /* Empurra mais */
     }
 
     .unit-item:nth-child(odd) .unit-info {
@@ -508,5 +561,11 @@ body {
     }
     .unit-item:nth-child(even) .unit-info {
     margin-left: 15px;
+    }
+
+    /* Mascote em tablet */
+    #pet-mascote {
+    width: 140px; /* Reduz o tamanho do mascote em tablet */
+    height: 140px;
     }
 }}

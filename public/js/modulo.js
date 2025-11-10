@@ -439,15 +439,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             const unitInfo = document.createElement('div');
             unitInfo.classList.add('unit-info');
             unitInfo.classList.add(currentUnitStatus); 
+
+            // --- INÍCIO DA MODIFICAÇÃO (Remover espaço em branco) ---
+            // 1. Primeiro, determine qual texto de status deve ser exibido
+            let statusText = '';
+            if (currentUnitStatus === 'completed') {
+                statusText = '<i class="fas fa-check-circle status-icon"></i> Concluída';
+            } else if (currentUnitStatus === 'desbloqueada' && !unitCircle.classList.contains('ativa')) {
+                statusText = '<i class="fas fa-unlock-alt status-icon"></i> Desbloqueada';
+            } else if (currentUnitStatus === 'desbloqueada' && unitCircle.classList.contains('ativa')) {
+                statusText = '<i class="fas fa-play-circle status-icon"></i> Iniciar';
+            } else if (currentUnitStatus === 'bloqueada') {
+                statusText = '<i class="fas fa-lock status-icon"></i> Bloqueada';
+            }
+
+            // 2. Agora, insira o texto (ou uma string vazia) no HTML
             unitInfo.innerHTML = `
                 <h3>${unit.nome_unidade || 'Nome da Unidade'}</h3>
-                <p class="status-text">
-                    ${currentUnitStatus === 'completed' ? '<i class="fas fa-check-circle status-icon"></i> Concluída' : ''}
-                    ${currentUnitStatus === 'desbloqueada' && !unitCircle.classList.contains('ativa') ? '<i class="fas fa-unlock-alt status-icon"></i> Desbloqueada' : ''}
-                    ${currentUnitStatus === 'desbloqueada' && unitCircle.classList.contains('ativa') ? '<i class="fas fa-play-circle status-icon"></i> Iniciar' : ''}
-                    ${currentUnitStatus === 'bloqueada' ? '<i class="fas fa-lock status-icon"></i> Bloqueada' : ''}
-                </p>
+                <p class="status-text">${statusText}</p>
             `;
+            // --- FIM DA MODIFICAÇÃO ---
 
             unitItem.appendChild(unitInfo);
             unitItem.appendChild(unitCircle);
