@@ -1,10 +1,11 @@
-/* public/css/login.css */
+/* Importa uma fonte mais amigável e arredondada */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap');
 
 /* Resets básicos */
 html, body {
     margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif; /* Considere usar uma fonte mais amigável */
+    font-family: 'Nunito', sans-serif; /* Fonte trocada para Nunito */
     color: #333;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -15,113 +16,199 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* Certifique-se de que o caminho da imagem está correto. */
-    /* Se background2.png estiver diretamente em public/img/, então o caminho está ok. */
-    background-image: url('/img/background2.png'); 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Mantém o fundo fixo ao rolar */
+
+    /* --- MODIFICAÇÃO: Novo background --- */
+    /* Gradiente rosa/azul claro, lembrando a Terra dos Doces */
+    background: linear-gradient(135deg, #f9d5e5 0%, #d4f1f4 100%);
+    overflow: hidden; /* Esconde elementos que saem da tela */
+    position: relative; /* Necessário para os elementos absolutos */
 }
 
-/* AJUSTE AQUI: 
-   Mudamos de '.login-form' para '.login-container' para coincidir com o HTML.
-   Este será o seu cartão branco principal.
-*/
-.login-container { 
-    background-color: rgba(255, 255, 255, 0.95); /* Um pouco menos transparente */
-    padding: 45px 40px; /* Um pouco mais de padding vertical */
-    border-radius: 18px; /* Borda mais arredondada */
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25); /* Sombra mais pronunciada */
+/* --- INÍCIO: Background Animado "Terra Saudável" --- */
+
+.background-wrapper {
+    position: fixed; /* Cobre a tela inteira, fixo */
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 420px; /* Levemente mais largo */
-    text-align: center;
-    box-sizing: border-box; /* Garante que padding não aumente o tamanho total */
+    height: 100%;
+    z-index: 0; /* Fica atrás de tudo */
+    overflow: hidden;
 }
 
-/* AJUSTE AQUI: 
-   O logo, título e links estão DENTRO de .login-container e FORA do form#loginForm.
-   Então, o seletor precisa ser direto de .login-container para esses elementos.
-*/
+.bg-element {
+    position: absolute;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.5; /* Suave, para não distrair */
+    animation: float 20s infinite ease-in-out alternate;
+}
+
+/* Animação de flutuação */
+@keyframes float {
+    0% {
+    transform: translateY(0px) rotate(-5deg);
+    }
+    50% {
+    transform: translateY(-30px) rotate(5deg);
+    }
+    100% {
+    transform: translateY(0px) rotate(-5deg);
+    }
+}
+
+/* --- CRIE ESTAS IMAGENS na pasta /img/foods/ --- */
+.bg-element.broccoli {
+    background-image: url('/img/foods/broccoli.png'); 
+    width: 100px; height: 100px;
+    top: 10%; left: 5%;
+    animation-duration: 25s;
+}
+
+.bg-element.strawberry {
+    background-image: url('/img/foods/strawberry.png');
+    width: 80px; height: 80px;
+    bottom: 15%; right: 10%;
+    animation-duration: 22s;
+    animation-delay: -5s; /* Começa em um ponto diferente */
+}
+
+.bg-element.apple {
+    background-image: url('/img/foods/apple.png');
+    width: 90px; height: 90px;
+    top: 25%; right: 8%;
+    animation-duration: 20s;
+    animation-delay: -10s;
+}
+
+.bg-element.carrot {
+    background-image: url('/img/foods/carrot.png');
+    width: 110px; height: 110px;
+    bottom: 5%; left: 15%;
+    animation-duration: 28s;
+    animation-delay: -2s;
+}
+
+.bg-element.avocado {
+    background-image: url('/img/foods/avocado.png');
+    width: 70px; height: 70px;
+    top: 50%; left: 20%;
+    animation-duration: 18s;
+    animation-delay: -7s;
+}
+/* --- FIM: Background Animado --- */
+
+
+.login-container { 
+    background-color: rgba(255, 255, 255, 0.95); 
+    padding: 45px 40px; 
+    border-radius: 18px; 
+    box-shadow: 0 10px 25px rgba(2, 65, 109, 0.2);
+    width: 100%;
+    max-width: 420px; 
+    text-align: center;
+    box-sizing: border-box; 
+
+    position: relative; 
+    z-index: 1; /* Fica na FRENTE do background */
+}
+
 .login-container .logo {
-    width: 120px; /* Tamanho do logo ajustado para sua imagem */
+    width: 120px; 
     height: auto;
-    margin-bottom: 25px; /* Mais espaço abaixo do logo */
-    display: block; /* Para centralizar com margin: auto */
+    margin-bottom: 25px; 
+    display: block; 
     margin-left: auto;
     margin-right: auto;
+    padding-bottom: 20px;
 }
 
-.login-container h1 { /* Ajustado para h1, pois seu HTML usa h1 "Bem-vindo de volta!" */
-    color: #02416d; /* Cor forte e escura */
-    font-size: 2.3rem; /* Tamanho maior para o título */
-    margin-bottom: 30px; /* Mais espaço abaixo do título */
-    font-weight: 700; /* Negrito */
+.login-container h1 {
+    color: #02416d; 
+    font-size: 1.8rem; 
+    margin-top: 0;
+    margin-bottom: 0;
+    font-weight: 800; 
+    padding-bottom: 20px;
 }
 
-/*
-   AJUSTE AQUI: 
-   Os seletores para input-group, label, input e button precisam ser ajustados
-   para estarem dentro do form#loginForm, que por sua vez está dentro do .login-container.
-*/
 #loginForm .input-group { 
-    margin-bottom: 25px; /* Mais espaço entre os grupos de input */
+    padding-bottom: 20px;
     text-align: left;
 }
 
 #loginForm .input-group label { 
     display: block;
-    margin-bottom: 10px; /* Mais espaço entre label e input */
+     margin-bottom: 0;
     font-weight: bold;
-    color: #02416d; /* Cor do label */
+    color: #02416d; 
     font-size: 1.05rem;
 }
 
 #loginForm .input-group input { 
     width: 100%;
-    padding: 14px; /* Mais padding para os inputs */
-    border: 1px solid #cce7f0;
-    border-radius: 10px; /* Borda mais arredondada */
-    font-size: 1.05rem;
-    color: #333;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Transição suave */
-    box-sizing: border-box; /* Impede que padding aumente a largura total */
+    padding: 14px 20px;
+    border: 2px solid #cce7f0; 
+    border-radius: 30px; /* Formato "pill" */
+    font-size: 0.90rem;
+    color: #515050;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; 
+    box-sizing: border-box;
+    font-weight: 700; 
 }
 
 #loginForm .input-group input:focus {
-    outline: none;
-    border-color: #50c8c6; /* Cor da borda focada */
-    box-shadow: 0 0 0 4px rgba(80, 200, 198, 0.4); /* Sombra de foco */
+   /* outline: none; */
+    border-color: #50c8c6; 
+    box-shadow: 0 0 0 3px rgba(80, 200, 198, 0.4); 
 }
 
-#loginForm button[type="submit"] { 
+#loginForm .btn-primary { 
     width: 100%;
-    padding: 16px; /* Mais padding para o botão */
-    background-color: #aedd2b; /* Cor do botão verde claro */
-    color: #02416d; /* Cor do texto no botão */
+    padding: 16px 0px; 
+    background-color: #aedd2b; 
+    color: #02416d; 
     font-weight: bold;
-    border: none;
-    border-radius: 10px; /* Borda mais arredondada */
     cursor: pointer;
-    font-size: 1.2rem; /* Texto maior no botão */
-    transition: background-color 0.3s ease, transform 0.2s ease; /* Transição suave */
-    margin-top: 15px; /* Espaço entre o último input e o botão */
+    font-size: 1.2rem; 
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, border-bottom 0.2s ease;
+    margin-top: 0px; 
+
+    border: none;
+    border-radius: 30px; /* Formato "pill" */
+    font-weight: 800; 
+    border-bottom: 4px solid #8cc63f; /* Sombra 3D */
+    text-transform: uppercase; 
 }
 
-#loginForm button[type="submit"]:hover {
-    background-color: #8cc63f; /* Cor verde um pouco mais escura no hover */
-    transform: translateY(-2px); /* Efeito de "levantar" no hover */
+#loginForm .btn-primary:hover {
+    background-color: #9cd530; 
 }
 
-/* Estilo para a mensagem de login (sucesso/erro) */
-#loginForm .message { /* Selecionador mais específico para p#loginMessage.message dentro do formulário */
+#loginForm .btn-primary:active {
+    background-color: #8cc63f; 
+    transform: translateY(2px); 
+    border-bottom: 2px solid #8cc63f; 
+}
+
+
+/* --- INÍCIO DA MODIFICAÇÃO (Ocultar mensagem vazia) --- */
+#loginForm .message { 
+    display: none; /* Oculto por padrão */
     margin-top: 15px;
-    margin-bottom: 15px; /* Adicionado margem inferior */
+    margin-bottom: 15px; 
     padding: 10px;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 10px; 
+    font-weight: bold; /* 'S' removido daqui */
     font-size: 0.95em;
-    min-height: 20px; /* Garante que o espaço seja reservado */
 }
+
+/* Mostra a caixa SÓ se tiver uma mensagem */
+#loginForm .message.success,
+#loginForm .message.error {
+    display: block;
+}
+/* --- FIM DA MODIFICAÇÃO --- */
 
 #loginForm .message.success {
     background-color: #d4edda;
@@ -135,15 +222,14 @@ body {
     border: 1px solid #f5c6cb;
 }
 
-/* AJUSTE AQUI: Os links estão dentro de <div class="links"> que está dentro de .login-container */
-.login-container .links { /* Seletor corrigido para o div que contém os links */
-    margin-top: 25px; /* Mais espaço acima do link de cadastro */
+.login-container .links { 
+    margin-top: 25px; 
     font-size: 1rem;
     color: #02416d;
 }
 
 .login-container .links a {
-    color: #50c8c6; /* Cor do link */
+    color: #50c8c6; 
     text-decoration: none;
     font-weight: bold;
     transition: color 0.2s ease;
@@ -151,16 +237,10 @@ body {
 
 .login-container .links a:hover {
     text-decoration: underline;
-    color: #3ea09f; /* Um pouco mais escuro no hover */
+    color: #3ea09f; 
 }
 
-/* AJUSTE AQUI: O link de esqueceu a senha não tem uma classe separada, mas está dentro de <p> dentro de .links */
-.login-container .links p:last-child { /* Seleciona o último parágrafo dentro de .links */
-    margin-top: 15px; /* Espaço abaixo do link de cadastro */
+.login-container .links p:last-child { 
+    margin-top: 15px; 
     font-size: 0.95rem;
 }
-
-/* Não é necessário um seletor específico para 'forgot-password-link' se ele não tiver uma classe distinta */
-/* Use .login-container .links a para estilos gerais de links, ou adicione uma classe ao p ou a */
-/* Se quiser estilizar especificamente, o HTML precisaria de uma classe: <p class="forgot-password-link">...</p> */
-/* Por enquanto, o estilo de links genéricos já cobre. */

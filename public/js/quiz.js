@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const colunaEsquerda = document.getElementById("coluna-esquerda");
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
-    // MUDADO AQUI: userNicknameSpan para consistência
     const userNicknameSpan = document.getElementById("user-nickname"); 
     const userAssiduidadeSpan = document.getElementById("user-assiduidade");
     const userPontosSpan = document.getElementById("user-pontos");
@@ -23,8 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const questionArea = document.getElementById('question-area'); 
     const resultsArea = document.getElementById('results-area');
     const finalScoreElement = document.getElementById('final-score');
-    const returnToModulesButton = document.getElementById('return-to-modules-button');
-
+    
     // Elementos da Nova Área de Explicação Passo a Passo
     const explanationStepArea = document.getElementById('explanation-step-area'); 
     const currentExplanationBlockContent = document.getElementById('current-explanation-block-content');
@@ -34,6 +32,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const rankingArea = document.getElementById('ranking-area');
     const rankingList = document.getElementById('ranking-list');
     const returnToModulesFromRankingButton = document.getElementById('return-to-modules-from-ranking-button');
+
+    // Elemento de feedback na tela (NOVO)
+    const userFeedbackMessage = document.getElementById('user-feedback-message');
+
 
     let questions = []; 
     let currentQuestionIndex = 0; 
@@ -46,14 +48,36 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // --- Funções Auxiliares ---
 
+    // NOVO: Função para exibir mensagens de feedback na tela (substitui alert)
+    function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
+        userFeedbackMessage.textContent = message;
+        userFeedbackMessage.className = ``; // Limpa classes anteriores
+        userFeedbackMessage.classList.add('user-feedback-message'); // Adiciona classe base
+        userFeedbackMessage.classList.remove('hidden');
+
+        if (type === 'error') {
+            userFeedbackMessage.classList.add('error');
+        } else if (type === 'success') {
+            userFeedbackMessage.classList.add('success');
+        } else {
+            userFeedbackMessage.classList.add('warning'); // Padrão
+        }
+
+        setTimeout(() => {
+            userFeedbackMessage.classList.add('hidden');
+        }, duration);
+    }
+
     async function fetchAuthenticatedData(url, options = {}) {
         const token = localStorage.getItem('jwtToken'); 
         if (!token) {
-            alert('Sessão expirada ou não autorizado. Faça login novamente.');
+            displayFeedbackMessage('Sessão expirada ou não autorizado. Faça login novamente.', 'error');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            localStorage.removeItem('userNickname'); // MUDADO AQUI: Remove userNickname
-            window.location.href = '/html/login.html';
+            localStorage.removeItem('userNickname'); 
+            setTimeout(() => {
+                window.location.href = '/html/login.html';
+            }, 1500);
             return null;
         }
 
@@ -61,11 +85,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const response = await fetch(url, { ...options, headers });
 
         if (response.status === 401 || response.status === 403) {
-            alert('Sessão expirada ou não autorizada. Faça login novamente.');
+            displayFeedbackMessage('Sessão expirada ou não autorizada. Faça login novamente.', 'error');
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('userId'); 
-            localStorage.removeItem('userNickname'); // MUDADO AQUI: Remove userNickname
-            window.location.href = '/html/login.html';
+            localStorage.removeItem('userNickname'); 
+            setTimeout(() => {
+                window.location.href = '/html/login.html';
+            }, 1500);
             return null;
         }
 
@@ -80,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             
             const errorMessage = errorData.message || `Erro na requisição: ${response.status} ${response.statusText}. Detalhes: ${errorBody.substring(0, 200)}...`;
+            displayFeedbackMessage(errorMessage, 'error');
             throw new Error(errorMessage);
         }
 
@@ -90,16 +117,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const user = await fetchAuthenticatedData('/api/users/profile');
             if (user) {
-                // MUDADO AQUI: Altera para user.nickname
                 userNicknameSpan.textContent = user.nickname; 
                 userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
                 userPontosSpan.textContent = user.pontos;
                 localStorage.setItem('userId', user.id_usuario);
-                // MUDADO AQUI: Armazena o nickname no localStorage
                 localStorage.setItem('userNickname', user.nickname); 
             }
         } catch (error) {
             console.error('Erro ao carregar perfil do usuário:', error);
+            // O fetchAuthenticatedData já exibe a mensagem de erro da requisição
         }
     }
 
@@ -113,9 +139,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     function logout() {
         localStorage.removeItem('jwtToken');
         localStorage.removeItem('userId'); 
-        localStorage.removeItem('userNickname'); // MUDADO AQUI: Remove userNickname
-        alert('Você foi desconectado.');
-        window.location.href = '/html/login.html';
+        localStorage.removeItem('userNickname'); 
+        displayFeedbackMessage('Você foi desconectado.', 'success', 500);
+        setTimeout(() => {
+            window.location.href = '/html/login.html';
+        }, 500);
     }
 
     function redirectToHome() {
@@ -136,22 +164,20 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (expBlock.texto) {
                 const p = document.createElement('p');
                 p.textContent = expBlock.texto;
-                p.classList.add('mb-2', 'text-gray-800'); 
                 currentExplanationBlockContent.appendChild(p);
             }
             if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
                 const img = document.createElement('img');
                 img.src = expBlock.url_media;
                 img.alt = expBlock.texto || "Conteúdo visual da explicação";
-                img.classList.add('w-full', 'max-w-md', 'mx-auto', 'my-4', 'rounded-lg', 'shadow-sm'); 
                 currentExplanationBlockContent.appendChild(img);
             }
             if (expBlock.url_media && expBlock.tipo_media === 'video') {
                 const iframeContainer = document.createElement('div');
-                iframeContainer.classList.add('iframe-container', 'max-w-full', 'mx-auto', 'my-4');
+                iframeContainer.classList.add('iframe-container');
                 const iframe = document.createElement('iframe');
                 
-                // --- CORREÇÃO: Formata URL do YouTube para embed ---
+                // Formata URL do YouTube para embed
                 let videoSrc = expBlock.url_media;
                 if (videoSrc.includes('youtube.com/watch?v=')) {
                     const videoId = videoSrc.split('v=')[1].split('&')[0];
@@ -161,14 +187,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     videoSrc = `https://www.youtube.com/embed/${videoId}`;
                 }
                 iframe.src = videoSrc;
-                // --- Fim da CORREÇÃO ---
-
-                iframe.classList.add('w-full', 'h-full', 'rounded-lg');
+                
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                 iframe.allowFullscreen = true;
                 iframeContainer.appendChild(iframe);
-                currentExplanationBlockContent.appendChild(iframeContainer);
                 currentExplanationBlockContent.appendChild(iframeContainer);
             }
             nextStepButton.textContent = 'Próximo'; 
@@ -203,6 +226,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function displayQuestion() {
         hideAllContainers();
         questionArea.classList.remove('hidden');
+        userFeedbackMessage.classList.add('hidden'); // Esconde feedback da tela
 
         const question = questions[currentQuestionIndex];
         
@@ -222,11 +246,20 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         question.respostas.forEach(alternative => { 
             const label = document.createElement('label');
-            label.className = 'alternative-item block p-3 bg-white border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors';
+            label.className = 'alternative-item'; // Nova classe base
             label.innerHTML = `
-                <input type="radio" name="alternative" value="${alternative.id_alternativa}" class="mr-3 leading-tight" data-correct="${alternative.eh_correto ? '1' : '0'}">
-                <span class="text-gray-900">${alternative.texto_resposta}</span>
+                <input type="radio" name="alternative" value="${alternative.id_resposta}" data-correct="${alternative.eh_correto ? '1' : '0'}">
+                <span>${alternative.texto_resposta}</span>
             `;
+            
+            // Adiciona listener para marcar a alternativa como 'selected' visualmente
+            label.addEventListener('click', () => {
+                alternativesContainer.querySelectorAll('.alternative-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                label.classList.add('selected');
+            });
+            
             alternativesContainer.appendChild(label);
         });
 
@@ -238,22 +271,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function handleSubmitOrNextQuestion() {
         if (submitButton.textContent === 'Confirmar Resposta') {
-            const selectedAlternative = alternativesContainer.querySelector('input[name="alternative"]:checked');
-            const currentQuestion = questions[currentQuestionIndex]; 
+            const selectedAlternativeInput = alternativesContainer.querySelector('input[name="alternative"]:checked');
 
-            if (!selectedAlternative) {
-                alert('Por favor, selecione uma alternativa!');
+            if (!selectedAlternativeInput) {
+                displayFeedbackMessage('Por favor, selecione uma alternativa antes de confirmar.', 'warning', 2000); // Usa displayFeedbackMessage
                 return;
             }
 
-            const isCorrect = selectedAlternative.dataset.correct === '1';
+            const currentQuestion = questions[currentQuestionIndex]; 
+            const isCorrect = selectedAlternativeInput.dataset.correct === '1';
             
-            const labelSelected = selectedAlternative.closest('label');
+            const labelSelected = selectedAlternativeInput.closest('label');
+            alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true); // Desabilita inputs
+
             if (isCorrect) {
                 labelSelected.classList.add('correct-answer');
                 userScore++;
+                displayFeedbackMessage('Resposta Correta! Bom trabalho!', 'success');
             } else {
                 labelSelected.classList.add('wrong-answer');
+                
+                // Revela a alternativa correta
                 const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
                 if (correctAnswerLabel) { 
                     correctAnswerLabel.classList.add('correct-answer-feedback');
@@ -263,10 +301,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                     postExplanationTextElement.textContent = `Explicação: ${currentQuestion.explicacao_pergunta}`;
                     postExplanationTextElement.classList.remove('hidden');
                 }
+                displayFeedbackMessage('Resposta Incorreta. Revise a explicação abaixo.', 'error');
             }
 
-            alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true);
-            
             submitButton.textContent = 'Próxima Questão';
         } else {
             // Após a resposta, avança para a próxima questão
@@ -277,13 +314,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function resetAlternativeStyles() {
-        alternativesContainer.querySelectorAll('.alternative-item').forEach(label => {
-            label.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback');
-            label.querySelector('input').disabled = false;
-            label.querySelector('input').checked = false; 
+        alternativesContainer.querySelectorAll('.alternative-item').forEach(item => {
+            item.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback', 'selected');
+            item.querySelector('input').disabled = false;
+            item.querySelector('input').checked = false; 
         });
         postExplanationTextElement.classList.add('hidden');
         postExplanationTextElement.textContent = '';
+        userFeedbackMessage.classList.add('hidden');
     }
 
     // Função para iniciar o fluxo de uma questão (explicações ou direto para a pergunta)
@@ -318,7 +356,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             if (currentModuleId === null) {
                 console.error("Erro: currentModuleId não definido. Não é possível registrar o progresso.");
-                alert("Erro interno ao registrar progresso: ID do módulo não encontrado.");
+                displayFeedbackMessage("Erro interno ao registrar progresso: ID do módulo não encontrado.", 'error');
                 return;
             }
 
@@ -330,7 +368,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 },
                 body: JSON.stringify({ 
                     id_modulo: currentModuleId, 
-                    pontuacao: userScore, 
+                    pontuacao: userScore, // Envia a pontuação total do quiz
                     concluido: true 
                 }),
             });
@@ -356,7 +394,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (error) {
             console.error('Erro ao registrar conclusão da unidade:', error);
-            alert('Não foi possível registrar seu progresso. Tente novamente.');
+            displayFeedbackMessage('Não foi possível registrar seu progresso. Tente novamente.', 'error');
         }
     }
 
@@ -425,9 +463,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     unitId = urlParams.get('unitId');
+    currentModuleId = urlParams.get('moduleId'); // Garante que o ID do módulo é pego
 
-    if (!unitId) {
+    if (!unitId || !currentModuleId) {
         unitTitleElement.textContent = 'Unidade não especificada.';
+        displayFeedbackMessage('A unidade ou o módulo não foram especificados na URL.', 'error');
         hideAllContainers();
         return;
     }
@@ -436,7 +476,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const unitInfo = await fetchAuthenticatedData(`/api/content/unidade/${unitId}`);
         if (unitInfo) {
             unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
-            currentModuleId = unitInfo.id_modulo; 
+            
+            // Note: Não precisamos mais pegar currentModuleId daqui se ele já vem da URL,
+            // mas mantemos a chamada para obter o nome da unidade
         }
 
         const fetchedQuestions = await fetchAuthenticatedData(`/api/content/unidade/${unitId}/questions`);
@@ -446,11 +488,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             startQuestionFlow(currentQuestionIndex); // Inicia o fluxo
         } else {
             unitTitleElement.textContent = `Nenhuma questão encontrada para esta unidade.`;
+            displayFeedbackMessage('Nenhuma questão encontrada para esta unidade.', 'warning');
             hideAllContainers();
         }
     } catch (error) {
         console.error('Erro ao carregar quiz (info da unidade ou questões):', error);
         unitTitleElement.textContent = 'Erro ao carregar o quiz.';
         hideAllContainers();
+        // displayFeedbackMessage já foi chamada dentro do fetchAuthenticatedData
     }
 });

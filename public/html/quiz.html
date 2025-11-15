@@ -4,34 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz - Melli Hero</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/styles/home.css" />
     <link rel="stylesheet" href="/styles/quiz.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-[#f8f8ec] text-[#02416d]">
+<body>
 
     <nav class="menu">
         <div class="logo">🍬 Melli Hero</div>
         <ul class="menu-desktop menu-links">
-            <li><button id="btn-perfil" class="hover:text-[#aedd2b]">👤 Perfil</button></li>
-            <li><a href="/html/home.html" class="ativo">🎓 Aprender</a></li>
-            <li><a href="#" class="hover:text-[#aedd2b]">⚡ Prática</a></li>
-            <li><a href="#" class="hover:text-[#aedd2b]">🏆 Conquistas</a></li>
-            <li><button id="btn-logout" class="ml-4 px-3 py-1 bg-red-500 rounded hover:bg-red-600 text-white">Sair</button></li>
+            <li>
+                <button id="btn-perfil" class="menu-button">
+                    <i class="fas fa-user"></i> Perfil
+                </button>
+            </li>
+            <li>
+                <a href="/html/home.html" class="menu-link">
+                    <i class="fas fa-graduation-cap"></i> Aprender
+                </a>
+            </li>
+            <li>
+                <a href="#" class="menu-link">
+                    <i class="fas fa-bolt"></i> Prática
+                </a>
+            </li>
+            <li>
+                <a href="#" class="menu-link">
+                    <i class="fas fa-trophy"></i> Conquistas
+                </a>
+            </li>
+            <li>
+                <button id="btn-logout" class="menu-button">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
+            </li>
         </ul>
         <button id="menu-toggle" class="mobile-toggle-btn">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
+            <i class="fas fa-bars fa-2x"></i>
         </button>
     </nav>
     
     <ul id="mobile-menu" class="mobile-menu-items">
-        <li><button id="btn-perfil-mobile" class="block w-full text-left hover:text-[#aedd2b]">👤 Perfil</button></li>
-        <li><a href="/html/home.html" class="block hover:text-[#aedd2b]">🎓 Aprender</a></li>
-        <li><a href="#" class="block hover:text-[#aedd2b]">⚡ Prática</a></li>
-        <li><a href="#" class="block hover:text-[#aedd2b]">🏆 Conquistas</a></li>
-        <li><button id="btn-logout-mobile" class="mt-2 block w-full text-left px-3 py-1 bg-red-500 rounded hover:bg-red-600">Sair</button></li>
+        <li>
+            <button id="btn-perfil-mobile" class="menu-button">
+                <i class="fas fa-user"></i> Perfil
+            </button>
+        </li>
+        <li>
+            <a href="/html/home.html" class="menu-link">
+                <i class="fas fa-graduation-cap"></i> Aprender
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-link">
+                <i class="fas fa-bolt"></i> Prática
+            </a>
+        </li>
+        <li>
+            <a href="#" class="menu-link">
+                <i class="fas fa-trophy"></i> Conquistas
+            </a>
+        </li>
+        <li>
+            <button id="btn-logout-mobile" class="menu-button">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </li>
     </ul>
 
     <div class="conteudo">
@@ -49,41 +87,42 @@
 
         <main class="coluna-centro">
             <div class="quiz-container">
-                <h1 id="unit-title" class="text-3xl font-bold mb-4">Carregando Quiz...</h1>
+                <h1 id="unit-title" class="quiz-main-title">Carregando Quiz...</h1>
                 
-                <div id="explanation-step-area" class="bg-white p-6 rounded-lg shadow-md mb-6 hidden">
-                    <h2 class="text-2xl font-bold mb-4 text-[#02416d]">Explicação da Unidade/Questão</h2>
-                    <div id="current-explanation-block-content" class="mb-6">
-                        </div>
-                    <button id="next-step-button" class="w-full py-3 bg-[#aedd2b] text-white rounded-lg font-bold hover:bg-[#8ecb21] transition-colors">
+                <div id="user-feedback-message" class="hidden"></div>
+
+                <div id="explanation-step-area" class="card-area hidden">
+                    <h2>Explicação da Unidade/Questão</h2>
+                    <div id="current-explanation-block-content" class="explanation-content"></div>
+                    <button id="next-step-button" class="btn-action btn-next">
                         Próximo
                     </button>
                 </div>
 
-                <div id="question-area" class="bg-white p-6 rounded-lg shadow-md mb-6 hidden">
-                    <p id="question-counter" class="text-sm text-gray-500 mb-2">Questão 1 de X</p>
+                <div id="question-area" class="card-area hidden">
+                    <p id="question-counter" class="question-tracker">Questão 1 de X</p>
                     
-                    <img id="question-image" class="w-full h-48 object-contain mb-4 hidden" alt="Imagem da Questão">
-                    <p id="question-text" class="text-xl font-semibold mb-4"></p>
+                    <img id="question-image" class="question-media hidden" alt="Imagem da Questão">
+                    <p id="question-text" class="question-statement"></p>
                     
-                    <p id="post-explanation-text" class="text-md text-gray-700 italic mt-4 mb-4 hidden"></p> 
+                    <p id="post-explanation-text" class="post-explanation hidden"></p> 
 
-                    <div id="alternatives-container" class="grid grid-cols-1 gap-3">
+                    <div id="alternatives-container" class="alternatives-grid">
                         </div>
-                    <button id="submit-button" class="mt-6 w-full py-3 bg-[#066699] text-white rounded-lg font-bold hover:bg-[#044b73] transition-colors">Confirmar Resposta</button>
+                    <button id="submit-button" class="btn-action btn-submit">Confirmar Resposta</button>
                 </div>
 
-                <div id="results-area" class="hidden bg-white p-8 rounded-lg shadow-md text-center">
-                    <h2 class="text-3xl font-bold text-[#02416d] mb-4">Quiz Concluído!</h2>
-                    <p class="text-xl mb-2">Sua pontuação: <span id="final-score" class="font-bold text-[#aedd2b]"></span></p>
-                    <p class="text-md text-gray-700 mb-6">Parabéns por completar a unidade!</p>
+                <div id="results-area" class="card-area results-card hidden">
+                    <h2 class="results-title">Quiz Concluído!</h2>
+                    <p class="results-text">Sua pontuação: <span id="final-score" class="final-score-value"></span></p>
+                    <p class="results-message">Parabéns por completar a unidade!</p>
                 </div>
 
-                <div id="ranking-area" class="hidden bg-white p-8 rounded-lg shadow-md text-center">
-                    <h2 class="text-3xl font-bold text-[#02416d] mb-6">Ranking dos Melli Heróis!</h2>
-                    <div id="ranking-list" class="flex flex-col items-center space-y-4">
+                <div id="ranking-area" class="card-area ranking-card hidden">
+                    <h2 class="ranking-title">Ranking dos Melli Heróis!</h2>
+                    <div id="ranking-list" class="ranking-list-container">
                         </div>
-                    <button id="return-to-modules-from-ranking-button" class="mt-8 py-3 px-6 bg-[#50c8c6] text-white rounded-lg font-bold hover:bg-[#3aa6a4] transition-colors">Voltar para Módulos</button>
+                    <button id="return-to-modules-from-ranking-button" class="btn-action btn-secondary">Voltar para Módulos</button>
                 </div>
             </div>
         </main>

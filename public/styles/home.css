@@ -9,7 +9,7 @@
 
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
-    /* NOVO BACKGROUND: Branco puro #FFFFFF */
+    /* BACKGROUND NOVO: Branco puro #FFFFFF */
     background-color: #ffffff; 
     
     background-image: none; /* Remove qualquer imagem de fundo */
@@ -60,13 +60,14 @@ body::before {
     font-size: 1.4rem;
     font-weight: bold;
     color: #f8f8ec;
+    text-decoration: none; /* Garante que o link do logo não tenha sublinhado */
 }
 
 .menu-links {
     list-style: none;
     display: flex;
     gap: 30px;
-    align-items: center; /* Centraliza verticalmente todos os itens do menu */
+    align-items: center;
 }
 
 .menu-links li {
@@ -74,17 +75,16 @@ body::before {
     color: #f9f2e7;
     cursor: pointer;
     transition: color 0.3s ease;
-    text-decoration: none; /* Remove sublinhado para todos os itens da lista */
+    text-decoration: none;
 }
 
-/* Estilo para links dentro do menu (Aprender, Prática, Conquistas) */
 .menu-links li a {
-    color: #f9f2e7; /* Cor do texto original */
-    text-decoration: none; /* Remove o sublinhado dos links */
+    color: #f9f2e7;
+    text-decoration: none;
     transition: color 0.3s ease;
-    display: flex; /* Para alinhar ícone e texto */
+    display: flex;
     align-items: center;
-    gap: 8px; /* Espaço entre ícone e texto */
+    gap: 8px;
 }
 
 .menu-links li a:hover {
@@ -93,37 +93,33 @@ body::before {
 
 .menu-links li .ativo {
     color: #aedd2b;
-    /* border-bottom: 2px solid #aedd2b; */ /* Remova ou comente esta linha */
-    border-bottom: none; /* Adicione esta linha para garantir que não haja borda */
+    border-bottom: none; /* Remove o sublinhado do item ativo */
     padding-bottom: 2px;
 }
 
-/* Estilo para ícones dentro dos links do menu */
 .menu-links li a i {
-    font-size: 1.2em; /* Tamanho do ícone */
+    font-size: 1.2em;
 }
 
-/* NOVO: Estilo para os botões "Perfil" e "Sair" para se parecerem com os links */
 .menu-links .menu-button {
-    background: none; /* Remove o fundo padrão do botão */
-    border: none; /* Remove a borda padrão do botão */
-    color: #f9f2e7; /* Cor do texto similar aos links */
+    background: none;
+    border: none;
+    color: #f9f2e7;
     font-weight: bold;
     cursor: pointer;
     transition: color 0.3s ease;
-    padding: 0; /* Remove padding padrão do botão */
-    display: flex; /* Para alinhar ícone e texto */
+    padding: 0;
+    display: flex;
     align-items: center;
-    gap: 8px; /* Espaço entre ícone e texto */
-    font-family: 'Comic Sans MS', cursive, sans-serif; /* Garante a mesma fonte */
-    font-size: 1rem; /* Garante o mesmo tamanho de fonte */
+    gap: 8px;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    font-size: 1rem;
 }
 
 .menu-links .menu-button:hover {
     color: #aedd2b;
 }
 
-/* Ícones dentro dos botões */
 .menu-links .menu-button i {
     font-size: 1.2em;
 }
@@ -131,7 +127,7 @@ body::before {
 .mobile-toggle-btn {
     display: none;
     cursor: pointer;
-    color: white; /* Para o ícone do hambúrguer */
+    color: white;
 }
 
 /* Estilo do menu mobile (escondido por padrão) */
@@ -150,8 +146,6 @@ body::before {
     gap: 10px;
 }
 
-
-
 .mobile-menu-items.visivel {
     display: flex;
 }
@@ -168,11 +162,11 @@ body::before {
     color: white;
     font-weight: bold;
     transition: color 0.3s;
-    background: none; /* Reset para o botão */
-    border: none; /* Reset para o botão */
+    background: none;
+    border: none;
     cursor: pointer;
-    text-decoration: none; /* Garante que os links e botões no menu mobile também não sublinhem */
-    display: flex; /* Alinha ícone e texto */
+    text-decoration: none;
+    display: flex;
     align-items: center;
     gap: 8px;
 }
@@ -187,16 +181,17 @@ body::before {
     width: 100%;
     position: relative;
     z-index: 10;
-    padding-top: 64px; /* Empurra o conteúdo abaixo da navbar fixa */
+    padding-top: 64px;
     min-height: 100vh;
 }
 
-/* COLUNA ESQUERDA (perfil) */
+/* COLUNA ESQUERDA (perfil) - Lógica de off-canvas padrão */
 .coluna-esquerda {
     width: 25%;
     max-width: 280px;
-    background-color: #ffffff;
-    display: none;
+    min-width: 280px; /* Garante que a largura sempre será 280px em desktop */
+    background-color: #ffffff; /* Fundo sólido para cobrir o conteúdo de trás */
+    display: flex;
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
@@ -204,16 +199,15 @@ body::before {
     height: calc(100vh - 64px);
     top: 64px;
     left: 0;
-    z-index: 50;
+    z-index: 50; /* Z-index para desktop */
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-    transform: translateX(-100%);
+    transform: translateX(-100%); /* Escondido por padrão */
     transition: transform 0.3s ease-in-out;
-    overflow-y: auto; /* Para permitir rolagem se o conteúdo for grande */
+    overflow-y: auto;
 }
 
 .coluna-esquerda.visivel {
-    display: flex;
-    transform: translateX(0);
+    transform: translateX(0); /* Desliza para dentro */
 }
 
 .avatar img {
@@ -240,44 +234,39 @@ body::before {
     padding: 50px;
     background-color: transparent;
     position: relative;
-    margin-left: 0;
+    margin-left: 0; /* Começa sem margem em desktop (sem sidebar aberta) */
     transition: margin-left 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centraliza o conteúdo horizontalmente */
-    text-align: center; /* Centraliza texto */
-    padding-bottom: 100px; /* Espaço extra para o rodapé ou elementos flutuantes */
-}
-
-/* Empurra a coluna central quando a coluna esquerda está visível */
-.coluna-esquerda.visivel ~ .coluna-centro {
-    margin-left: 280px;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 100px;
 }
 
 .coluna-centro h1 {
-    font-size: 2.2rem; /* Aumenta o tamanho */
+    font-size: 2.2rem;
     color: #02416d;
     margin-bottom: 10px;
-    font-weight: 800; /* Mais negrito */
+    font-weight: 800;
 }
 
 .coluna-centro p {
     font-size: 1.1rem;
     color: #444;
-    margin-bottom: 40px; /* Mais espaço antes dos módulos */
-    max-width: 700px; /* Limita largura do parágrafo */
+    margin-bottom: 40px;
+    max-width: 700px;
 }
 
-/* CONTAINER DOS MÓDULOS - ONDE A MÁGICA ACONTECE */
-.modulos { /* id="modules-container" */
+/* CONTAINER DOS MÓDULOS (TRILHA/MAPA) */
+.modulos {
     display: grid;
-    grid-template-columns: repeat(2, 280px); /* Duas colunas para os cards */
-    grid-template-rows: repeat(2, 200px); /* Altura das linhas para permitir o zigue-zague */
-    gap: 0; /* O espaçamento é controlado pelo posicionamento e linhas */
-    position: relative; /* Para posicionar as linhas com absolute */
-    max-width: 600px; /* Largura máxima do grid */
-    margin: 0 auto; /* Centraliza o grid */
-    padding: 20px; /* Padding para que as linhas não saiam da borda */
+    grid-template-columns: repeat(2, 280px);
+    grid-template-rows: repeat(2, 200px);
+    gap: 0;
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 /* Esconde o texto "Carregando módulos..." quando os módulos são renderizados */
@@ -287,26 +276,26 @@ body::before {
 
 /* ESTILO DOS CARDS INDIVIDUAIS */
 .module-card {
-    width: 250px; /* Largura dos cards */
-    height: 140px; /* Altura dos cards */
+    width: 250px;
+    height: 140px;
     padding: 18px;
     border-radius: 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Sombra mais forte */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
     position: relative;
-    z-index: 10; /* Sempre acima das linhas */
+    z-index: 10;
     text-align: left;
-    transform: translateZ(0); /* Para suavizar a transição em alguns navegadores */
-    text-decoration: none; /* Adicionado: Remove o sublinhado do próprio link */
+    transform: translateZ(0);
+    text-decoration: none;
 }
 
 .module-card:hover {
-    transform: translateY(-8px) scale(1.03); /* Efeito de "levantar" e aumentar um pouco */
+    transform: translateY(-8px) scale(1.03);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
@@ -314,7 +303,7 @@ body::before {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px; /* Mais espaço entre número e título */
+    gap: 8px;
 }
 
 .module-card .module-number {
@@ -323,30 +312,30 @@ body::before {
     color: rgba(255, 255, 255, 0.9);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    text-decoration: none; /* Adicionado: Remove qualquer sublinhado herdado ou padrão */
+    text-decoration: none;
 }
 
 .module-card .module-title {
-    font-size: 1.25em; /* Aumenta o título */
+    font-size: 1.25em;
     font-weight: bold;
     color: #fff;
     line-height: 1.3;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Pequena sombra no texto */
-    text-decoration: none; /* Adicionado: Remove qualquer sublinhado herdado ou padrão */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
 }
 
 .module-card .module-icon {
     position: absolute;
     bottom: 15px;
     right: 18px;
-    font-size: 2.5em; /* Tamanho maior para os ícones */
+    font-size: 2.5em;
     color: rgba(255, 255, 255, 0.5);
     opacity: 0.8;
 }
 
 /* POSICIONAMENTO DOS CARDS NO GRID */
 .module-1 {
-    background-color: #508ee6; /* Azul */
+    background-color: #508ee6;
     grid-column: 1 / 2;
     grid-row: 1 / 2;
     justify-self: start;
@@ -354,80 +343,95 @@ body::before {
 }
 
 .module-2 {
-    background-color: #5dc886; /* Verde */
+    background-color: #5dc886;
     grid-column: 2 / 3;
     grid-row: 1 / 2;
     justify-self: end;
     align-self: end;
-    transform: translateY(60px); /* Empurra para baixo para o zigue-zague */
+    transform: translateY(60px);
 }
 
 .module-3 {
-    background-color: #ff9933; /* Laranja */
+    background-color: #ff9933;
     grid-column: 1 / 2;
     grid-row: 2 / 3;
     justify-self: start;
     align-self: start;
-    transform: translateY(-60px); /* Empurra para cima para o zigue-zague */
+    transform: translateY(-60px);
 }
 
 .module-4 {
-    background-color: #9b59b6; /* Roxo */
+    background-color: #9b59b6;
     grid-column: 2 / 3;
     grid-row: 2 / 3;
     justify-self: end;
     align-self: end;
 }
 
-/* STATUS DOS MÓDULOS (desbloqueado, bloqueado, completed) */
+/* STATUS DOS MÓDULOS */
 .module-card.desbloqueado {
     /* Cores já definidas acima */
 }
 
 .module-card.bloqueado {
-    background-color: #aeb1b8; /* Cor mais neutra para bloqueado */
+    background-color: #aeb1b8;
     cursor: not-allowed;
-    filter: grayscale(80%); /* Efeito de escala de cinza */
+    filter: grayscale(80%);
     opacity: 0.7;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .module-card.bloqueado:hover {
-    transform: none; /* Sem efeito de hover para bloqueados */
+    transform: none;
     box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
 }
 
 .module-card.completed {
-    background-color: #50c8c6; /* Um verde/azul mais forte para completo */
+    background-color: #50c8c6;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
 }
 .module-card.completed .module-icon {
-    color: rgba(255, 255, 255, 0.8); /* Ícone mais visível para completos */
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* LINHAS DE CONEXÃO (Trilha) */
 .module-path {
     position: absolute;
-    /* Remover bordas por padrão, a trilha específica vai definir qual borda usar */
     border: none;
-    z-index: 5; /* Fica abaixo dos cards */
+    z-index: 5;
 }
 
 /* Linha entre Módulo 1 e Módulo 2 */
 .path-1-2 {
-    top: 100px; /* Ajuste para sair mais perto do centro vertical do M1 */
-    left: 215px; /* Ponto de partida do lado direito do M1 */
-    width: 130px; /* Comprimento da linha */
-    height: 0; /* Para ser uma linha horizontal antes da rotação */
-    transform: rotate(20deg); /* Ajustar ângulo para conectar ao M2 */
-    transform-origin: left center; /* O ponto de rotação é o início da linha */
-    border-top: 2px dashed rgba(80, 200, 198, 0.7); /* Apenas uma borda para fazer a linha */
-    border-color: rgba(80, 200, 198, 0.7); /* Cor da trilha */
+    top: 100px;
+    left: 215px;
+    width: 130px;
+    height: 0;
+    transform: rotate(20deg);
+    transform-origin: left center;
+    border-top: 2px dashed rgba(80, 200, 198, 0.7);
+    border-color: rgba(80, 200, 198, 0.7);
 }
 
 /* As outras trilhas (path-2-3 e path-3-4) estão ocultas via HTML ou serão geradas pelo JS se precisar */
 .path-2-3, .path-3-4 {
     display: none;
+}
+
+/* Backdrop para mobile */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Fundo escuro semi-transparente */
+    z-index: 101; /* Fica abaixo da sidebar, mas acima do conteúdo principal */
+    display: none; /* Escondido por padrão */
+}
+
+.backdrop.visivel { /* Classe adicionada pelo JS */
+    display: block;
 }
 
 
@@ -436,6 +440,25 @@ body::before {
     .menu-desktop { display: flex; }
     .mobile-toggle-btn { display: none; }
     .mobile-menu-items, .mobile-menu-items.visivel { display: none !important; }
+
+    /* EMPURRÃO NO DESKTOP: Sidebar fechada - margem 0 */
+    .coluna-centro {
+        margin-left: 0; /* Começa em 0 */
+    }
+
+    /* EMPURRÃO NO DESKTOP: Sidebar visível - margem 280px */
+    .coluna-esquerda.visivel ~ .coluna-centro {
+        margin-left: 280px; /* Empurra o conteúdo central */
+    }
+
+    /* Ocultar a coluna esquerda por padrão em desktop, mas usar a transição */
+    .coluna-esquerda {
+        transform: translateX(-100%);
+    }
+
+    .coluna-esquerda.visivel {
+        transform: translateX(0);
+    }
 }
 
 @media (max-width: 767px) {
@@ -446,30 +469,33 @@ body::before {
         flex-direction: column;
         margin-top: 0;
         min-height: auto;
-        padding-top: 64px; /* Mantém o padding para a navbar principal */
+        padding-top: 64px;
     }
 
-    /* Coluna Esquerda (Perfil) */
+    /* Coluna Esquerda (Perfil) - Lógica de sobreposição TOTAL em mobile (CORRIGIDO) */
     .coluna-esquerda {
-        width: 100%;
-        max-width: none;
-        position: static; /* Flui no documento */
-        height: auto;
-        transform: translateX(0);
-        box-shadow: none;
-        border-bottom: 1px solid #cce7f0;
-        margin-bottom: 20px;
-        display: none;
-    }
-    .coluna-esquerda.visivel {
-        display: flex;
+        width: 100%; /* Ocupa a largura total */
+        max-width: 100%;
+        min-width: auto;
+        position: fixed; /* Essencial para sobreposição */
+        height: 100vh; /* Ocupa a altura total da viewport */
+        top: 0; /* Começa do topo */
+        left: 0;
+        z-index: 102; /* Fica acima de todo o conteúdo */
+        box-shadow: none; /* Remove sombras laterais */
+        padding-top: 64px; /* Ajusta padding para navbar, para que o conteúdo comece abaixo dela */
     }
 
-    /* Coluna Central */
+    /* Controle de Overflow para BODY (gerenciado pelo JS) */
+    body.sidebar-open-mobile {
+        overflow: hidden;
+    }
+
+    /* Coluna Central - Sem margem em mobile */
     .coluna-centro {
         padding: 30px 20px;
-        margin-left: 0;
-        align-items: center; /* Centraliza o conteúdo principal */
+        margin-left: 0 !important; /* Garante que não haja margem em mobile */
+        align-items: center;
     }
 
     .coluna-centro h1 {
@@ -482,38 +508,38 @@ body::before {
 
     /* Módulos (empilhados em mobile) */
     .modulos {
-        grid-template-columns: 1fr; /* Uma coluna */
-        grid-template-rows: auto; /* Altura automática */
-        max-width: 300px; /* Largura máxima para os cards */
-        padding: 0; /* Remove padding do grid container */
-        margin: 0 auto; /* Centraliza */
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        max-width: 300px;
+        padding: 0;
+        margin: 0 auto;
     }
 
     .module-card {
         width: 100%;
-        margin-bottom: 25px; /* Espaçamento entre os cards */
-        transform: none !important; /* Remove transformações de zigue-zague */
+        margin-bottom: 25px;
+        transform: none !important;
         grid-column: auto !important;
         grid-row: auto !important;
         justify-self: center !important;
         align-self: center !important;
-        height: auto; /* Altura flexível */
-        min-height: 120px; /* Altura mínima */
-        text-decoration: none; /* Mantido para mobile */
+        height: auto;
+        min-height: 120px;
+        text-decoration: none;
     }
 
     .module-card .module-icon {
-        position: static; /* Volta à posição normal */
-        margin-top: 10px; /* Espaço acima do ícone */
-        text-align: right; /* Alinha à direita */
-        width: 100%; /* Ocupa a largura total para alinhamento */
-        font-size: 2em; /* Ícone menor em mobile */
+        position: static;
+        margin-top: 10px;
+        text-align: right;
+        width: 100%;
+        font-size: 2em;
         color: rgba(255, 255, 255, 0.7);
     }
 
     .module-card .module-number,
     .module-card .module-title {
-        text-decoration: none; /* Mantido para mobile */
+        text-decoration: none;
     }
 
     /* Esconde as linhas de conexão em mobile */

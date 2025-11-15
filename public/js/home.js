@@ -14,16 +14,51 @@ document.addEventListener('DOMContentLoaded', () => {
     const welcomeNicknameSpan = document.getElementById("welcome-nickname");
     const btnLogout = document.getElementById('btn-logout');
     const btnLogoutMobile = document.getElementById('btn-logout-mobile');
+    const backdrop = document.getElementById('backdrop');
+    const logoLink = document.getElementById('logo-link');
 
-    // Mapeamento de ícones para cada tipo de módulo (adapte conforme seus dados)
+
+    // Mapeamento de ícones para cada tipo de módulo
     const moduleIcons = {
-        'Introdução à Programação': 'fas fa-microchip',
+        'Introdução à Plataforma': 'fas fa-microchip',
         'Estruturas de Dados': 'fas fa-sitemap',
         'Desenvolvimento Web': 'fas fa-globe',
         'Banco de Dados': 'fas fa-database',
-        // Adicione outros mapeamentos conforme necessário para seus módulos
-        'default': 'fas fa-graduation-cap' // Ícone padrão
+        'default': 'fas fa-graduation-cap'
     };
+
+    // Função auxiliar para controlar o scroll do body (SEM BACKDROP)
+    function toggleBodyScroll(disableScroll) {
+        if (window.innerWidth <= 767) { // Aplica apenas em mobile
+            if (disableScroll) {
+                document.body.classList.add('sidebar-open-mobile'); // Adiciona classe para overflow: hidden
+            } else {
+                document.body.classList.remove('sidebar-open-mobile'); // Remove classe para restaurar scroll
+            }
+        } else {
+            // Garante que a classe de scroll esteja removida em desktop
+            document.body.classList.remove('sidebar-open-mobile');
+        }
+    }
+
+    // NOVO: Função centralizada para toggle da sidebar de perfil
+    function toggleSidebar(open) {
+        const isCurrentlyOpen = colunaEsquerda.classList.contains("visivel");
+        const shouldOpen = (open !== undefined) ? open : !isCurrentlyOpen;
+
+        if (shouldOpen) {
+            colunaEsquerda.classList.add("visivel");
+            mobileMenu.classList.remove("visivel"); // Fecha o menu mobile se a sidebar abre
+        } else {
+            colunaEsquerda.classList.remove("visivel");
+        }
+        
+        // Gerencia o backdrop e o scroll (apenas em mobile)
+        if (window.innerWidth <= 767) {
+            toggleBodyScroll(shouldOpen);
+        }
+    }
+
 
     // Função auxiliar para fazer requisições autenticadas
     async function fetchAuthenticatedData(url, options = {}) {
@@ -68,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = await fetchAuthenticatedData('/api/users/profile'); 
             if (user) {
                 userNicknameSpan.textContent = user.nickname;
-                userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
+                userAssiduidadeSpan.textContent = `${user.assiduidade_days || 0} dias`;
                 userPontosSpan.textContent = user.pontos;
                 welcomeNicknameSpan.textContent = user.nickname; 
                 
@@ -86,29 +121,25 @@ document.addEventListener('DOMContentLoaded', () => {
             const modules = await fetchAuthenticatedData('/api/content/modulos');
             
             if (modulesContainer) {
-                // Guarda as divs das trilhas para recolocá-las
                 const existingPaths = Array.from(modulesContainer.querySelectorAll('.module-path'));
-                modulesContainer.innerHTML = ''; // Limpa o conteúdo, incluindo a mensagem "Carregando módulos..."
-                existingPaths.forEach(path => modulesContainer.appendChild(path)); // Adiciona as trilhas de volta
+                modulesContainer.innerHTML = '';
+                existingPaths.forEach(path => modulesContainer.appendChild(path));
             }
 
             if (modules && modules.length > 0) {
                 modules.forEach((module, index) => {
                     const moduleCard = document.createElement('a');
                     moduleCard.href = `/html/modulo.html?id=${module.id_modulo}`;
-                    // Adiciona as classes necessárias para o novo design
-                    moduleCard.className = `module-card module-${index + 1}`; // module-1, module-2, etc.
+                    moduleCard.className = `module-card module-${index + 1}`;
 
-                    // Adiciona classes de status
                     if (module.completo) {
                         moduleCard.classList.add('completed');
-                    } else if (module.bloqueado) { // Assumindo que seu backend pode retornar 'bloqueado'
+                    } else if (module.bloqueado) {
                         moduleCard.classList.add('bloqueado');
                     } else {
                         moduleCard.classList.add('desbloqueado');
                     }
 
-                    // Obtenha o ícone com base no nome do módulo, se possível, ou use um padrão
                     const iconClass = moduleIcons[module.nome_modulo] || moduleIcons['default'];
 
                     moduleCard.innerHTML = `
@@ -122,14 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
                     
                     if (modulesContainer) {
-                        // Inserir o card antes da próxima trilha ou no final se não houver mais trilhas
-                        // Esta lógica simples apenas adiciona no final. Se a ordem das trilhas precisar ser intercalada,
-                        // uma lógica de inserção mais complexa seria necessária.
                         modulesContainer.appendChild(moduleCard);
                     }
                 });
 
-                // Remove a mensagem "Carregando módulos..." se ainda estiver lá
                 const loadingMessage = modulesContainer.querySelector('.text-gray-700');
                 if (loadingMessage) {
                     loadingMessage.remove();
@@ -165,26 +192,84 @@ document.addEventListener('DOMContentLoaded', () => {
     loadUserProfile();
     loadModules();
 
-    // Toggle do painel de perfil
-    btnPerfil.addEventListener("click", () => {
-        colunaEsquerda.classList.toggle("visivel");
-    });
+    // Toggle do painel de perfil (desktop e mobile)
+    if (btnPerfil) {
+        btnPerfil.addEventListener("click", () => {
+            toggleSidebar(); // Usa a função centralizada
+        });
+    }
 
     if (btnPerfilMobile) { 
         btnPerfilMobile.addEventListener("click", () => {
-            colunaEsquerda.classList.toggle("visivel"); 
-            mobileMenu.classList.remove("visivel"); 
+            toggleSidebar(); // Usa a função centralizada
         }); 
     }
 
-    // Lógica CORRIGIDA para o menu hambúrguer
-    menuToggle.addEventListener("click", () => {
-        mobileMenu.classList.toggle("visivel");
-        colunaEsquerda.classList.remove("visivel"); 
+    // Lógica do menu hambúrguer
+    if (menuToggle) {
+        menuToggle.addEventListener("click", () => {
+            const isMenuOpen = mobileMenu.classList.contains("visivel");
+            
+            mobileMenu.classList.toggle("visivel");
+            toggleSidebar(false); // Sempre fecha a sidebar se o menu mobile abre
+
+            // Gerencia o scroll para o menu mobile
+            if (window.innerWidth <= 767) {
+                toggleBodyScroll(!isMenuOpen);
+            }
+        });
+    }
+
+    // Event Listener para o clique no logo
+    if (logoLink) {
+        logoLink.addEventListener('click', (event) => {
+            event.preventDefault(); 
+
+            // Limpa o estado da sidebar e menu antes de redirecionar
+            toggleSidebar(false); // Garante que a sidebar está fechada (e restaura o scroll)
+            mobileMenu.classList.remove('visivel'); // Garante que o menu mobile está fechado
+            toggleBodyScroll(false); // Garante que o scroll é reativado
+
+            // Redireciona para a home.html
+            window.location.href = '/html/home.html';
+        });
+    }
+
+    // Fechar sidebar/menu mobile ao clicar fora (mobile)
+    // O clique na coluna esquerda em mobile NÃO deve fechar (pois a sidebar está 100% da largura).
+    // O backdrop (que não usamos) ou o clique no botão de toggle deve fechar.
+    
+    // NOVO: Adicionado listener para fechar a sidebar ao clicar fora (no main content) em mobile
+    // Verifica se a largura é mobile e se a sidebar está visível
+    document.querySelector('.conteudo').addEventListener('click', (event) => {
+        if (window.innerWidth <= 767 && colunaEsquerda.classList.contains('visivel')) {
+            // Se o clique NÃO foi dentro da colunaEsquerda ou do botão de toggle, feche.
+            if (!colunaEsquerda.contains(event.target) && 
+                !btnPerfil.contains(event.target) && !btnPerfilMobile.contains(event.target)) {
+                
+                toggleSidebar(false); // Fecha a sidebar
+            }
+        }
     });
 
+
+    // Logout
     btnLogout.addEventListener('click', logout);
     if (btnLogoutMobile) { 
         btnLogoutMobile.addEventListener('click', logout); 
     }
+
+    // Opcional: Fechar menus ao redimensionar
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 767) {
+            // Se estiver em desktop, garantir que o scroll esteja restaurado e menus mobile fechados
+            toggleBodyScroll(false); 
+            mobileMenu.classList.remove('visivel'); 
+        } else {
+            // Se estiver em mobile, e algum menu ou sidebar estava aberto, mantém o scroll block
+            if (colunaEsquerda.classList.contains('visivel') || mobileMenu.classList.contains('visivel')) {
+                toggleBodyScroll(true);
+            }
+        }
+    });
 });

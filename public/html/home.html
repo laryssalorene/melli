@@ -4,45 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Área do Herói - Melli Hero</title>
+    
     <link rel="stylesheet" href="/styles/home.css" />
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-        .practice-zone {
-            margin-top: 40px;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-        }
-        .game-card {
-            background-color: white;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .game-card h3 {
-            margin-top: 0;
-            color: #333;
-        }
-        .play-button {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 12px 25px;
-            background-color: #28a745;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .play-button:hover {
-            background-color: #218838;
-        }
-    </style>
-</head>
-<body> <nav class="menu">
-        <div class="logo">🍬 Melli Hero</div>
+    
+    </head>
+<body>
+
+    <nav class="menu">
+        
+        <a href="/html/home.html" id="logo-link" class="logo">🍬 Melli Hero</a>
+        
         <ul class="menu-desktop menu-links">
             <li>
                 <button id="btn-perfil" class="menu-button">
@@ -50,12 +23,13 @@
                 </button>
             </li>
             <li>
-                <a href="/html/home.html" class="ativo">
+                <a href="/html/home.html" class="menu-link ativo">
                     <i class="fas fa-graduation-cap"></i> Aprender
                 </a>
             </li>
             <li>
-                <a href="#" class="menu-link"> <i class="fas fa-bolt"></i> Prática
+                <a href="#" class="menu-link">
+                    <i class="fas fa-bolt"></i> Prática
                 </a>
             </li>
             <li>
@@ -70,7 +44,8 @@
             </li>
         </ul>
         <button id="menu-toggle" class="mobile-toggle-btn">
-            <i class="fas fa-bars fa-2x"></i> </button>
+            <i class="fas fa-bars fa-2x"></i>
+        </button>
     </nav>
     
     <ul id="mobile-menu" class="mobile-menu-items">
@@ -80,7 +55,7 @@
             </button>
         </li>
         <li>
-            <a href="/html/home.html" class="menu-link ativo">
+            <a href="/html/home.html" class="menu-link">
                 <i class="fas fa-graduation-cap"></i> Aprender
             </a>
         </li>
@@ -101,6 +76,8 @@
         </li>
     </ul>
 
+    <div id="backdrop" class="backdrop"></div>
+
     <div class="conteudo">
         <aside class="coluna-esquerda" id="coluna-esquerda">
             <div class="avatar">
@@ -117,19 +94,10 @@
         <main class="coluna-centro">
             <h1>Bem-vindo, <span id="welcome-nickname">herói do açúcar</span>! 🍭</h1>
             <p>Escolha um módulo para continuar sua jornada.</p>
+            
             <div class="modulos" id="modules-container"> 
                 <div class="module-path path-1-2"></div>
                 <p class="text-gray-700">Carregando módulos...</p> 
-            </div>
-
-            <div class="practice-zone">
-                <h2>Zona de Prática</h2>
-                <p>Teste seus conhecimentos com nossos minigames!</p>
-                <div class="game-card">
-                    <h3>Jogo da Cesta</h3>
-                    <p>Colete os alimentos certos e evite os errados para ganhar pontos.</p>
-                    <a href="/html/jogo-cesta.html" class="play-button">Jogar Agora</a>
-                </div>
             </div>
         </main>
     </div>

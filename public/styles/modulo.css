@@ -50,7 +50,7 @@ body {
  display: inline-flex; /* Use inline-flex para não ocupar toda a largura */
  align-items: center;
  gap: 10px;
- margin-bottom: 40px;
+ margin-top: 40px;
  padding: 12px 25px;
  background-color: #066699; /* Azul da navbar */
  color: #ffffff;
