@@ -8,24 +8,133 @@ body {
     background-image: url('/img/background2.png'); /* Caminho ajustado */
     background-size: cover;
     background-position: center;
+    font-family: 'Poppins', sans-serif; /* Exemplo de fonte, se usar */
+    margin: 0;
 }
 
 .cadastro-container {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.95);
     padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     width: 100%;
-    max-width: 450px;
+    max-width: 450px; /* Ajuste para o tamanho mais compacto da sua imagem */
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .cadastro-container h1 {
     color: #02416d;
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     margin-bottom: 25px;
+    font-weight: 800;
 }
 
+/* --- SEÇÃO: SELEÇÃO DE MASCOTE (REESTILIZADA) --- */
+.mascote-selection-group {
+    margin-top: 0; /* Ajuste para vir logo após o título */
+    margin-bottom: 20px; /* Espaçamento antes da descrição */
+    text-align: center;
+}
+
+.mascote-selection-label {
+    display: block;
+    font-weight: bold;
+    color: #02416d;
+    font-size: 1.15rem;
+    margin-bottom: 20px; /* Espaçamento entre o título e os círculos */
+}
+
+.mascote-options {
+    display: flex;
+    justify-content: center;
+    gap: 25px; /* Mais espaço entre os círculos */
+    flex-wrap: wrap;
+    margin-bottom: 10px; /* Espaço entre os círculos e a caixa de descrição */
+}
+
+.mascote-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Centraliza verticalmente o conteúdo (imagem) */
+    cursor: pointer;
+    border: 2px solid #cce7f0; /* Borda mais fina por padrão */
+    border-radius: 50%; /* Torna o elemento um círculo */
+    padding: 10px; /* Espaçamento interno para a imagem */
+    background-color: #f7fafd;
+    transition: all 0.2s ease-in-out;
+    width: 90px; /* Tamanho do círculo */
+    height: 90px; /* Tamanho do círculo */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); /* Sombra mais sutil */
+    position: relative;
+}
+
+.mascote-option:hover {
+    transform: translateY(-3px); /* Efeito de elevação ao passar o mouse */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mascote-option input[type="radio"] {
+    display: none; /* Esconde o radio button nativo */
+}
+
+.mascote-option img {
+    width: 100%; /* Imagem preenche o círculo */
+    height: 100%;
+    object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
+    border-radius: 50%; /* Para garantir que a imagem também seja circular se tiver fundo */
+    filter: grayscale(60%); /* Mais acinzentado por padrão */
+    transition: filter 0.2s ease-in-out, transform 0.2s ease-in-out;
+}
+
+/* Esconde o span com o nome do mascote */
+.mascote-option span {
+    display: none; 
+}
+
+/* Estilo para o mascote selecionado (aplicado via JS) */
+.mascote-option.selected-mascote-border {
+    border-color: #50c8c6; /* Cor da borda quando selecionado */
+    box-shadow: 0 0 0 4px rgba(80, 200, 198, 0.3); /* Anel de foco externo */
+}
+
+.mascote-option.selected-mascote-border img {
+    filter: grayscale(0%); /* Remove o cinza quando selecionado */
+    transform: scale(1.05); /* Pequeno zoom */
+}
+
+
+/* --- CAIXA DE DESCRIÇÃO GLOBAL --- */
+.mascote-description-box {
+    margin: 0 auto 30px; /* Ajustado para ficar logo abaixo dos mascotes */
+    padding: 15px;
+    border: 1px solid #cce7f0;
+    border-radius: 8px;
+    background-color: #f7fafd;
+    font-size: 1rem;
+    color: #888; /* Cor inicial mais suave */
+    min-height: 60px; /* Garante que a caixa não encolha demais */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1.4;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.mascote-description-box.mascote-active {
+    color: #02416d;
+    font-weight: 600;
+    border-color: #50c8c6;
+    background-color: #e0f2f7;
+    box-shadow: 0 4px 10px rgba(80, 200, 198, 0.1);
+}
+
+
+/* --- CAMPOS DO FORMULÁRIO E BOTÃO --- */
 .form-group {
     margin-bottom: 20px;
     text-align: left;
@@ -36,6 +145,7 @@ body {
     margin-bottom: 8px;
     font-weight: bold;
     color: #02416d;
+    font-size: 1.05rem;
 }
 
 .form-group input {
@@ -45,12 +155,13 @@ body {
     border-radius: 8px;
     font-size: 1rem;
     color: #333;
+    transition: all 0.2s ease-in-out;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: #50c8c6;
-    box-shadow: 0 0 0 3px rgba(80, 200, 198, 0.3);
+    box-shadow: 0 0 0 4px rgba(80, 200, 198, 0.2);
 }
 
 button[type="submit"] {
@@ -63,29 +174,39 @@ button[type="submit"] {
     border-radius: 8px;
     cursor: pointer;
     font-size: 1.1rem;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; /* Espaço antes do botão */
 }
 
 button[type="submit"]:hover {
     background-color: #8cc63f;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .message {
     margin-top: 15px;
     font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .success-message {
-    color: #48bb78;
+    color: #2f855a;
+    background-color: #e6ffed;
+    border: 1px solid #48bb78;
 }
 
 .error-message {
-    color: #e53e3e;
+    color: #c53030;
+    background-color: #fff5f5;
+    border: 1px solid #e53e3e;
 }
 
 .link-login {
-    margin-top: 20px;
-    font-size: 0.95rem;
+    margin-top: 25px;
+    font-size: 0.98rem;
     color: #02416d;
 }
 
@@ -97,4 +218,61 @@ button[type="submit"]:hover {
 
 .link-login a:hover {
     text-decoration: underline;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 768px) {
+    .cadastro-container {
+        padding: 30px 20px;
+        margin: 20px auto;
+        max-width: 95%;
+    }
+    .cadastro-container h1 {
+        font-size: 2rem;
+    }
+    .mascote-options {
+        gap: 15px; /* Ajuste para mobile */
+    }
+    .mascote-option {
+        width: 80px; /* Círculos menores em mobile */
+        height: 80px;
+        padding: 8px;
+    }
+    .mascote-selection-label {
+        font-size: 1.05rem;
+    }
+    .mascote-description-box {
+        font-size: 0.9rem;
+        min-height: 45px;
+    }
+    .form-group label {
+        font-size: 1rem;
+    }
+    .form-group input {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+    button[type="submit"] {
+        font-size: 1rem;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mascote-options {
+        gap: 10px;
+    }
+    .mascote-option {
+        width: 70px; /* Ainda menores em telas muito pequenas */
+        height: 70px;
+        padding: 6px;
+    }
+    .mascote-selection-label {
+        font-size: 1rem;
+    }
+    .mascote-description-box {
+        font-size: 0.85rem;
+        min-height: 40px;
+        padding: 12px;
+    }
 }

@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Elemento de feedback na tela (NOVO)
     const userFeedbackMessage = document.getElementById('user-feedback-message');
+    // Elementos de progresso (NOVO)
+    const progressBarContainer = document.getElementById('progress-bar-container');
+    const progressBar = document.getElementById('progress-bar');
 
 
     let questions = []; 
@@ -45,10 +48,42 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentExplanationBlocks = []; 
     let currentExplanationBlockIndex = 0; 
 
+    // Variáveis de controle de progresso (NOVO)
+    let totalContentSteps = 0;
+    let currentContentStep = 0;
+
 
     // --- Funções Auxiliares ---
 
-    // NOVO: Função para exibir mensagens de feedback na tela (substitui alert)
+    // NOVO: Função para atualizar a barra de progresso
+    function updateProgressBar(advance = 0) {
+        currentContentStep += advance;
+        if (totalContentSteps === 0) {
+            progressBar.style.width = '0%';
+            return;
+        }
+
+        const percentage = (currentContentStep / totalContentSteps) * 100;
+        progressBar.style.width = `${Math.min(percentage, 100).toFixed(2)}%`;
+    }
+
+    // NOVO: Função para calcular o total de passos
+    function calculateTotalSteps(allQuestions) {
+        // Total de passos = (Número de questões) + (Total de blocos de explicação pré-questão)
+        let total = allQuestions.length; // Cada questão é um passo principal
+        
+        allQuestions.forEach(q => {
+            if (q.explicacoes_pre_questao) {
+                total += q.explicacoes_pre_questao.length;
+            }
+        });
+        totalContentSteps = total;
+        currentContentStep = 0; // Reseta o contador para o início
+        updateProgressBar(0); // Inicializa a barra em 0%
+    }
+
+
+    // Função para exibir mensagens de feedback na tela (substitui alert)
     function displayFeedbackMessage(message, type = 'warning', duration = 3000) {
         userFeedbackMessage.textContent = message;
         userFeedbackMessage.className = ``; // Limpa classes anteriores
@@ -146,10 +181,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 500);
     }
 
-    function redirectToHome() {
-        window.location.href = '/html/home.html';
-    }
-
     // =======================================================
     // Funções de Fluxo de Explicações (Duolingo/Mimo Style)
     // =======================================================
@@ -203,6 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function displayExplanationStep() {
         hideAllContainers();
         explanationStepArea.classList.remove('hidden');
+        userFeedbackMessage.classList.add('hidden'); // Esconde feedback da tela
 
         renderCurrentExplanationBlock();
         
@@ -211,6 +243,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function handleNextStep() {
+        // Avanca o progresso na barra
+        updateProgressBar(1); 
+        
         currentExplanationBlockIndex++;
         if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
             renderCurrentExplanationBlock(); // Próximo bloco de explicação
@@ -254,10 +289,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Adiciona listener para marcar a alternativa como 'selected' visualmente
             label.addEventListener('click', () => {
+                // Remove 'selected' de todas as outras
                 alternativesContainer.querySelectorAll('.alternative-item').forEach(item => {
                     item.classList.remove('selected');
                 });
+                // Adiciona 'selected' à clicada
                 label.classList.add('selected');
+                // Marca o radio button interno
+                label.querySelector('input[type="radio"]').checked = true;
             });
             
             alternativesContainer.appendChild(label);
@@ -306,6 +345,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             submitButton.textContent = 'Próxima Questão';
         } else {
+            // Avanca o progresso na barra
+            updateProgressBar(1); 
+
             // Após a resposta, avança para a próxima questão
             currentQuestionIndex++;
             resetAlternativeStyles(); // Limpa estilos de feedback
@@ -327,6 +369,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Função para iniciar o fluxo de uma questão (explicações ou direto para a pergunta)
     function startQuestionFlow(index) {
         if (index >= questions.length) {
+            // Se todas as questões foram respondidas, avança o progresso e mostra os resultados
+            updateProgressBar(1); 
             showResults();
             return;
         }
@@ -334,10 +378,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const question = questions[index];
         currentExplanationBlocks = question.explicacoes_pre_questao || [];
         currentExplanationBlockIndex = 0; 
-
+        
+        // Se houver explicações pré-questão, a barra avança no handleNextStep
+        // Senão, ela avança ao carregar a questão
         if (currentExplanationBlocks.length > 0) {
             displayExplanationStep();
         } else {
+            updateProgressBar(1); // Avança o progresso para a tela da questão
             displayQuestion();
         }
     }
@@ -463,7 +510,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     unitId = urlParams.get('unitId');
-    currentModuleId = urlParams.get('moduleId'); // Garante que o ID do módulo é pego
+    currentModuleId = urlParams.get('moduleId');
 
     if (!unitId || !currentModuleId) {
         unitTitleElement.textContent = 'Unidade não especificada.';
@@ -477,14 +524,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (unitInfo) {
             unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
             
-            // Note: Não precisamos mais pegar currentModuleId daqui se ele já vem da URL,
-            // mas mantemos a chamada para obter o nome da unidade
         }
 
         const fetchedQuestions = await fetchAuthenticatedData(`/api/content/unidade/${unitId}/questions`);
         if (fetchedQuestions && fetchedQuestions.length > 0) {
             questions = fetchedQuestions;
             currentQuestionIndex = 0; 
+            
+            // NOVO: Calcula o total de passos antes de iniciar o quiz
+            calculateTotalSteps(questions);
+
             startQuestionFlow(currentQuestionIndex); // Inicia o fluxo
         } else {
             unitTitleElement.textContent = `Nenhuma questão encontrada para esta unidade.`;

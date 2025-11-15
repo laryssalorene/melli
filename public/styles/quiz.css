@@ -5,25 +5,6 @@
     display: none !important;
 }
 
-.conteudo {
-    display: flex;
-    justify-content: center;
-    padding-top: 80px; /* Altura da navbar */
-    min-height: calc(100vh - 80px);
-}
-
-.coluna-centro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 30px 20px;
-    position: relative;
-    max-width: 1200px;
-    width: 100%;
-    box-sizing: border-box;
-}
-
 .quiz-container {
     max-width: 800px;
     margin: 2rem auto;
@@ -31,6 +12,25 @@
     display: flex; /* Para centralizar os cards */
     flex-direction: column;
     align-items: center;
+}
+
+/* --- BARRA DE PROGRESSO (NOVO) --- */
+#progress-bar-container {
+    width: 100%;
+    max-width: 700px;
+    height: 12px; /* Altura da barra */
+    background-color: #e0e7ee; /* Cor de fundo (cinza claro) */
+    border-radius: 6px;
+    margin-bottom: 2rem;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+#progress-bar {
+    height: 100%;
+    width: 0; /* Começa em 0% */
+    background: linear-gradient(to right, #aedd2b, #50c8c6); /* Gradiente de progresso */
+    border-radius: 6px;
+    transition: width 0.3s ease-in-out;
 }
 
 /* --- Estilo Base dos Cards (Explicação, Questão, Resultados, Ranking) --- */
@@ -51,31 +51,35 @@
     color: #02416d;
     font-size: 2.8rem; /* Maior e mais impactante */
     font-weight: 800;
-    margin-bottom: 2.5rem; /* Mais espaço antes do conteúdo */
+    margin-bottom: 1.5rem; /* Menos espaço antes da barra */
     line-height: 1.2;
 }
 
 /* --- Mensagens de Feedback na Tela (NOVO) --- */
 #user-feedback-message {
-    background-color: #ffe0b2; /* Laranja suave */
-    color: #e65100; /* Laranja escuro */
     padding: 1rem 1.5rem;
     border-radius: 8px;
     margin-bottom: 1.5rem;
     font-weight: 600;
     text-align: center;
-    border: 1px solid #ffcc80;
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    width: 100%;
+    max-width: 700px;
 }
 #user-feedback-message.error {
     background-color: #ffcdd2; /* Vermelho suave */
     color: #c62828; /* Vermelho escuro */
-    border-color: #ef9a9a;
+    border: 1px solid #ef9a9a;
 }
 #user-feedback-message.success {
     background-color: #c8e6c9; /* Verde suave */
     color: #2e7d32; /* Verde escuro */
-    border-color: #a5d6a7;
+    border: 1px solid #a5d6a7;
+}
+#user-feedback-message.warning {
+    background-color: #ffe0b2; /* Laranja suave */
+    color: #e65100; /* Laranja escuro */
+    border: 1px solid #ffcc80;
 }
 
 
@@ -90,26 +94,26 @@
     margin-bottom: 1.5rem;
 }
 .explanation-content {
-    margin-bottom: 2.5rem; /* Mais espaço antes do botão */
+    margin-bottom: 2.5rem;
 }
 .explanation-content p {
-    font-size: 1.15rem; /* Leitura mais fácil */
+    font-size: 1.15rem;
     line-height: 1.7;
     color: #333;
     margin-bottom: 1.25rem;
-    text-align: left; /* Garante alinhamento esquerdo para o texto */
+    text-align: left;
 }
 .explanation-content img {
     max-width: 100%;
     height: auto;
     border-radius: 12px;
-    margin: 2rem auto; /* Centraliza a imagem e adiciona margem */
+    margin: 2rem auto;
     display: block;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 .explanation-content .iframe-container {
     position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    padding-bottom: 56.25%;
     height: 0;
     overflow: hidden;
     max-width: 100%;
@@ -127,9 +131,19 @@
     border: 0;
 }
 
+/* Estilo para o botão "Próximo" nas explicações */
+#next-step-button {
+    font-size: 1.2rem;
+    padding: 0.9rem 2.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+
 /* --- Área da Questão --- */
 #question-area {
-    text-align: center; /* Centraliza o conteúdo geral */
+    text-align: center;
 }
 .question-tracker {
     font-size: 1rem;
@@ -140,15 +154,15 @@
 }
 .question-media {
     max-width: 100%;
-    max-height: 300px; /* Um pouco mais alta */
+    max-height: 300px;
     object-fit: contain;
     border-radius: 12px;
-    margin: 0 auto 2rem auto; /* Mais espaço */
+    margin: 0 auto 2rem auto;
     display: block;
     box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
 .question-statement {
-    font-size: 1.6rem; /* Fonte maior para o enunciado */
+    font-size: 1.6rem;
     font-weight: 700;
     color: #02416d;
     margin-bottom: 2rem;
@@ -160,23 +174,23 @@
 .alternatives-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px; /* Espaço entre as alternativas */
+    gap: 12px;
 }
 .alternative-item {
     display: flex;
     align-items: center;
     background-color: #f7fafd;
     border: 2px solid #cce7f0;
-    padding: 1.2rem 1.5rem; /* Mais padding */
-    border-radius: 12px; /* Mais arredondado */
+    padding: 1.2rem 1.5rem;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease-in-out;
-    position: relative; /* Para o custom radio */
+    position: relative;
 }
 .alternative-item:hover:not(.selected):not(.correct-answer):not(.wrong-answer) {
     background-color: #e0f2f7;
     border-color: #50c8c6;
-    transform: translateY(-2px); /* Pequena elevação ao passar o mouse */
+    transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -186,13 +200,13 @@
     position: absolute;
     width: 1px;
     height: 1px;
-    pointer-events: none; /* Garante que o clique seja na label */
+    pointer-events: none;
 }
 /* Estilo do texto da alternativa */
 .alternative-item span {
-    font-size: 1.15rem; /* Leitura mais fácil */
+    font-size: 1.15rem;
     color: #333;
-    padding-left: 35px; /* Mais espaço para o custom radio */
+    padding-left: 35px;
     position: relative;
     display: block;
     width: 100%;
@@ -206,7 +220,7 @@
     left: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 22px; /* Tamanho maior */
+    width: 22px;
     height: 22px;
     border: 2px solid #50c8c6;
     border-radius: 50%;
@@ -217,10 +231,10 @@
 .alternative-item input[type="radio"]:checked + span::after {
     content: '';
     position: absolute;
-    left: 6px; /* Ajusta o ponto ao centro */
+    left: 6px;
     top: 50%;
     transform: translateY(-50%);
-    width: 10px; /* Tamanho do ponto */
+    width: 10px;
     height: 10px;
     border-radius: 50%;
     background-color: #50c8c6;
@@ -228,7 +242,7 @@
 }
 /* Estilo quando a alternativa está selecionada (antes de confirmar) */
 .alternative-item.selected {
-    border-color: #066699; /* Borda azul mais escura */
+    border-color: #066699;
     background-color: #e0f2f7;
     box-shadow: 0 2px 10px rgba(6, 102, 153, 0.15);
 }
@@ -246,10 +260,10 @@
 
 /* --- Feedback Pós-Resposta --- */
 .post-explanation {
-    margin-top: 2rem; /* Mais espaço */
+    margin-top: 2rem;
     padding: 1.25rem 1.5rem;
     background-color: #f7fafd;
-    border-left: 6px solid #50c8c6; /* Borda mais grossa */
+    border-left: 6px solid #50c8c6;
     border-radius: 0 10px 10px 0;
     color: #02416d;
     line-height: 1.6;
@@ -260,8 +274,8 @@
 
 /* Feedback de Resposta: Correta, Incorreta, Correta Visível */
 .alternative-item.correct-answer {
-    background-color: #e6ffed; /* Verde claro */
-    border-color: #48bb78; /* Borda verde */
+    background-color: #e6ffed;
+    border-color: #48bb78;
 }
 .alternative-item.correct-answer span {
     color: #2f855a;
@@ -275,8 +289,8 @@
 }
 
 .alternative-item.wrong-answer {
-    background-color: #fff5f5; /* Vermelho claro */
-    border-color: #e53e3e; /* Borda vermelha */
+    background-color: #fff5f5;
+    border-color: #e53e3e;
 }
 .alternative-item.wrong-answer span {
     color: #c53030;
@@ -290,7 +304,7 @@
 }
 
 .alternative-item.correct-answer-feedback {
-    background-color: #e0f2f7; /* Um azul mais claro para indicar a correta */
+    background-color: #e0f2f7;
     border-color: #50c8c6;
     box-shadow: 0 0 8px rgba(80, 200, 198, 0.4);
 }
@@ -308,14 +322,14 @@
 /* --- Botões de Ação --- */
 .btn-action {
     width: 100%;
-    font-size: 1.25rem; /* Maior */
+    font-size: 1.25rem;
     padding: 1.1rem 2.5rem;
     border: none;
-    border-radius: 12px; /* Mais arredondado */
+    border-radius: 12px;
     font-weight: bold;
     transition: background-color 0.2s ease-in-out, transform 0.1s ease, box-shadow 0.2s ease;
     cursor: pointer;
-    margin-top: 2rem; /* Mais espaço */
+    margin-top: 2rem;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 .btn-action:disabled {
@@ -368,7 +382,7 @@
     margin-bottom: 1rem;
 }
 .final-score-value {
-    font-size: 3.5rem; /* Ainda maior para destaque */
+    font-size: 3.5rem;
     font-weight: 900;
     color: #aedd2b;
     display: block;
@@ -382,7 +396,7 @@
 
 .ranking-list-container {
     width: 100%;
-    max-width: 550px; /* Um pouco mais largo */
+    max-width: 550px;
     margin: 0 auto;
     padding-top: 1.5rem;
 }
@@ -391,7 +405,7 @@
     align-items: center;
     background-color: #f7fafd;
     border: 2px solid #e0e7ee;
-    padding: 1.1rem; /* Mais padding */
+    padding: 1.1rem;
     border-radius: 12px;
     margin-bottom: 0.8rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -402,7 +416,7 @@
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 .ranking-item .ranking-badge {
-    width: 50px; /* Maior */
+    width: 50px;
     height: 50px;
     margin-right: 1.2rem;
     flex-shrink: 0;
@@ -433,18 +447,18 @@
 
 /* Estilos específicos para os top 3 */
 .ranking-item.top-1 {
-    background-color: #fffacd; /* Amarelo claro */
-    border-color: #ffd700; /* Dourado */
+    background-color: #fffacd;
+    border-color: #ffd700;
     transform: scale(1.03);
     box-shadow: 0 8px 20px rgba(255, 215, 0, 0.25);
 }
 .ranking-item.top-2 {
-    background-color: #f0f0f0; /* Cinza claro */
-    border-color: #c0c0c0; /* Prata */
+    background-color: #f0f0f0;
+    border-color: #c0c0c0;
 }
 .ranking-item.top-3 {
-    background-color: #f8ede3; /* Bronze claro */
-    border-color: #cd7f32; /* Bronze */
+    background-color: #f8ede3;
+    border-color: #cd7f32;
 }
 
 
