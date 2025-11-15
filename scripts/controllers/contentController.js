@@ -1,5 +1,5 @@
 // scripts/controllers/contentController.js
-const contentService = require('../services/ContentService');
+const contentService = require('../services/contentService');
 const ProgressoModel = require('../models/Progresso'); // Para interagir com o DB de progresso
 
 const contentController = {

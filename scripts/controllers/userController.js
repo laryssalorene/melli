@@ -1,6 +1,6 @@
 // scripts/controllers/userController.js
 
-const userService = require('../services/userService');
+const userService = require('../services/UserService');
 
 const userController = {
     // =======================================================
@@ -45,12 +45,12 @@ const userController = {
     // =======================================================
     resetPassword: async (req, res) => {
         try {
-            const { token } = req.params; 
+            const { token } = req.params;
             const { newPassword } = req.body;
             if (!token || !newPassword) {
                 return res.status(400).json({ message: 'Token e nova senha são obrigatórios.' });
             }
-            if (newPassword.length < 6) { 
+            if (newPassword.length < 6) {
                 return res.status(400).json({ message: 'A nova senha deve ter pelo menos 6 caracteres.' });
             }
             const result = await userService.resetPassword(token, newPassword); // Chame userService
@@ -66,7 +66,7 @@ const userController = {
     // =======================================================
     getRanking: async (req, res) => {
         try {
-            const ranking = await userService.getUsersRanking(); 
+            const ranking = await userService.getUsersRanking();
             res.status(200).json(ranking);
         } catch (error) {
             console.error('Erro ao buscar ranking de usuários:', error);
@@ -79,14 +79,14 @@ const userController = {
     // =======================================================
     updateProfile: async (req, res) => {
         try {
-            const userId = req.userId; 
-            const { nickname, email, mascote_id } = req.body; 
+            const userId = req.userId;
+            const { nickname, email, mascote_id } = req.body;
 
             if (!userId) {
                 return res.status(401).json({ message: 'Usuário não autenticado.' });
             }
 
-            const updatedUser = await userService.updateProfile(userId, { nickname, email, mascote_id }); 
+            const updatedUser = await userService.updateProfile(userId, { nickname, email, mascote_id });
 
             res.status(200).json({ message: 'Perfil atualizado com sucesso!', user: updatedUser });
         } catch (error) {
@@ -106,11 +106,11 @@ const userController = {
     // =======================================================
     deleteAccount: async (req, res) => {
         try {
-            const userId = req.userId; 
+            const userId = req.userId;
             if (!userId) {
                 return res.status(401).json({ message: 'Usuário não autenticado.' });
             }
-            await userService.deleteAccount(userId); 
+            await userService.deleteAccount(userId);
             res.status(200).json({ message: 'Conta deletada com sucesso.' });
         } catch (error) {
             console.error('Erro ao deletar conta do usuário:', error);
@@ -128,7 +128,7 @@ const userController = {
                 return res.status(400).json({ message: 'O e-mail é obrigatório para recuperar o nickname.' });
             }
             const result = await userService.requestNicknameRecovery(email);
-            res.status(200).json(result); 
+            res.status(200).json(result);
         } catch (error) {
             console.error('Erro ao solicitar recuperação de nickname:', error);
             res.status(200).json({ message: error.message || 'Se o e-mail estiver cadastrado, o nickname foi enviado.' });

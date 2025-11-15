@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Melli Hero - Jogo da Cesta</title>
+    <link rel="stylesheet" href="../styles/home.css"> <!-- Reusing home styles for consistency -->
+    <style>
+        .game-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+        }
+        iframe {
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            width: 960px;  /* Default Godot resolution, adjust if needed */
+            height: 540px; /* Default Godot resolution, adjust if needed */
+        }
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <main class="game-container">
+        <h1>Jogo da Cesta</h1>
+        <p>Colete os alimentos corretos para marcar pontos!</p>
+        <iframe src="/jogo-da-cesta/CestaDoGlico.html"></iframe>
+        <a href="/html/home.html" class="back-link">Voltar para a Home</a>
+    </main>
+
+</body>
+</html>
