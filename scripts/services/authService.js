@@ -29,16 +29,18 @@ const authService = {
         // REMOVA ESTA LINHA. O UserModel fará o hash.
         // const hashedPassword = await bcrypt.hash(password, 10);
 
-        let finalMascoteId = mascote_id;
-        if (finalMascoteId) {
-            const mascoteExists = await MascoteModel.findById(finalMascoteId);
-            if (!mascoteExists) {
+        let finalMascoteId = null;
+        if (mascote_id) {
+            const mascote = await MascoteModel.findByName(mascote_id);
+            if (!mascote) {
                 throw new Error('Mascote escolhido inválido.');
             }
+            finalMascoteId = mascote.id_mascote;
         } else {
             const defaultMascote = await MascoteModel.findByName('Melli'); 
-            finalMascoteId = defaultMascote ? defaultMascote.id_mascote : null;
-            if (!finalMascoteId) { 
+            if (defaultMascote) {
+                finalMascoteId = defaultMascote.id_mascote;
+            } else {
                 console.warn("Mascote padrão 'Melli' não encontrado. Registrando usuário sem mascote inicial.");
             }
         }

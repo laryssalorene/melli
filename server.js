@@ -38,6 +38,9 @@ async function initializeDatabase() {
         await MascoteModel.addMascote('Melli', 'Um simpático robô-ajudante.', '/img/mascotes/melli.png');
         await MascoteModel.addMascote('Hero', 'Um super-herói corajoso.', '/img/mascotes/hero.png');
         await MascoteModel.addMascote('Amigo', 'Um animal de estimação leal.', '/img/mascotes/amigo.png');
+        await MascoteModel.addMascote('monstrinho_insulina', 'Monstrinho fofo que carrega insulina.', '/img/mascotes/mascote_monstrinho_insulina.png');
+        await MascoteModel.addMascote('coelho_glicosimetro', 'Coelho glicosímetro.', '/img/mascotes/mascote_coelho_glicosimetro.png');
+        await MascoteModel.addMascote('caneta_aventureira', 'Caneta de insulina aventureira.', '/img/mascotes/mascote_caneta_aventureira.png');
         console.log("Mascotes padrão verificados/adicionados.");
 
         console.log("Tabelas do banco de dados verificadas/criadas com sucesso (via scripts/db.js).");
