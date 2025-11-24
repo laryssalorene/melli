@@ -1,5 +1,5 @@
 // scripts/controllers/authController.js
-const authService = require('../services/authService'); // Serviço de AUTENTICAÇÃO
+const authService = require('../services/authService'); 
 const jwt = require('jsonwebtoken'); 
 
 require('dotenv').config();
@@ -12,25 +12,29 @@ const authController = {
      */
     register: async (req, res) => {
         try {
+            // Captura o mascote_id (esperando um número)
             const { nickname, email, password, mascote_id } = req.body; 
 
-            if (!nickname || !email || !password) {
-                return res.status(400).json({ message: 'Nickname, email e senha são obrigatórios.' });
+            // Validações básicas (incluindo mascote_id)
+            if (!nickname || !email || !password || mascote_id === undefined || mascote_id === null) {
+                return res.status(400).json({ message: 'Nickname, e-mail, senha e mascote são obrigatórios.' });
             }
             if (password.length < 6) {
                 return res.status(400).json({ message: 'A senha deve ter pelo menos 6 caracteres.' });
             }
 
+            // Chama o serviço para registrar o usuário
             const newUser = await authService.registerUser(nickname, email, password, mascote_id); 
             
+            // Criação do JWT (já inclui mascote_id numérico do authService)
             const token = jwt.sign(
-                { id_usuario: newUser.id_usuario, nickname: newUser.nickname, email: newUser.email }, 
+                { id_usuario: newUser.id_usuario, nickname: newUser.nickname, email: newUser.email, mascote_id: newUser.mascote_id }, 
                 JWT_SECRET,
                 { expiresIn: JWT_EXPIRES_IN }
             );
 
             res.status(201).json({ 
-                message: 'Usuário registrado com sucesso!', 
+                message: 'Cadastro realizado com sucesso!', 
                 token, 
                 user: { 
                     id_usuario: newUser.id_usuario, 
@@ -38,12 +42,12 @@ const authController = {
                     email: newUser.email, 
                     pontos: newUser.pontos,
                     assiduidade_dias: newUser.assiduidade_dias,
-                    mascote_id: newUser.mascote_id
+                    mascote_id: newUser.mascote_id // Retorna o mascote_id numérico
                 } 
             });
         } catch (error) {
             console.error('Erro no registro do usuário:', error);
-            if (error.message.includes('já cadastrado') || error.message.includes('já está em uso')) {
+            if (error.message.includes('já cadastrado') || error.message.includes('já está em uso') || error.message.includes('Mascote escolhido inválido') || error.message.includes('ID do mascote fornecido é inválido')) {
                 return res.status(409).json({ message: error.message }); 
             }
             res.status(500).json({ message: error.message || 'Erro interno do servidor ao registrar usuário.' });
@@ -64,7 +68,7 @@ const authController = {
             
             res.json({ 
                 token: result.token, 
-                user: result.user 
+                user: result.user // result.user já contém o mascote_id numérico
             });
         } catch (error) {
             console.error('Erro no login do usuário:', error);
@@ -76,4 +80,4 @@ const authController = {
     },
 };
 
-module.exports = { authController }; // Exporta APENAS o controller, não o verifyToken
+module.exports = { authController };

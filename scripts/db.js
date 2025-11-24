@@ -28,24 +28,7 @@ async function connectAndInitializeDb() {
                         return reject(pragmaErr);
                     } else {
                         console.log('FOREIGN KEYS ativadas.');
-                        
-                        // Importa os modelos aqui para garantir que estão disponíveis
-                        // (Isso também garante que o `run` dentro do modelo pode usar o `db_instance` já definido)
-                        const UsuarioModel = require('./models/Usuario');
-                        const MascoteModel = require('./models/Mascote');
-                        const ProgressoModel = require('./models/Progresso');
-
-                        try {
-                            await UsuarioModel.createTable();
-                            await MascoteModel.createTable();
-                            await ProgressoModel.createTable();
-                            console.log("Todas as tabelas foram verificadas/criadas.");
-                            resolve(db_instance); // Resolve a Promise com a instância do DB
-                        } catch (initErr) {
-                            console.error("Erro ao criar tabelas:", initErr);
-                            db_connection_promise = null;
-                            reject(initErr);
-                        }
+                        resolve(db_instance); // Resolve a Promise com a instância do DB
                     }
                 });
             }
@@ -121,4 +104,4 @@ function run(sql, params = []) {
     });
 }
 
-module.exports = { all, get, run, connectAndInitializeDb, db_instance: () => db_instance };
+module.exports = { all, get, run, connectAndInitializeDb };

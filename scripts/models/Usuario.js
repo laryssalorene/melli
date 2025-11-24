@@ -1,12 +1,12 @@
 // scripts/models/Usuario.js
 const { get, run, all } = require('../db');
-const bcrypt = require('bcryptjs'); // A importação de bcryptjs está correta aqui
+const bcrypt = require('bcryptjs'); 
 
 class Usuario {
     constructor(data) {
         this.id_usuario = data.id_usuario;
         this.nickname = data.nickname;
-        this.email = data.email; // O email aqui é o valor CRIPTOGRAFADO vindo do DB
+        this.email = data.email; 
         this.senha = data.senha;
         this.mascote_id = data.mascote_id;
         this.pontos = data.pontos;
@@ -37,10 +37,9 @@ class Usuario {
         console.log("Tabela 'Usuario' verificada/criada.");
     }
     
-    // Este método 'create' recebe a senha em texto puro e a hasheia
     static async create(nickname, encryptedEmail, plainTextPassword, mascote_id = null) { 
         try {
-            const hashedPassword = await bcrypt.hash(plainTextPassword, 10); // Hash da senha em texto puro
+            const hashedPassword = await bcrypt.hash(plainTextPassword, 10); 
             
             const result = await run(
                 `INSERT INTO Usuario (nickname, email, senha, mascote_id) VALUES (?, ?, ?, ?)`,
@@ -49,8 +48,8 @@ class Usuario {
             return new Usuario({
                 id_usuario: result.lastID,
                 nickname,
-                email: encryptedEmail, // Retorna o e-mail como foi salvo (CRIPTOGRAFADO)
-                senha: hashedPassword, // A senha aqui é o hash
+                email: encryptedEmail, 
+                senha: hashedPassword, 
                 mascote_id,
                 pontos: 0,
                 assiduidade_dias: 0,
@@ -61,7 +60,7 @@ class Usuario {
                 throw new Error("Nickname já está em uso.");
             }
             if (err.message.includes('UNIQUE constraint failed: Usuario.email')) {
-                throw new Error("E-mail já está em uso."); 
+                throw new Error("E-mail já cadastrado."); // Alterei para 'cadastrado' para ser mais consistente com a msg do authService
             }
             throw err;
         }
@@ -82,33 +81,91 @@ class Usuario {
         return row ? new Usuario(row) : null; 
     }
 
-    // Método para comparar a senha (usado nos serviços) - JÁ ESTAVA CORRETO
     async comparePassword(plainTextPassword) {
         return await bcrypt.compare(plainTextPassword, this.senha);
     }
 
-    async update() {
+    // O método update genérico está um pouco problemático para múltiplos campos
+    // Vamos ajustá-lo para ser mais flexível e robusto.
+    // Ou, para simplificar, se você só precisa de `updateLoginInfo` e `updatePassword`,
+    // podemos remover este `update` genérico e confiar nos específicos.
+    // No seu caso, o `userService.js` já tem um `updateProfile` que lida com isso.
+    // Vou manter a versão mais recente que você tinha do `update` aqui (que estava no `Usuario.js` anteriormente)
+    // Se o userService estiver usando `update` neste modelo, o abaixo funcionará.
+    async update(updates) { // Recebe um objeto de updates, não precisa de 'this' para todos
+        const fields = [];
+        const params = [];
+
+        if (updates.nickname !== undefined) {
+            fields.push('nickname = ?');
+            params.push(updates.nickname);
+        }
+        if (updates.email !== undefined) { // Já criptografado
+            fields.push('email = ?');
+            params.push(updates.email);
+        }
+        if (updates.senha !== undefined) { // Já hashed
+            fields.push('senha = ?');
+            params.push(updates.senha);
+        }
+        if (updates.mascote_id !== undefined) {
+            fields.push('mascote_id = ?');
+            params.push(updates.mascote_id);
+        }
+        if (updates.pontos !== undefined) {
+            fields.push('pontos = ?');
+            params.push(updates.pontos);
+        }
+        if (updates.ultimo_login !== undefined) {
+            fields.push('ultimo_login = ?');
+            params.push(updates.ultimo_login);
+        }
+        if (updates.assiduidade_dias !== undefined) {
+            fields.push('assiduidade_dias = ?');
+            params.push(updates.assiduidade_dias);
+        }
+        if (updates.reset_token !== undefined) {
+            fields.push('reset_token = ?');
+            params.push(updates.reset_token);
+        }
+        if (updates.reset_token_expires !== undefined) {
+            fields.push('reset_token_expires = ?');
+            params.push(updates.reset_token_expires);
+        }
+        if (updates.data_registro !== undefined) {
+            fields.push('data_registro = ?');
+            params.push(updates.data_registro);
+        }
+
+        if (fields.length === 0) {
+            return false; // Nenhum campo para atualizar
+        }
+
+        params.push(this.id_usuario); // Condição WHERE
+        const stmt = `UPDATE Usuario SET ${fields.join(', ')} WHERE id_usuario = ?`;
+
         try {
-            const result = await run(
-                `UPDATE Usuario SET nickname = ?, email = ?, mascote_id = ?, pontos = ?, ultimo_login = ?, assiduidade_dias = ?, reset_token = ?, reset_token_expires = ?, data_registro = ? WHERE id_usuario = ?`,
-                [this.nickname, this.email, this.mascote_id, this.pontos, this.ultimo_login, this.assiduidade_dias, this.reset_token, this.reset_token_expires, this.data_registro, this.id_usuario]
-            );
+            const result = await run(stmt, params);
+            // Atualiza a instância atual com os novos valores
+            Object.assign(this, updates);
             return result.changes > 0;
         } catch (err) {
             if (err.message.includes('UNIQUE constraint failed: Usuario.nickname')) {
                 throw new Error("Nickname já está em uso.");
             }
             if (err.message.includes('UNIQUE constraint failed: Usuario.email')) {
-                throw new Error("E-mail já está em uso.");
+                throw new Error("E-mail já cadastrado.");
             }
             throw err;
         }
     }
 
+
     async saveResetToken(token, expires) {
         this.reset_token = token;
         this.reset_token_expires = expires.toISOString();
-        await this.update(); 
+        // Usando o método update mais genérico
+        await this.update({ reset_token: this.reset_token, reset_token_expires: this.reset_token_expires }); 
     }
 
     static async findByResetToken(token) {
@@ -122,10 +179,12 @@ class Usuario {
         return user;
     }
 
-    // Atualiza apenas a senha (recebe senha em texto puro, hasheia e salva) - JÁ ESTAVA CORRETO
     async updatePassword(newPassword) {
         this.senha = await bcrypt.hash(newPassword, 10);
         await run(`UPDATE Usuario SET senha = ?, reset_token = NULL, reset_token_expires = NULL WHERE id_usuario = ?`, [this.senha, this.id_usuario]);
+        // Atualiza a instância local também
+        this.reset_token = null;
+        this.reset_token_expires = null;
     }
 
     async updateLoginInfo(ultimo_login, assiduidade_dias) {
@@ -151,9 +210,9 @@ class Usuario {
     }
 }
 
-// Garante que a tabela é criada quando o modelo é carregado
 Usuario.createTable().catch(err => {
     console.error("Erro ao criar tabela de Usuário na inicialização:", err);
+    process.exit(1);
 });
 
 module.exports = Usuario;

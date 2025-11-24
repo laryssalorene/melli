@@ -10,17 +10,18 @@ document.getElementById('cadastroForm').addEventListener('submit', async functio
     
     // Captura o mascote selecionado
     const selectedMascoteInput = document.querySelector('input[name="mascote"]:checked');
-    const mascoteId = selectedMascoteInput ? selectedMascoteInput.value : null; 
+    // IMPORTANTE: Captura o ID NUMÉRICO (1, 2, 3) diretamente do valor do rádio
+    const mascoteId = selectedMascoteInput ? parseInt(selectedMascoteInput.value, 10) : null; 
 
     const feedbackMessage = document.getElementById('feedbackMessage');
     feedbackMessage.textContent = ''; // Limpa mensagens anteriores
     feedbackMessage.className = 'message'; // Reseta classes de estilo
 
     // Validação para garantir que um mascote foi escolhido
-    if (!mascoteId) {
+    if (mascoteId === null || isNaN(mascoteId)) { // Verifica se é null ou NaN
         feedbackMessage.textContent = 'Por favor, escolha um mascote.';
         feedbackMessage.classList.add('error-message');
-        return; // Impede o envio do formulário se nenhum mascote for selecionado
+        return; 
     }
 
     try {
@@ -29,7 +30,7 @@ document.getElementById('cadastroForm').addEventListener('submit', async functio
             headers: {
                 'Content-Type': 'application/json',
             },
-            // Envia 'nickname', 'email', 'password' e o 'mascote_id' para o backend
+            // Envia 'nickname', 'email', 'password' e o 'mascote_id' (NUMÉRICO) para o backend
             body: JSON.stringify({ nickname, email, password, mascote_id: mascoteId }), 
         });
 
@@ -45,7 +46,6 @@ document.getElementById('cadastroForm').addEventListener('submit', async functio
             descriptionBox.textContent = 'Clique em um mascote para ver sua descrição.';
             descriptionBox.classList.remove('mascote-active');
             document.querySelectorAll('.mascote-option').forEach(opt => opt.classList.remove('selected-mascote-border'));
-
 
             setTimeout(() => {
                 window.location.href = '/html/login.html';
@@ -68,26 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Estado inicial da caixa de descrição
     descriptionBox.textContent = 'Clique em um mascote para ver sua descrição.';
-    descriptionBox.classList.remove('mascote-active'); // Garante que não está ativa no início
+    descriptionBox.classList.remove('mascote-active'); 
 
     mascoteOptions.forEach(option => {
         const radio = option.querySelector('input[type="radio"]');
-        const descriptionText = option.dataset.description; // Obtém a descrição do data-attribute
+        const descriptionText = option.dataset.description; 
 
         const applySelectionStyles = (selected) => {
-            // Remove a classe 'selected-mascote-border' de todos os outros mascotes
             mascoteOptions.forEach(opt => opt.classList.remove('selected-mascote-border'));
             
             if (selected) {
-                // Adiciona a classe ao mascote clicado/selecionado
                 option.classList.add('selected-mascote-border');
-                
-                // Exibe a descrição na caixa global
                 descriptionBox.textContent = descriptionText;
                 descriptionBox.classList.add('mascote-active');
             } else {
-                // Se a opção não está selecionada (o que não deve acontecer muito com radio buttons)
-                // ou se for a lógica inicial.
                 descriptionBox.textContent = 'Clique em um mascote para ver sua descrição.';
                 descriptionBox.classList.remove('mascote-active');
             }
@@ -95,13 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Escuta o clique em qualquer lugar da label (área do mascote)
         option.addEventListener('click', () => {
-            // Usa um pequeno delay para garantir que o estado do radio button seja atualizado
             setTimeout(() => {
                 applySelectionStyles(radio.checked);
             }, 0);
         });
 
-        // Verifica o estado inicial (por exemplo, se o navegador restaurou o formulário com um radio marcado)
         if (radio.checked) {
             applySelectionStyles(true);
         }
