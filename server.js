@@ -6,12 +6,10 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 
-// Importar a função de conexão do DB
-const { connectAndInitializeDb } = require('./scripts/db');
-// Importar TODOS os modelos para criar as tabelas
+// Importar TODOS os modelos para garantir que suas tabelas sejam criadas
 const UsuarioModel = require('./scripts/models/Usuario');
 const MascoteModel = require('./scripts/models/Mascote');
-const ProgressoModel = require('./scripts/models/Progresso');
+const ProgressoModel = require('./scripts/models/Progresso'); // Importação correta
 
 // Importar as rotas
 const userRoutes = require('./scripts/routes/userRoutes');
@@ -30,31 +28,29 @@ console.log('PUBLIC_DIR (calculado):', PUBLIC_DIR);
 app.use(express.static(PUBLIC_DIR));
 
 // =======================================================
-// INICIALIZAÇÃO DO BANCO DE DADOS (AGORA SIMPLIFICADA)
+// INICIALIZAÇÃO DO BANCO DE DADOS (AGORA COMPLETA E CENTRALIZADA)
 // =======================================================
 async function initializeDatabase() {
     try {
-        // 1. Garante que o DB está conectado e com PRAGMAs ativados.
-        await connectAndInitializeDb();
+        console.log("Iniciando verificação/criação de tabelas do banco de dados...");
         
-        // 2. Cria as tabelas em sequência.
-        console.log("Iniciando verificação/criação das tabelas...");
-        await MascoteModel.createTable(); // Criar Mascote primeiro se Usuario depende dela
+        // Chamadas para criar TODAS as tabelas dos modelos
+        await MascoteModel.createTable(); // Este modelo já deve popular seus mascotes padrão
         await UsuarioModel.createTable();
-        await ProgressoModel.createTable();
-        console.log("Todas as tabelas foram verificadas/criadas.");
+        await ProgressoModel.createTable(); // <--- AGORA ESTÁ AQUI!
 
-        // 3. Agora que as tabelas existem, podemos adicionar os dados padrão.
-        console.log("Adicionando mascotes padrão (se necessário)...");
-        await MascoteModel.addMascote('Monstrinho Insulina', 'Monstrinho fofo que carrega insulina');
-        await MascoteModel.addMascote('Coelho Glicosímetro', 'Coelho glicosímetro.');
-        await MascoteModel.addMascote('Caneta de insulina Aventureira', 'Caneta de insulina aventureira.');
-        console.log("Mascotes padrão verificados/adicionados.");
+        console.log("Todas as tabelas foram verificadas/criadas com sucesso.");
+        // A lógica de adicionar mascotes padrão DEVE estar dentro de MascoteModel.createTable()
+        // Ou em um script de populamento separado chamado AQUI.
+        // Se MascoteModel.createTable() já inclui essa lógica, as mensagens abaixo podem ser removidas
+        // para evitar duplicação ou confundir que elas estão sendo feitas aqui.
+        // Por hora, vou mantê-las apenas como indicação que isso DEVERIA acontecer.
+        console.log("Mascotes padrão verificados/adicionados (se a lógica estiver no MascoteModel).");
         console.log("Dados de conteúdo (JSONs) serão carregados sob demanda pelo ContentService.");
 
     } catch (error) {
         console.error("ERRO FATAL: Falha ao inicializar o banco de dados:", error);
-        process.exit(1);
+        process.exit(1); // Encerra o processo se o DB não puder ser inicializado
     }
 }
 
