@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Glico - Aventura Educativa</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Fredoka', sans-serif;
+            background-color: #f0f9ff;
+            user-select: none;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .card-hover:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s;
+        }
+
+        .correct-flash {
+            animation: flash-green 0.5s;
+        }
+        .wrong-flash {
+            animation: flash-red 0.5s;
+        }
+
+        @keyframes flash-green {
+            0%, 100% { background-color: white; }
+            50% { background-color: #86efac; }
+        }
+        @keyframes flash-red {
+            0%, 100% { background-color: white; }
+            50% { background-color: #fca5a5; }
+        }
+
+        .game-btn {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.2s;
+        }
+        .game-btn:active {
+            transform: translateY(2px);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body class="h-screen w-full overflow-hidden flex flex-col items-center justify-center bg-blue-50">
+
+    <!-- MENU PRINCIPAL -->
+    <div id="main-menu" class="w-full max-w-md p-6 text-center space-y-8">
+        <div class="space-y-2">
+            <h1 class="text-5xl font-bold text-blue-600 drop-shadow-sm">Quiz Glico</h1>
+            <p class="text-gray-600 text-lg">Aprenda a controlar a glicemia brincando!</p>
+        </div>
+
+        <div class="grid gap-4">
+            <button onclick="startGame('rescue')" class="game-btn bg-orange-400 hover:bg-orange-500 text-white py-6 rounded-2xl text-xl font-bold flex items-center justify-center gap-3">
+                <i class="fas fa-kit-medical text-3xl"></i>
+                SOS Hipoglicemia
+            </button>
+            
+            <button onclick="startGame('sorting')" class="game-btn bg-purple-500 hover:bg-purple-600 text-white py-6 rounded-2xl text-xl font-bold flex items-center justify-center gap-3">
+                <i class="fas fa-notes-medical text-3xl"></i>
+                Classificar Sintomas
+            </button>
+        </div>
+        
+        <div class="mt-8 text-sm text-gray-400">
+            <p>Selecione um modo para começar</p>
+        </div>
+    </div>
+
+    <!-- TELA DE RESULTADO -->
+    <div id="game-over" class="hidden absolute inset-0 bg-white z-50 flex-col items-center justify-center p-6 text-center animate-float">
+        <div id="result-icon-container" class="mb-6">
+            <i id="result-icon" class="fas fa-trophy text-6xl text-yellow-400"></i>
+        </div>
+        <h2 id="result-title" class="text-4xl font-bold text-gray-800 mb-2">Fim de Jogo!</h2>
+        <p id="result-message" class="text-xl text-gray-600 mb-4 max-w-xs mx-auto">Mensagem aqui</p>
+        
+        <div class="bg-gray-100 rounded-xl p-4 mb-2 w-full max-w-xs">
+            <p class="text-gray-500 text-sm">Sua Pontuação</p>
+            <p class="text-3xl font-bold text-blue-600">
+                <span id="final-score">0</span> / <span id="max-score">0</span>
+            </p>
+        </div>
+
+        <p id="medal-text" class="text-sm font-semibold text-gray-500 mb-6"></p>
+
+        <button onclick="returnToMenu()" class="game-btn bg-blue-500 text-white py-3 px-8 rounded-full text-lg font-bold hover:bg-blue-600 transition">
+            <i class="fas fa-home mr-2"></i> Voltar ao Menu
+        </button>
+    </div>
+
+    <!-- JOGO 1: RESGATE (HIPOGLICEMIA) -->
+    <div id="game-rescue" class="hidden w-full max-w-md h-full flex-col bg-white sm:h-auto sm:rounded-3xl sm:shadow-2xl overflow-hidden relative">
+        <div class="bg-orange-100 p-4 flex justify-between items-center">
+            <button onclick="returnToMenu()" class="text-orange-600 hover:bg-orange-200 p-2 rounded-full"><i class="fas fa-arrow-left"></i> Sair</button>
+            <span class="font-bold text-orange-800">Pontos: <span id="rescue-score">0</span></span>
+        </div>
+
+        <div class="flex-1 p-6 flex flex-col items-center justify-center text-center space-y-6">
+            <div class="relative">
+                <i class="fas fa-child text-8xl text-yellow-500 animate-float"></i>
+            </div>
+            
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-4 rounded text-left w-full">
+                <p class="font-bold text-gray-800">Emergência!</p>
+                <p class="text-gray-600 text-sm">
+                    O Glico está com tremedeira e suor frio. A glicemia dele está bem baixinha.
+                </p>
+                <p class="text-gray-700 text-sm font-semibold mt-1">
+                    Glicemia atual: <span class="text-red-500 font-bold">55 mg/dL</span> (muito baixa!).
+                </p>
+                <p class="text-gray-600 text-sm mt-2">
+                    O que devemos dar para ele subir rápido?
+                </p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 w-full" id="rescue-options">
+                <!-- Botões via JS -->
+            </div>
+        </div>
+
+        <div id="rescue-feedback" class="absolute inset-0 bg-black/80 hidden flex-col items-center justify-center p-6 text-center z-40 backdrop-blur-sm">
+            <i id="fb-icon" class="fas fa-check-circle text-6xl mb-4 text-green-400"></i>
+            <h2 id="fb-title" class="text-3xl font-bold text-white mb-2">Muito Bem!</h2>
+            <p id="fb-text" class="text-gray-200 mb-6 text-lg">A explicação vai aqui.</p>
+            <button onclick="nextRescueRound()" class="bg-white text-black font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition">
+                Continuar <i class="fas fa-chevron-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- JOGO 2: CLASSIFICADOR (SINTOMAS) -->
+    <div id="game-sorting" class="hidden w-full max-w-md h-full flex-col bg-white sm:h-auto sm:rounded-3xl sm:shadow-2xl overflow-hidden">
+        <div class="bg-purple-100 p-4 flex justify-between items-center">
+            <button onclick="returnToMenu()" class="text-purple-600 hover:bg-purple-200 p-2 rounded-full"><i class="fas fa-arrow-left"></i> Sair</button>
+            <div class="flex gap-4 text-sm font-bold">
+                <span class="text-green-600">Acertos: <span id="sort-score">0</span></span>
+            </div>
+        </div>
+
+        <div class="flex-1 flex flex-col p-4 relative">
+            <p class="text-center text-gray-500 mb-4 text-sm">Toque na caixa certa para o sintoma abaixo</p>
+
+            <div class="flex-1 flex items-center justify-center mb-6">
+                <div id="symptom-card" class="bg-white border-2 border-gray-200 shadow-xl rounded-2xl p-6 w-64 h-64 flex flex-col items-center justify-center text-center transform transition-all duration-300">
+                    <i id="symptom-icon" class="fas fa-question text-5xl text-gray-400 mb-4"></i>
+                    <h3 id="symptom-text" class="text-2xl font-bold text-gray-800">Carregando...</h3>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-auto">
+                <button onclick="checkSort('hypo')" class="game-btn bg-gray-100 border-2 border-gray-300 p-4 rounded-xl flex flex-col items-center hover:bg-gray-200">
+                    <span class="text-red-600 font-bold text-lg">HIPO</span>
+                    <span class="text-xs text-gray-500">Açúcar Baixo</span>
+                    <i class="fas fa-arrow-down text-gray-600 mt-2 text-xl"></i>
+                </button>
+
+                <button onclick="checkSort('hyper')" class="game-btn bg-gray-100 border-2 border-gray-300 p-4 rounded-xl flex flex-col items-center hover:bg-gray-200">
+                    <span class="text-blue-600 font-bold text-lg">HIPER</span>
+                    <span class="text-xs text-gray-500">Açúcar Alto</span>
+                    <i class="fas fa-arrow-up text-gray-600 mt-2 text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="sort-feedback" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity duration-300 z-50">
+            <div class="bg-white/90 p-6 rounded-2xl shadow-2xl transform scale-110">
+                <i id="sort-fb-icon" class="fas fa-check text-5xl text-green-500"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DO JOGO -->
+    <script>
+        // Dados do jogo 1
+        const rescueItems = [
+            { 
+                name: "Água com Açúcar", 
+                type: "good", 
+                icon: "fa-mug-hot",
+                color: "text-sky-500", 
+                desc: "Perfeito! O açúcar diluído entra rápido no sangue e ajuda a corrigir a hipoglicemia." 
+            },
+            { 
+                name: "Suco de Laranja", 
+                type: "good", 
+                icon: "fa-wine-glass",
+                color: "text-orange-500", 
+                desc: "Ótimo! Suco comum (não diet) é rico em açúcar e sobe rápido a glicemia." 
+            },
+            { 
+                name: "Refrigerante Comum", 
+                type: "good", 
+                icon: "fa-wine-bottle",
+                color: "text-purple-500", 
+                desc: "Correto! Em emergências, o açúcar do refrigerante comum ajuda a sair da hipoglicemia." 
+            },
+            { 
+                name: "Balinha de Açúcar", 
+                type: "good", 
+                icon: "fa-candy-cane",
+                color: "text-pink-500", 
+                desc: "Isso! Balas açucaradas (não diet) são rápidas para subir a glicose." 
+            },
+            { 
+                name: "Refrigerante Zero", 
+                type: "bad", 
+                icon: "fa-circle-xmark",
+                color: "text-gray-500", 
+                desc: "Não! Refrigerante zero não tem açúcar suficiente para levantar a glicemia." 
+            },
+            { 
+                name: "Água Pura", 
+                type: "bad", 
+                icon: "fa-glass-water",
+                color: "text-blue-200", 
+                desc: "Não! A água hidrata, mas não tem glicose para corrigir a hipoglicemia." 
+            },
+            { 
+                name: "Balinha Diet", 
+                type: "bad", 
+                icon: "fa-candy-cane",
+                color: "text-gray-400", 
+                desc: "Cuidado! Balas diet/light quase não têm açúcar, então não servem para tratar hipoglicemia." 
+            },
+            { 
+                name: "Chocolate (Gordura)", 
+                type: "bad", 
+                icon: "fa-cookie",
+                color: "text-amber-700", 
+                desc: "Evite! Por ter muita gordura, o chocolate faz o açúcar subir mais devagar e não é a melhor opção na emergência." 
+            }
+        ];
+
+        // Dados do jogo 2
+        const symptoms = [
+            { text: "Tremedeira",     type: "hypo",  icon: "fa-person-walking" },
+            { text: "Suor Frio",      type: "hypo",  icon: "fa-droplet" },
+            { text: "Palidez",        type: "hypo",  icon: "fa-face-meh" },
+            { text: "Muita Fome",     type: "hypo",  icon: "fa-utensils" },
+            { text: "Fraqueza",       type: "hypo",  icon: "fa-battery-quarter" },
+
+            { text: "Sede Intensa",   type: "hyper", icon: "fa-glass-water" },
+            { text: "Xixi toda hora", type: "hyper", icon: "fa-toilet" },
+            { text: "Boca Seca",      type: "hyper", icon: "fa-face-grimace" },
+            { text: "Muito Sono",     type: "hyper", icon: "fa-bed" }
+        ];
+
+        // Estado
+        let currentRescueScore = 0;
+        let currentSortScore = 0;
+        let currentSymptom = null;
+        let maxRescueRounds = 0;
+        let maxSortRounds = 0;
+
+        let poolGoodItems = [];
+        let poolBadItems = [];
+        let poolSymptoms = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startGame(mode) {
+            document.getElementById('main-menu').classList.add('hidden');
+            document.getElementById('game-over').classList.add('hidden');
+            document.getElementById('game-over').classList.remove('flex');
+            
+            if (mode === 'rescue') {
+                document.getElementById('game-rescue').classList.remove('hidden');
+                document.getElementById('game-rescue').classList.add('flex');
+                
+                const allGood = rescueItems.filter(i => i.type === 'good');
+                const allBad = rescueItems.filter(i => i.type === 'bad');
+                
+                poolGoodItems = shuffleArray([...allGood]);
+                poolBadItems = shuffleArray([...allBad]);
+                
+                maxRescueRounds = Math.min(poolGoodItems.length, poolBadItems.length);
+                
+                currentRescueScore = 0;
+                document.getElementById('rescue-score').innerText = "0";
+                
+                nextRescueRound();
+
+            } else if (mode === 'sorting') {
+                document.getElementById('game-sorting').classList.remove('hidden');
+                document.getElementById('game-sorting').classList.add('flex');
+                
+                poolSymptoms = shuffleArray([...symptoms]);
+                maxSortRounds = poolSymptoms.length;
+
+                currentSortScore = 0;
+                document.getElementById('sort-score').innerText = "0";
+                
+                nextSortRound();
+            }
+        }
+
+        function returnToMenu() {
+            document.getElementById('game-rescue').classList.add('hidden');
+            document.getElementById('game-rescue').classList.remove('flex');
+            document.getElementById('game-sorting').classList.add('hidden');
+            document.getElementById('game-sorting').classList.remove('flex');
+            document.getElementById('game-over').classList.add('hidden');
+            document.getElementById('game-over').classList.remove('flex');
+            
+            document.getElementById('main-menu').classList.remove('hidden');
+        }
+
+        function finishGame(mode) {
+            document.getElementById('game-rescue').classList.add('hidden');
+            document.getElementById('game-rescue').classList.remove('flex');
+            document.getElementById('game-sorting').classList.add('hidden');
+            document.getElementById('game-sorting').classList.remove('flex');
+
+            const gameOverScreen = document.getElementById('game-over');
+            gameOverScreen.classList.remove('hidden');
+            gameOverScreen.classList.add('flex');
+
+            const title = document.getElementById('result-title');
+            const message = document.getElementById('result-message');
+            const finalScoreDisplay = document.getElementById('final-score');
+            const maxScoreDisplay = document.getElementById('max-score');
+            const icon = document.getElementById('result-icon');
+            const medalText = document.getElementById('medal-text');
+
+            let score = 0;
+            let maxPoints = 0;
+
+            if (mode === 'rescue') {
+                score = currentRescueScore;
+                maxPoints = maxRescueRounds * 10;
+            } else if (mode === 'sorting') {
+                score = currentSortScore;
+                maxPoints = maxSortRounds;
+            }
+
+            finalScoreDisplay.innerText = score;
+            maxScoreDisplay.innerText = maxPoints || 0;
+
+            const percentage = maxPoints > 0 ? (score / maxPoints) * 100 : 0;
+
+            if (percentage === 100) {
+                title.innerText = "PARABÉNS!";
+                title.className = "text-4xl font-bold text-green-600 mb-2";
+                message.innerText = "Uau! Você acertou TUDO! Você é um verdadeiro mestre da glicemia!";
+                icon.className = "fas fa-trophy text-6xl text-yellow-400 animate-bounce";
+            } else if (percentage >= 50) {
+                title.innerText = "MUITO BEM!";
+                title.className = "text-4xl font-bold text-blue-600 mb-2";
+                message.innerText = "Você foi ótimo! Mas que tal tentar de novo para conseguir a pontuação máxima?";
+                icon.className = "fas fa-thumbs-up text-6xl text-blue-400";
+            } else {
+                title.innerText = "TUDO BEM!";
+                title.className = "text-4xl font-bold text-orange-500 mb-2";
+                message.innerText = "O importante é aprender. Não desista, tente mais uma vez e você vai conseguir!";
+                icon.className = "fas fa-book-open text-6xl text-orange-400";
+            }
+
+            if (medalText) {
+                if (percentage === 100) {
+                    medalText.innerText = "Medalha: Ouro • Você protegeu o Glico perfeitamente!";
+                    medalText.className = "text-sm font-semibold text-yellow-500 mb-6";
+                } else if (percentage >= 70) {
+                    medalText.innerText = "Medalha: Prata • Faltou pouco para a pontuação perfeita!";
+                    medalText.className = "text-sm font-semibold text-gray-600 mb-6";
+                } else if (percentage >= 40) {
+                    medalText.innerText = "Medalha: Bronze • Bom começo! Que tal tentar de novo?";
+                    medalText.className = "text-sm font-semibold text-amber-700 mb-6";
+                } else {
+                    medalText.innerText = "Continue treinando para ganhar sua medalha!";
+                    medalText.className = "text-sm font-semibold text-gray-500 mb-6";
+                }
+            }
+        }
+
+        function nextRescueRound() {
+            const fb = document.getElementById('rescue-feedback');
+            fb.classList.add('hidden');
+            fb.classList.remove('flex');
+
+            if (poolGoodItems.length === 0 || poolBadItems.length === 0) {
+                finishGame('rescue');
+                return;
+            }
+
+            const container = document.getElementById('rescue-options');
+            container.innerHTML = '';
+
+            const good = poolGoodItems.pop();
+            const bad = poolBadItems.pop();
+
+            const roundItems = [good, bad].sort(() => Math.random() - 0.5);
+
+            roundItems.forEach(item => {
+                const btn = document.createElement('button');
+
+                btn.className = "p-4 rounded-xl flex flex-col items-center justify-center gap-2 game-btn h-40 border-2 text-center bg-white border-gray-200 hover:bg-gray-100";
+                btn.onclick = () => checkRescueAnswer(item);
+                btn.innerHTML = `
+                    <i class="fas ${item.icon} text-4xl ${item.color}"></i>
+                    <span class="font-bold text-gray-700 text-sm">${item.name}</span>
+                `;
+
+                container.appendChild(btn);
+            });
+        }
+
+        function checkRescueAnswer(item) {
+            const fbModal = document.getElementById('rescue-feedback');
+            const fbTitle = document.getElementById('fb-title');
+            const fbText = document.getElementById('fb-text');
+            const fbIcon = document.getElementById('fb-icon');
+
+            if (item.type === 'good') {
+                currentRescueScore += 10;
+                document.getElementById('rescue-score').innerText = currentRescueScore;
+                fbTitle.innerText = "Excelente!";
+                fbTitle.className = "text-3xl font-bold text-green-400 mb-2";
+                fbIcon.className = "fas fa-check-circle text-6xl mb-4 text-green-400";
+                fbText.innerText = item.desc;
+            } else {
+                fbTitle.innerText = "Ops, não...";
+                fbTitle.className = "text-3xl font-bold text-red-400 mb-2";
+                fbIcon.className = "fas fa-times-circle text-6xl mb-4 text-red-400";
+                fbText.innerText = item.desc;
+            }
+
+            fbModal.classList.remove('hidden');
+            fbModal.classList.add('flex');
+        }
+
+        function nextSortRound() {
+            if (poolSymptoms.length === 0) {
+                setTimeout(() => finishGame('sorting'), 500);
+                return;
+            }
+
+            currentSymptom = poolSymptoms.pop();
+            
+            const cardIcon = document.getElementById('symptom-icon');
+            const cardText = document.getElementById('symptom-text');
+            const card = document.getElementById('symptom-card');
+
+            card.style.transform = "scale(0.8) rotate(-5deg)";
+            card.style.opacity = "0";
+
+            setTimeout(() => {
+                cardIcon.className = `fas ${currentSymptom.icon} text-5xl text-blue-500 mb-4`;
+                cardText.innerText = currentSymptom.text;
+                
+                card.style.transform = "scale(1) rotate(0deg)";
+                card.style.opacity = "1";
+            }, 100);
+        }
+
+        function checkSort(userChoice) {
+            const feedbackOverlay = document.getElementById('sort-feedback');
+            const feedbackIcon = document.getElementById('sort-fb-icon');
+
+            if (userChoice === currentSymptom.type) {
+                currentSortScore++;
+                document.getElementById('sort-score').innerText = currentSortScore;
+                feedbackIcon.className = "fas fa-check text-5xl text-green-500";
+            } else {
+                feedbackIcon.className = "fas fa-times text-5xl text-red-500";
+            }
+
+            feedbackOverlay.style.opacity = "1";
+            setTimeout(() => {
+                feedbackOverlay.style.opacity = "0";
+                nextSortRound();
+            }, 800);
+        }
+    </script>
+</body>
+</html>
