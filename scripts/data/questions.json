@@ -1,122 +1,1060 @@
 [
   {
-    "id_questao": 1,
+
+  "id_questao": 1,
     "id_unidade": 101,
-    "enunciado_pergunta": "Qual é a capital da França?",
+    "enunciado_pergunta": "De onde vem a energia que usamos para brincar e correr?",
     "img_url_pergunta": null,
-    "explicacao_pergunta": "Paris é a capital da França e uma das cidades mais importantes da Europa.",
+    "explicacao_pergunta": "A energia que usamos para brincar e correr vem principalmente do açúcar presente nas comidas. Esse açúcar se transforma em glicose, que o corpo usa como combustível.",
     "respostas": [
       {
         "id_resposta": 1,
-        "texto_resposta": "Berlim",
+        "texto_resposta": "Do vento",
         "eh_correto": false,
         "id_questao": 1
       },
       {
         "id_resposta": 2,
-        "texto_resposta": "Paris",
+        "texto_resposta": "Do açúcar que está nas comidas",
         "eh_correto": true,
         "id_questao": 1
       },
       {
         "id_resposta": 3,
-        "texto_resposta": "Londres",
+        "texto_resposta": "Do sono",
         "eh_correto": false,
         "id_questao": 1
       }
     ]
   },
-  {
+  { 
+
     "id_questao": 2,
     "id_unidade": 101,
-    "enunciado_pergunta": "Qual o principal componente do ar que respiramos?",
-    "img_url_pergunta": null,
-    "explicacao_pergunta": "O nitrogênio é o gás mais abundante na atmosfera terrestre, compondo cerca de 78% do ar.",
+    "enunciado_pergunta": "O que é a glicose?",
+    "img_url_pergunta": "/img/explicacao1.png", 
+    "explicacao_pergunta": "A diabetes tipo 1 é uma doença autoimune em que o pâncreas deixa de produzir insulina.",
     "respostas": [
       {
         "id_resposta": 4,
-        "texto_resposta": "Oxigênio",
+        "texto_resposta": "Um tipo de sal",
         "eh_correto": false,
         "id_questao": 2
       },
       {
         "id_resposta": 5,
-        "texto_resposta": "Dióxido de Carbono",
-        "eh_correto": false,
+        "texto_resposta": "Um tipo de açúcar que dá energia para o corpo",
+        "eh_correto": true,
         "id_questao": 2
       },
       {
         "id_resposta": 6,
-        "texto_resposta": "Nitrogênio",
-        "eh_correto": true,
+        "texto_resposta": "Um tipo de gordura",
+        "eh_correto": false,
         "id_questao": 2
       }
     ]
   },
   {
     "id_questao": 3,
-    "id_unidade": 102,
-    "enunciado_pergunta": "Qual seção da plataforma Melli Hero você usa para acompanhar seu progresso em um módulo?",
+    "id_unidade": 101,
+    "enunciado_pergunta": "A glicose funciona como o quê no nosso corpo?",
     "img_url_pergunta": null,
-    "explicacao_pergunta": "A seção 'Aprender' ou a página do módulo específico, como esta, é onde você encontra a trilha de unidades e o status de cada uma.",
+    "explicacao_pergunta": "A glicose é um tipo de açúcar que serve como combustível para o corpo. Ela dá energia para correr, estudar e brincar.",
     "respostas": [
       {
         "id_resposta": 7,
-        "texto_resposta": "Conquistas",
-        "eh_correto": false,
+        "texto_resposta": "Como a gasolina de um carro ou a bateria de um videogame",
+        "eh_correto": true,
         "id_questao": 3
       },
       {
         "id_resposta": 8,
-        "texto_resposta": "Perfil",
+        "texto_resposta": "Como a tinta de um lápis",
         "eh_correto": false,
         "id_questao": 3
       },
       {
         "id_resposta": 9,
-        "texto_resposta": "Módulos de Aprendizagem (Aprender)",
-        "eh_correto": true,
-        "id_questao": 3
-      },
-      {
-        "id_resposta": 10,
-        "texto_resposta": "Prática",
+        "texto_resposta": "Uma vitamina para os ossos",
         "eh_correto": false,
         "id_questao": 3
       }
     ]
   },
-  {
+{
     "id_questao": 4,
-    "id_unidade": 102,
-    "enunciado_pergunta": "Onde você encontraria suas informações de nickname, sequência de dias e pontos XP na interface principal?",
-    "img_url_pergunta": null,
-    "explicacao_pergunta": "No layout padrão do Melli Hero, essas informações são exibidas na coluna lateral esquerda, visível na página de módulos.",
+    "id_unidade": 101,
+    "enunciado_pergunta": "O que acontece no corpo de quem tem Diabetes Mellitus?",
+    "img_url_pergunta": "/img/explicacao2.png",
+    "explicacao_pergunta": "O tratamento principal da diabetes tipo 1 envolve o uso diário de insulina para controlar a glicemia.",
     "respostas": [
       {
+        "id_resposta": 10,
+        "texto_resposta": "O corpo tem dificuldade para usar a glicose como energia",
+        "eh_correto": true,
+        "id_questao": 4
+      },
+      {
         "id_resposta": 11,
-        "texto_resposta": "No rodapé da página",
+        "texto_resposta": "O corpo deixa de produzir água",
         "eh_correto": false,
         "id_questao": 4
       },
       {
         "id_resposta": 12,
-        "texto_resposta": "Na barra de navegação superior",
-        "eh_correto": false,
-        "id_questao": 4
-      },
-      {
-        "id_resposta": 13,
-        "texto_resposta": "Na coluna lateral esquerda",
-        "eh_correto": true,
-        "id_questao": 4
-      },
-      {
-        "id_resposta": 14,
-        "texto_resposta": "Dentro da seção 'Prática'",
+        "texto_resposta": "O corpo perde o gosto por doces",
         "eh_correto": false,
         "id_questao": 4
       }
     ]
+  },
+  {
+    "id_questao": 5,
+    "id_unidade": 101,
+    "enunciado_pergunta": "É possível viver bem mesmo tendo diabetes?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "No diabetes, o corpo tem dificuldade de usar a glicose como energia, porque falta insulina ou ela não funciona direito.",
+    "respostas": [
+      {
+        "id_resposta": 13,
+        "texto_resposta": "Não. Quem tem diabetes não pode fazer nada.",
+        "eh_correto": true,
+        "id_questao": 5
+      },
+      {
+        "id_resposta": 14,
+        "texto_resposta": "Sim, com cuidados e tratamento é possível viver feliz",
+        "eh_correto": true,
+        "id_questao": 5
+      },
+      {
+        "id_resposta": 15,
+        "texto_resposta": "Só se nunca mais comer doce",
+        "eh_correto": false,
+        "id_questao": 5
+      }
+    ]
+  },
+  {
+    "id_questao": 6,
+    "id_unidade": 101,
+    "enunciado_pergunta": "O diabetes é uma doença contagiosa?",
+    "img_url_pergunta": "/img/explicacao3.png",
+    "explicacao_pergunta": "Os sintomas comuns incluem sede excessiva, aumento da frequência urinária e perda de peso inexplicável.",
+    "respostas": [
+      {
+        "id_resposta": 16,
+        "texto_resposta": "Sim, dá pra “pegar” de outra pessoa",
+        "eh_correto": false,
+        "id_questao": 6
+      },
+      {
+        "id_resposta": 17,
+        "texto_resposta": " Não, o diabetes não passa de uma pessoa para outra",
+        "eh_correto": true,
+        "id_questao": 6
+      },
+      {
+        "id_resposta": 18,
+        "texto_resposta": "Só se usar o mesmo copo",
+        "eh_correto": false,
+        "id_questao": 6
+      }
+    ]
+  },
+
+  
+  
+
+  {
+    "id_questao": 7,
+    "id_unidade": 102,
+    "enunciado_pergunta": " O que as células, nossas casinhas, precisam para ter energia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A glicose é como a energia que as casinhas (células) precisam para funcionar bem.",
+    "respostas": [
+      {
+        "id_resposta": 19,
+        "texto_resposta": "Elas precisam de tintas  para pintar as paredes.",
+        "eh_correto": false,
+        "id_questao": 7
+      },
+      {
+        "id_resposta": 20,
+        "texto_resposta": "Elas precisam de um combustível, que é o açúcar (a glicose)!",
+        "eh_correto": true,
+        "id_questao": 7
+      },
+      {
+        "id_resposta": 21,
+        "texto_resposta": "Elas precisam de um policial para fazer a segurança.",
+        "eh_correto": false,
+        "id_questao": 7
+      }
+    
+    ]
+  },
+  {
+    "id_questao": 8,
+    "id_unidade": 102,
+    "enunciado_pergunta": "O que acontece com o açúcar que entra nessa estrada de sangue?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A insulina funciona como uma chave que abre as portas das células para o açúcar entrar.",
+    "respostas": [  
+    {
+        
+        "id_resposta": 22,
+        "texto_resposta": "Ele fica parado no meio da estrada.",
+        "eh_correto": false,
+        "id_questao": 8
+      },
+      {
+        "id_resposta": 23,
+        "texto_resposta": "Ele viaja por todo o corpo para deixar a energia em cada casinha.",
+        "eh_correto": true,
+        "id_questao": 8
+      },
+      {
+        "id_resposta": 24,
+        "texto_resposta": "Ele é jogado para fora da estrada para virar pedrinhas no chão da cidade.",
+        "eh_correto": false,
+        "id_questao": 8
+      }
+    ]
+  },
+
+   {
+    "id_questao": 9,
+    "id_unidade": 102,
+    "enunciado_pergunta": "O que acontece com o açúcar quando ele não consegue entrar na casinha?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "No diabetes, o açúcar não entra nas células e fica acumulado no sangue.",
+    "respostas": [
+      {
+        "id_resposta": 25,
+        "texto_resposta": "Ele vira sal.",
+        "eh_correto": false,
+        "id_questao": 9
+      },
+      {
+        "id_resposta": 26,
+        "texto_resposta": "Ele continua no sangue esperando.",
+        "eh_correto": true,
+        "id_questao": 9
+      },
+      {
+        "id_resposta": 27,
+        "texto_resposta": "Ele vira água.",
+        "eh_correto": false,
+        "id_questao": 9
+      }
+    ]
+  },
+
+     {
+    "id_questao": 10,
+    "id_unidade": 102,
+    "enunciado_pergunta": "Quem é a chave mágica que destranca a porta da casinha para o açúcar entrar?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "No diabetes, o açúcar não entra nas células e fica acumulado no sangue.",
+    "respostas": [
+      {
+        "id_resposta": 28,
+        "texto_resposta": "É a Vitamina C, que faz a casinha ficar cheirosa",
+        "eh_correto": false,
+        "id_questao": 10
+      },
+      {
+        "id_resposta": 29,
+        "texto_resposta": "É a Insulina, que abre a porta para o açúcar virar o combustível da casinha!",
+        "eh_correto": true,
+        "id_questao": 10
+      },
+      {
+        "id_resposta": 30,
+        "texto_resposta": "É o sal, que tempera o açúcar e o deixa mais gostoso",
+        "eh_correto": false,
+        "id_questao": 10
+      }
+    ]
+  },
+  {
+    "id_questao": 11,
+    "id_unidade": 103,
+    "enunciado_pergunta": "Se a chave Insulina está com problemas e não consegue destrancar a porta da célula, o que fica preso do lado de fora e não consegue entrar?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "No diabetes, o açúcar não entra nas células e fica acumulado no sangue.",
+    "respostas": [
+      {
+        "id_resposta": 31,
+        "texto_resposta": "O Carteiro, que traz as cartas e contas para a casinha.",
+        "eh_correto": false,
+        "id_questao": 11
+      },
+      {
+        "id_resposta": 32,
+        "texto_resposta": "O Vizinho, que vem pedir um ovo emprestado.",
+        "eh_correto": false,
+        "id_questao": 11
+      },
+      {
+        "id_resposta": 33,
+        "texto_resposta": "O Açúcar (a glicose), que é o combustível que dá força para a casinha.",
+        "eh_correto": true,
+        "id_questao": 11
+      }
+    ]
+  },
+  {
+    "id_questao": 12,
+    "id_unidade": 103,
+    "enunciado_pergunta": "O que são as casinhas do corpo?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "As casinhas do corpo são as células",
+    "respostas": [
+      {
+        "id_resposta": 34,
+        "texto_resposta": "As células",
+        "eh_correto": true,
+        "id_questao": 12
+      },
+      {
+        "id_resposta": 34,
+        "texto_resposta": "O sol.",
+        "eh_correto": false,
+        "id_questao": 12
+      },
+      {
+        "id_resposta": 34,
+        "texto_resposta": "O sal.",
+        "eh_correto": false,
+        "id_questao": 12
+      }
+    ]
+  },
+  {
+    "id_questao": 15,
+    "id_unidade": 103,
+    "enunciado_pergunta": "No texto, o sangue é comparado às estradas. O que ele carrega nessas estradas?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "O sangue leva a glicose por todo o corpo, como estradas que levam coisas importantes para as casas.",
+    "respostas": [
+      { "id_resposta": 47, "texto_resposta": "Brinquedos e jogos", "eh_correto": false, "id_questao": 25 },
+      { "id_resposta": 48, "texto_resposta": "Açúcar que vira energia para as células", "eh_correto": true, "id_questao": 25 },
+      { "id_resposta": 49, "texto_resposta": "Ar para encher balões", "eh_correto": false, "id_questao": 25 }
+    ]
+  },
+   
+  {
+    "id_questao": 16,
+    "id_unidade": 201,
+    "enunciado_pergunta": "Hipoglicemia é quando o açúcar no sangue está…?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Hipoglicemia é quando o nível de açúcar no sangue fica muito baixo, deixando o corpo sem energia suficiente.",
+    "respostas": [
+      { "id_resposta": 51, "texto_resposta": "Muito alto", "eh_correto": false, "id_questao": 31 },
+      { "id_resposta": 52, "texto_resposta": "Muito baixo", "eh_correto": true, "id_questao": 31 },
+      { "id_resposta": 53, "texto_resposta": "Perfeito", "eh_correto": false, "id_questao": 31 }
+    ]
+  },
+  {
+    "id_questao": 32,
+    "id_unidade": 201,
+    "enunciado_pergunta": "O que pode causar hipoglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A hipoglicemia pode acontecer quando a pessoa pula refeições, demora muito para comer, faz mais exercício do que o normal ou usa remédios em doses maiores que o necessário.",
+    "respostas": [
+      { "id_resposta": 54, "texto_resposta": "Pular refeições", "eh_correto": true, "id_questao": 32 },
+      { "id_resposta": 55, "texto_resposta": "Comer muito doce", "eh_correto": false, "id_questao": 32 },
+      { "id_resposta": 56, "texto_resposta": "Dormir cedo", "eh_correto": false, "id_questao": 32 }
+    ]
+  },
+  {
+    "id_questao": 33,
+    "id_unidade": 201,
+    "enunciado_pergunta": "Qual destes NÃO é um sintoma de hipoglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Os sintomas da hipoglicemia incluem tremedeira, suor frio, fome intensa, tontura e cansaço. Muita sede e boca seca sis mais comuns de quando o açúcar está ALTO.",
+    "respostas": [
+      { "id_resposta": 57, "texto_resposta": "Suor frio", "eh_correto": false, "id_questao": 33 },
+      { "id_resposta": 58, "texto_resposta": "Tremedeira", "eh_correto": false, "id_questao": 33 },
+      { "id_resposta": 59, "texto_resposta": "Muita sede e boca seca", "eh_correto": true, "id_questao": 33 }
+    ]
+  },
+  {
+  
+    "id_questao": 34,
+    "id_unidade": 201,
+    "enunciado_pergunta": "O que é bom oferecer para alguém que está com hipoglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Quando o açúcar está muito baixo, alimentos doces como suco de laranja, balas ou glicose em gel ajudam a subir rápido o nível de glicose.",
+    "respostas": [
+      { "id_resposta": 60, "texto_resposta": "Um prato de salada", "eh_correto": false, "id_questao": 34 },
+      { "id_resposta": 61, "texto_resposta": "Um copinho de suco de laranja", "eh_correto": true, "id_questao": 34 },
+      { "id_resposta": 62, "texto_resposta": "Um copo de água", "eh_correto": false, "id_questao": 34 }
+    ]
+  },
+  {
+    "id_questao": 35,
+    "id_unidade": 202,
+    "enunciado_pergunta": "O que é hiperglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Hiperglicemia acontece quando o açúcar no sangue fica muito alto.",
+    "respostas": [
+      {
+        "id_resposta": 63,
+        "texto_resposta": "Quando o açúcar está muito alto",
+        "eh_correto": true,
+        "id_questao": 301
+      },
+      {
+        "id_resposta":64,
+        "texto_resposta": "Quando o açúcar está muito baixo",
+        "eh_correto": false,
+        "id_questao": 301
+      },
+      {
+        "id_resposta": 65,
+        "texto_resposta": "Quando o açúcar congela",
+        "eh_correto": false,
+        "id_questao": 301
+      }
+    ]
+  },
+
+  {
+    "id_questao": 39,
+    "id_unidade": 202,
+    "enunciado_pergunta": "Qual é um sintoma comum da hiperglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Quando o açúcar está muito alto, o corpo tenta se livrar dele pela urina.",
+    "respostas": [
+      {
+        "id_resposta": 66,
+        "texto_resposta": "Fazer xixi toda hora e sentir muita sede",
+        "eh_correto": true,
+        "id_questao": 302
+      },
+      {
+        "id_resposta": 67,
+        "texto_resposta": "Tremedeira",
+        "eh_correto": false,
+        "id_questao": 302
+      },
+      {
+        "id_resposta": 68,
+        "texto_resposta": "Suor frio",
+        "eh_correto": false,
+        "id_questao": 302
+      }
+    ]
+  },
+
+  {
+    "id_questao": 43,
+    "id_unidade": 202,
+    "enunciado_pergunta": "O que pode causar hiperglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A hiperglicemia pode acontecer quando falta insulina ou quando se come muito carboidrato.",
+    "respostas": [
+      {
+        "id_resposta": 69,
+        "texto_resposta": "Esquecer a insulina ou remédio",
+        "eh_correto": true,
+        "id_questao": 303
+      },
+      {
+        "id_resposta": 70,
+        "texto_resposta": "Comer menos que o normal",
+        "eh_correto": false,
+        "id_questao": 303
+      },
+      {
+        "id_resposta": 71,
+        "texto_resposta": "Fazer muito exercício",
+        "eh_correto": false,
+        "id_questao": 303
+       }
+    ]
+  },
+
+  {
+      
+    "id_questao": 44,
+    "id_unidade": 203,
+    "enunciado_pergunta": "Situações de açúcar muito alto ou muito baixo passam sozinhas?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Tanto a hipoglicemia grave quanto a hiperglicemia grave precisam de ajuda imediata.",
+    "respostas": [
+      {
+        "id_resposta": 1010,
+        "texto_resposta": "Não, precisam de cuidado imediato",
+        "eh_correto": true,
+        "id_questao": 304
+      },
+      {
+        "id_resposta": 1011,
+        "texto_resposta": "Sim, sempre passam sozinhas",
+        "eh_correto": false,
+        "id_questao": 304
+      },
+      {
+        "id_resposta": 1012,
+        "texto_resposta": "Só passam se beber água",
+        "eh_correto": false,
+        "id_questao": 304
+      }
+    ]
+  },
+
+  {
+    "id_questao": 45,
+    "id_unidade": 203,
+    "enunciado_pergunta": "O que é hipoglicemia grave?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "É quando o açúcar fica abaixo de 54 mg/dL e pode causar desmaios.",
+    "respostas": [
+      {
+        "id_resposta": 1013,
+        "texto_resposta": "Quando o açúcar fica muito baixo e pode causar desmaio",
+        "eh_correto": true,
+        "id_questao": 305
+      },
+      {
+        "id_resposta": 1014,
+        "texto_resposta": "Quando o açúcar fica muito alto",
+        "eh_correto": false,
+        "id_questao": 305
+      },
+      {
+        "id_resposta": 1015,
+        "texto_resposta": "Quando o açúcar congela",
+        "eh_correto": false,
+        "id_questao": 305
+      }
+    ]
+  },
+
+  {
+    "id_questao": 46,
+    "id_unidade": 203,
+    "enunciado_pergunta": "Como prevenir hipoglicemia?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Comer nos horários certos e seguir o plano de tratamento ajuda a evitar quedas de açúcar.",
+    "respostas": [
+      {
+        "id_resposta": 1016,
+        "texto_resposta": "Comer nos horários certos e seguir o plano de medicação",
+        "eh_correto": true,
+        "id_questao": 306
+      },
+      {
+        "id_resposta": 1017,
+        "texto_resposta": "Pular refeições",
+        "eh_correto": false,
+        "id_questao": 306
+      },
+      {
+        "id_resposta": 1018,
+        "texto_resposta": "Evitar frutas",
+        "eh_correto": false,
+        "id_questao": 306
+      }
+    ]
+  },
+      
+  {
+    "id_questao": 47,
+    "id_unidade": 301,
+    "enunciado_pergunta": "Qual é o objetivo principal do tratamento do diabetes?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "O tratamento ajuda a manter o açúcar do sangue perto do normal, evitando altos e baixos perigosos.",
+    "respostas": [
+      {
+        "id_resposta": 2001,
+        "texto_resposta": "Manter o açúcar do sangue perto do normal",
+        "eh_correto": true,
+        "id_questao": 401
+      },
+      {
+        "id_resposta": 2002,
+        "texto_resposta": "Aumentar o açúcar do sangue",
+        "eh_correto": false,
+        "id_questao": 401
+      },
+      {
+        "id_resposta": 2003,
+        "texto_resposta": "Nunca mais precisar medir o açúcar",
+        "eh_correto": false,
+        "id_questao": 401
+      }
+    ]
+  },
+      
+  {
+  "id_questao": 48,
+  "id_unidade": 301,
+  "enunciado_pergunta": "Por que o tratamento do diabetes tem várias partes como alimentação, exercícios e medicamentos?",
+  "img_url_pergunta": null,
+  "explicacao_pergunta": "Cada parte do tratamento ajuda o corpo de um jeito diferente para manter o açúcar estável.",
+  "respostas": [
+    { "id_resposta": 3010201, "texto_resposta": "Porque cada parte ajuda a controlar o açúcar de um jeito", "eh_correto": true },
+    { "id_resposta": 3010202, "texto_resposta": "Para deixar tudo mais difícil", "eh_correto": false },
+    { "id_resposta": 3010203, "texto_resposta": "Para a pessoa não esquecer que tem diabetes", "eh_correto": false }
+    
+    ]
+  },
+      
+  {
+
+    
+  "id_questao": 49,
+  "id_unidade": 301,
+  "enunciado_pergunta": "Qual é o papel da alimentação inteligente no tratamento do diabetes?",
+  "img_url_pergunta": null,
+  "explicacao_pergunta": "Comer bem ajuda o açúcar a se manter no lugar certo e evita picos altos.",
+  "respostas": [
+    { "id_resposta": 3010301, "texto_resposta": "Ajudar a manter o açúcar equilibrado", "eh_correto": true },
+    { "id_resposta": 3010302, "texto_resposta": "Fazer a pessoa nunca mais comer", "eh_correto": false },
+    { "id_resposta": 3010303, "texto_resposta": "Transformar tudo em açúcar extra", "eh_correto": false }
+  ]
+},
+{
+  "id_questao": 50,
+  "id_unidade": 301,
+  "enunciado_pergunta": "Por que os exercícios são importantes no tratamento do diabetes?",
+  "img_url_pergunta": null,
+  "explicacao_pergunta": "Mexer o corpo ajuda a glicose a entrar nas células.",
+  "respostas": [
+    { "id_resposta": 3010401, "texto_resposta": "Porque ajudam o açúcar a entrar nas células", "eh_correto": true },
+    { "id_resposta": 3010402, "texto_resposta": "Porque aumentam o açúcar no sangue", "eh_correto": false },
+    { "id_resposta": 3010403, "texto_resposta": "Porque impedem a fome", "eh_correto": false }
+  ]
+},
+
+{
+  "id_questao": 51,
+  "id_unidade": 301,
+  "enunciado_pergunta": "Por que medir a glicemia é importante?",
+  "img_url_pergunta": null,
+  "explicacao_pergunta": "É como olhar o painel de controle do corpo!",
+  "respostas": [
+    { "id_resposta": 3010501, "texto_resposta": "Para saber como está o açúcar no sangue", "eh_correto": true },
+    { "id_resposta": 3010502, "texto_resposta": "Só para gastar tirinhas", "eh_correto": false },
+    { "id_resposta": 3010503, "texto_resposta": "Para encher o dedo de furinhos", "eh_correto": false }
+  ]
+},
+
+    {
+    "id_questao": 52,
+    "id_unidade": 302,
+    "enunciado_pergunta": "Por que a insulina precisa ser aplicada na pele e não tomada como xarope?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Se tomada pela boca, a insulina seria destruída pelo estômago e não funcionaria.",
+    "respostas": [
+      {
+        "id_resposta": 2004,
+        "texto_resposta": "Porque o estômago destruiria a insulina",
+        "eh_correto": true,
+        "id_questao": 402
+      },
+      {
+        "id_resposta": 2005,
+        "texto_resposta": "Porque ela tem gosto ruim",
+        "eh_correto": false,
+        "id_questao": 402
+      },
+      {
+        "id_resposta": 2006,
+        "texto_resposta": "Porque funciona só no braço",
+        "eh_correto": false,
+        "id_questao": 402
+      }
+    ]
+  },
+
+  {
+    "id_questao": 53,
+    "id_unidade": 302,
+    "enunciado_pergunta": "Qual destes é um bom lugar para aplicar insulina?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A insulina deve ser aplicada na camada de gordura da pele, como barriga, braço, coxa ou bumbum.",
+    "respostas": [
+      {
+        "id_resposta": 2007,
+        "texto_resposta": "Na barriga, um pouco longe do umbigo",
+        "eh_correto": true,
+        "id_questao": 403
+      },
+      {
+        "id_resposta": 2008,
+        "texto_resposta": "Na palma da mão",
+        "eh_correto": false,
+        "id_questao": 403
+      },
+      {
+        "id_resposta": 2009,
+        "texto_resposta": "No joelho",
+        "eh_correto": false,
+        "id_questao": 403
+      }
+    ]
+  },
+
+  {
+    "id_questao": 54,
+    "id_unidade": 302,
+    "enunciado_pergunta": "Por que é importante variar o local de aplicação da insulina?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Variar evita machucadinhos chamados lipodistrofias e melhora a absorção da insulina.",
+    "respostas": [
+      {
+        "id_resposta": 2010,
+        "texto_resposta": "Para evitar carocinhos e ajudar a insulina a funcionar bem",
+        "eh_correto": true,
+        "id_questao": 404
+      },
+      {
+        "id_resposta": 2011,
+        "texto_resposta": "Para gastar mais agulhas",
+        "eh_correto": false,
+        "id_questao": 404
+      },
+      {
+        "id_resposta": 2012,
+        "texto_resposta": "Porque a insulina só funciona em lugares diferentes a cada dia",
+        "eh_correto": false,
+        "id_questao": 404
+      }
+    ]
+  },
+
+  {
+    "id_questao": 55,
+    "id_unidade": 303,
+    "enunciado_pergunta": "Quem tem diabetes pode comer doces?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Pode sim, mas com moderação e planejamento!",
+    "respostas": [
+      {
+        "id_resposta": 2013,
+        "texto_resposta": "Sim, mas com moderação e orientação",
+        "eh_correto": true,
+        "id_questao": 405
+      },
+      {
+        "id_resposta": 2014,
+        "texto_resposta": "Não, nunca",
+        "eh_correto": false,
+        "id_questao": 405
+      },
+      {
+        "id_resposta": 2015,
+        "texto_resposta": "Sim, pode comer à vontade",
+        "eh_correto": false,
+        "id_questao": 405
+      }
+    ]
+  },
+
+  {
+    "id_questao": 56,
+    "id_unidade": 303,
+    "enunciado_pergunta": "Qual a importância da alimentação para quem tem diabetes?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A alimentação ajuda a controlar o açúcar no sangue e manter a saúde.",
+    "respostas": [
+      {
+        "id_resposta": 2016,
+        "texto_resposta": "Ajuda a controlar o açúcar no sangue e manter a saúde",
+        "eh_correto": true,
+        "id_questao": 406
+      },
+      {
+        "id_resposta": 2017,
+        "texto_resposta": "Nenhuma",
+        "eh_correto": false,
+        "id_questao": 406
+      },
+      {
+        "id_resposta": 2018,
+        "texto_resposta": "Serve apenas para emagrecer",
+        "eh_correto": false,
+        "id_questao": 406
+      }
+    ]
+  },
+
+  {
+    "id_questao": 57,
+    "id_unidade": 303,
+    "enunciado_pergunta": "Verdadeiro ou falso: quem tem diabetes não pode comer nenhum tipo de doce.",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Quem tem diabetes pode comer doces, mas com equilíbrio.",
+    "respostas": [
+      {
+        "id_resposta": 2019,
+        "texto_resposta": "Falso",
+        "eh_correto": true,
+        "id_questao": 407
+      },
+      {
+        "id_resposta": 2020,
+        "texto_resposta": "Verdadeiro",
+        "eh_correto": false,
+        "id_questao": 407
+      }
+    ]
+  },
+
+  {
+    "id_questao": 58,
+    "id_unidade": 304,
+    "enunciado_pergunta": "Por que quem tem diabetes deve fazer exercícios?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "O exercício ajuda a insulina a funcionar melhor e baixa o açúcar.",
+    "respostas": [
+      {
+        "id_resposta": 2021,
+        "texto_resposta": "Porque os exercícios melhoram a ação da insulina e controlam o açúcar",
+        "eh_correto": true,
+        "id_questao": 408
+      },
+      {
+        "id_resposta": 2022,
+        "texto_resposta": "Porque aumentam o açúcar no sangue",
+        "eh_correto": false,
+        "id_questao": 408
+      },
+      {
+        "id_resposta": 2023,
+        "texto_resposta": "Porque servem só para cansar",
+        "eh_correto": false,
+        "id_questao": 408
+      }
+    ]
+  },
+
+  {
+    "id_questao": 59,
+    "id_unidade": 304,
+    "enunciado_pergunta": "Verdadeiro ou falso: às vezes é preciso comer um lanchinho antes de exercícios longos para evitar hipoglicemia.",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Alguns exercícios podem baixar muito o açúcar.",
+    "respostas": [
+      {
+        "id_resposta": 2024,
+        "texto_resposta": "Verdadeiro",
+        "eh_correto": true,
+        "id_questao": 409
+      },
+      {
+        "id_resposta": 2025,
+        "texto_resposta": "Falso",
+        "eh_correto": false,
+        "id_questao": 409
+      }
+    ]
+  },
+
+
+
+
+  {
+    "id_questao": 60,
+    "id_unidade": 401,
+    "enunciado_pergunta": "Por que a alimentação saudável é importante para quem tem diabetes?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A alimentação saudável ajuda o corpo a funcionar direitinho e controla o açúcar no sangue.",
+    "respostas": [
+      {
+        "id_resposta": 3001,
+        "texto_resposta": "Porque ajuda a controlar o açúcar no sangue",
+        "eh_correto": true,
+        "id_questao": 501
+      },
+      {
+        "id_resposta": 3002,
+        "texto_resposta": "Porque deixa a comida mais cara",
+        "eh_correto": false,
+        "id_questao": 501
+      },
+      {
+        "id_resposta": 3003,
+        "texto_resposta": "Porque obriga a pessoa a comer menos",
+        "eh_correto": false,
+        "id_questao": 501
+      }
+    ]
+  },
+
+  {
+    "id_questao": 61,
+    "id_unidade": 401,
+    "enunciado_pergunta": "O que acontece quando a pessoa mantém horários organizados para comer?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Ter horários organizados ajuda o açúcar do sangue a subir e descer com equilíbrio.",
+    "respostas": [
+      {
+        "id_resposta": 3004,
+        "texto_resposta": "O corpo funciona melhor e o açúcar fica mais estável",
+        "eh_correto": true,
+        "id_questao": 502
+      },
+      {
+        "id_resposta": 3005,
+        "texto_resposta": "A pessoa sente sono o dia todo",
+        "eh_correto": false,
+        "id_questao": 502
+      },
+      {
+        "id_resposta": 3006,
+        "texto_resposta": "O açúcar desaparece do sangue",
+        "eh_correto": false,
+        "id_questao": 502
+      }
+    ]
+  },
+
+  {
+    "id_questao": 62,
+    "id_unidade": 401,
+    "enunciado_pergunta": "O que significa ter equilíbrio na alimentação?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Equilíbrio é variar os alimentos e evitar exageros.",
+    "respostas": [
+      {
+        "id_resposta": 3007,
+        "texto_resposta": "Comer de tudo um pouco, nas quantidades certas",
+        "eh_correto": true,
+        "id_questao": 503
+      },
+      {
+        "id_resposta": 3008,
+        "texto_resposta": "Só comer frutas o dia inteiro",
+        "eh_correto": false,
+        "id_questao": 503
+      },
+      {
+        "id_resposta": 3009,
+        "texto_resposta": "Comer apenas uma vez ao dia",
+        "eh_correto": false,
+        "id_questao": 503
+      }
+    ]
+  },
+
+  {
+    "id_questao": 63,
+    "id_unidade": 401,
+    "enunciado_pergunta": "Qual é o papel da atividade física para quem tem diabetes?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "A atividade física ajuda o corpo a usar a glicose e controlar o açúcar.",
+    "respostas": [
+      {
+        "id_resposta": 3010,
+        "texto_resposta": "Ajudar o corpo a usar a glicose e controlar o açúcar",
+        "eh_correto": true,
+        "id_questao": 504
+      },
+      {
+        "id_resposta": 3011,
+        "texto_resposta": "Aumentar o açúcar no sangue",
+        "eh_correto": false,
+        "id_questao": 504
+      },
+      {
+        "id_resposta": 3012,
+        "texto_resposta": "Deixar a pessoa sem fome",
+        "eh_correto": false,
+        "id_questao": 504
+      }
+    ]
+  },
+
+  {
+    "id_questao": 64,
+    "id_unidade": 401,
+    "enunciado_pergunta": "Qual é o segredo para viver bem com diabetes?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Uma rotina equilibrada com alimentação, descanso e cuidados mantém o corpo forte e saudável.",
+    "respostas": [
+      {
+        "id_resposta": 3013,
+        "texto_resposta": "Seguir uma rotina equilibrada com alimentação e cuidados",
+        "eh_correto": true,
+        "id_questao": 505
+      },
+      {
+        "id_resposta": 3014,
+        "texto_resposta": "Evitar todas as comidas para sempre",
+        "eh_correto": false,
+        "id_questao": 505
+      },
+      {
+        "id_resposta": 3015,
+        "texto_resposta": "Dormir o dia todo",
+        "eh_correto": false,
+        "id_questao": 505
+      }
+    ]
+  },
+
+  {
+    "id_questao": 65,
+    "id_unidade": 401,
+    "enunciado_pergunta": "Por que é importante fazer refeições regulares?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Fazer refeições com horários ajuda a evitar queda ou subida exagerada do açúcar.",
+    "respostas": [
+      {
+        "id_resposta": 3016,
+        "texto_resposta": "Para evitar que o açúcar suba ou caia demais",
+        "eh_correto": true,
+        "id_questao": 506
+      },
+      {
+        "id_resposta": 3017,
+        "texto_resposta": "Para comer mais sem perceber",
+        "eh_correto": false,
+        "id_questao": 506
+      },
+      {
+        "id_resposta": 3018,
+        "texto_resposta": "Para não sentir sede",
+        "eh_correto": false,
+        "id_questao": 506
+      }
+    ]
+  },
+
+  {
+    "id_questao": 66,
+    "id_unidade": 401,
+    "enunciado_pergunta": "Quem tem diabetes pode comer coisas gostosas?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "Quem tem diabetes pode comer coisas gostosas, sim! O segredo é o equilíbrio.",
+    "respostas": [
+      {
+        "id_resposta": 3019,
+        "texto_resposta": "Sim, desde que faça boas escolhas e tenha equilíbrio",
+        "eh_correto": true,
+        "id_questao": 507
+      },
+      {
+        "id_resposta": 3020,
+        "texto_resposta": "Não, nunca mais pode comer nada gostoso",
+        "eh_correto": false,
+        "id_questao": 507
+      },
+      {
+        "id_resposta": 3021,
+        "texto_resposta": "Pode, mas só doces",
+        "eh_correto": false,
+        "id_questao": 507
+      }
+    ]
   }
 ]
+

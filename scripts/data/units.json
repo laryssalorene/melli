@@ -1,25 +1,115 @@
 [
   {
-    "id_unidade": 101,
+    "id_unidade": 101, 
     "id_modulo": 1,
-    "nome_unidade": "Começando sua Jornada",
-    "descricao": "Aprenda a navegar na plataforma Melli Hero e dê os primeiros passos.",
+    "nome_unidade": "Diabetes",
+    "descricao": "O que é? Um misterio no Corpo",
     "ordem": 1,
     "pontos_por_conclusao": 10
   },
   {
-    "id_unidade": 102,
+    
+    "id_unidade": 102, 
     "id_modulo": 1,
-    "nome_unidade": "Navegando na Interface",
-    "descricao": "Explore as funcionalidades e o layout do ambiente de aprendizado.",
+    "nome_unidade": "A Incrível Viagem do Açúcar e o Papel do Diabetes",
+    "descricao": "Papel do Diabetes no nosso corpo",
+    "ordem": 1,
+    "pontos_por_conclusao": 10
+  },
+  {
+    "id_unidade": 103, 
+    "id_modulo": 1,
+    "nome_unidade": "Sinal Vermelho - Hipoglicemia",
+    "descricao": "Explore o açucar no sangue quando fica baixo.",
+    "ordem": 2,
+    "pontos_por_conclusao": 15
+
+  },
+  {
+     "id_unidade": 104, 
+    "id_modulo": 1,
+    "nome_unidade": "Sinal Vermelho - Hiperglicemia",
+    "descricao": "Explore o açucar no sangue quando fica alto.",
     "ordem": 2,
     "pontos_por_conclusao": 15
   },
   {
-    "id_unidade": 201,
+     "id_unidade": 105, 
+    "id_modulo": 1,
+    "nome_unidade": "Zona de Perigo — Quando o Açúcar Acende o Alerta Geral!",
+    "descricao": "Explore o açucar no sangue quando fica muito alto ou muito baixo.",
+    "ordem": 2,
+    "pontos_por_conclusao": 15
+  },
+  {
+    "id_unidade": 201, 
     "id_modulo": 2,
-    "nome_unidade": "Comunicação Eficaz",
-    "descricao": "Aprimore suas habilidades de comunicação verbal e escrita.",
+    "nome_unidade": "Sinal Vermelho Baixinho Hipoglicemias",
+    "descricao": "Explore o açucar no sangue quando fica baixo.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+  },
+  {
+
+
+    "id_unidade": 202, 
+    "id_modulo": 2,
+    "nome_unidade": "Sinal Vermelho Altinho Hiperglicemias",
+    "descricao": "Explore o açucar no sangue quando fica alto.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+
+  },
+  {
+
+    
+     "id_unidade": 203, 
+    "id_modulo": 2,
+    "nome_unidade": "Zona de Perigo — Quando o Açúcar Acende o Alerta Geral!",
+    "descricao": "Explore o açucar no sangue quando fica muito alto ou muito baixo.",
+    "ordem": 2,
+    "pontos_por_conclusao": 15
+  },
+  {
+    
+    "id_unidade": 301, 
+    "id_modulo": 3,
+    "nome_unidade": "O Tratamento do Diabetes",
+    "descricao": "Explore como funciona o tratamento do Diabetes.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+  },
+  {
+   "id_unidade": 302, 
+    "id_modulo": 3,
+    "nome_unidade": "Insulina – A Chave Mestra e Onde Usar",
+    "descricao": "Explore e aprenda sobre o uso da Insulina.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+  },
+  {
+    
+   "id_unidade": 303, 
+    "id_modulo": 3,
+    "nome_unidade": "Prato Colorido, Saúde em Dia! (Alimentação e Diabetes)",
+    "descricao": "Explore e aprenda sobre a alimentação.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+  },
+  {
+    "id_unidade": 304,
+    "id_modulo": 3,
+    "nome_unidade": "Energia em Movimento – Exercícios e Diabetes",
+    "descricao": "Explore e aprenda sobre a alimentação.",
+    "ordem": 1,
+    "pontos_por_conclusao": 20
+  },
+  {
+    
+    "id_unidade": 401, 
+    "id_modulo": 4,
+    "nome_unidade": "O Poder dos Bons Hábitos!",
+    "descricao": "Explore bons hábitos para adotar e prevenir a diabetes.",
     "ordem": 1,
     "pontos_por_conclusao": 20
   }

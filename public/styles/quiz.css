@@ -104,8 +104,10 @@
     text-align: left;
 }
 .explanation-content img {
-    max-width: 100%;
-    height: auto;
+    max-width: 100%; /* A imagem não ultrapassará a largura do contêiner */
+    max-height: 350px; /* Define uma altura máxima para a imagem */
+    width: auto; /* Permite que a largura se ajuste para manter a proporção */
+    object-fit: contain; /* Garante que a imagem inteira seja exibida sem cortes */
     border-radius: 12px;
     margin: 2rem auto;
     display: block;
@@ -175,6 +177,12 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
+}
+
+/* Desativa a interação com as alternativas após a resposta */
+.alternatives-grid.disabled .alternative-item {
+    pointer-events: none;
+    cursor: default;
 }
 .alternative-item {
     display: flex;

@@ -1,14 +1,29 @@
+
 [
   {
     "id_modulo": 1,
-    "nome_modulo": "Introdução à Plataforma",
+    "nome_modulo": "Detetives do Açúcar:Descobrindo o Diabetes",
     "descricao": "Uma jornada inicial para o Melli Hero.",
     "ordem": 1
   },
   {
     "id_modulo": 2,
-    "nome_modulo": "Habilidades Essenciais de Mercado",
-    "descricao": "Desenvolva competências valiosas para o mercado de trabalho.",
+    "nome_modulo": "Alerta de Nível!:Entendendo o Açúcar no Sangue",
+    "descricao": "Aprendendo sobre o acuçar e a Diabetes.",
     "ordem": 2
+  },
+
+    {
+    "id_modulo": 3,
+    "nome_modulo": "Superpoderes Ativados!:Controlando o Diabetes",
+    "descricao": "Aprendendo sobre o controle da Diabetes.",
+    "ordem": 3
+  },
+  {
+
+ "id_modulo": 4,
+    "nome_modulo": "Guardiões da Rotina:Alimentação e Cuidados de Verdade!",
+    "descricao": "Aprendendo sobre os cuidados da Diabetes.",
+    "ordem": 4
   }
 ]

@@ -20,11 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mapeamento de ícones para cada tipo de módulo
     const moduleIcons = {
-        'Introdução à Plataforma': 'fas fa-microchip',
-        'Estruturas de Dados': 'fas fa-sitemap',
-        'Desenvolvimento Web': 'fas fa-globe',
-        'Banco de Dados': 'fas fa-database',
-        'default': 'fas fa-graduation-cap'
+        'INTRODUÇÃO À PLATAFORMA': 'fas fa-microchip', // Exemplo
+        'ESTRUTURAS DE DADOS': 'fas fa-sitemap',       // Exemplo
+        'DESENVOLVIMENTO WEB': 'fas fa-globe',         // Exemplo
+        'BANCO DE DADOS': 'fas fa-database',           // Exemplo
+        // Adicione outros mapeamentos de ícones para seus títulos curtos (ANTES DO ':')
+        'DETETIVES DO AÇÚCAR': 'fas fa-flask', // Exemplo de ícone para "Detetives do Açúcar"
+        'ALERTA DE NÍVEL!': 'fas fa-chart-line', // Exemplo de ícone para "Alerta de Nível!"
+        'SUPERPODERES ATIVADOS!': 'fas fa-bolt', // Exemplo de ícone para "Superpoderes Ativados!"
+        'GUARDIÕES DA ROTINA': 'fas fa-hand-holding-heart', // Exemplo de ícone para "Guardiões da Rotina"
+        'default': 'fas fa-graduation-cap' // Ícone padrão
     };
 
     // Função auxiliar para controlar o scroll do body (SEM BACKDROP)
@@ -53,12 +58,11 @@ document.addEventListener('DOMContentLoaded', () => {
             colunaEsquerda.classList.remove("visivel");
         }
         
-        // Gerencia o backdrop e o scroll (apenas em mobile)
+        // Gerencia o scroll (apenas em mobile)
         if (window.innerWidth <= 767) {
             toggleBodyScroll(shouldOpen);
         }
     }
-
 
     // Função auxiliar para fazer requisições autenticadas
     async function fetchAuthenticatedData(url, options = {}) {
@@ -118,19 +122,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // Função para carregar e exibir os módulos
     async function loadModules() {
         try {
-            const modules = await fetchAuthenticatedData('/api/content/modulos');
+            // CORRIGIDO: Usando o endpoint correto do backend
+            const modules = await fetchAuthenticatedData('/api/content/modulos'); 
             
             if (modulesContainer) {
+                // Remove apenas os módulos existentes, mantendo os paths que estão no HTML
                 const existingPaths = Array.from(modulesContainer.querySelectorAll('.module-path'));
-                modulesContainer.innerHTML = '';
-                existingPaths.forEach(path => modulesContainer.appendChild(path));
+                modulesContainer.innerHTML = ''; // Limpa o container
+                existingPaths.forEach(path => modulesContainer.appendChild(path)); // Adiciona os paths de volta
             }
 
             if (modules && modules.length > 0) {
                 modules.forEach((module, index) => {
                     const moduleCard = document.createElement('a');
                     moduleCard.href = `/html/modulo.html?id=${module.id_modulo}`;
-                    moduleCard.className = `module-card module-${index + 1}`;
+                    moduleCard.className = `module-card module-${index + 1}`; // Usando index + 1 para corresponder a module-1, module-2, etc.
 
                     if (module.completo) {
                         moduleCard.classList.add('completed');
@@ -140,12 +146,27 @@ document.addEventListener('DOMContentLoaded', () => {
                         moduleCard.classList.add('desbloqueado');
                     }
 
-                    const iconClass = moduleIcons[module.nome_modulo] || moduleIcons['default'];
+                    // --- LÓGICA DE EXTRAÇÃO DO TEXTO ANTES E DEPOIS DO ":" ---
+                    let moduleShortTitle = ''; // Para o module-number
+                    let moduleFullTitle = module.nome_modulo; // Para o module-title, por padrão é o nome_modulo completo
+                    
+                    const parts = module.nome_modulo.split(':');
+                    if (parts.length > 1) {
+                        moduleShortTitle = parts[0].trim().toUpperCase(); // Parte antes do ':'
+                        moduleFullTitle = parts.slice(1).join(':').trim(); // Todas as partes depois do ':', unidas novamente
+                    } else {
+                        // Fallback se não houver ':', usa "MÓDULO X" para o curto
+                        moduleShortTitle = `MÓDULO ${index + 1}`; 
+                        // O nome_modulo completo já é o default para moduleFullTitle
+                    }
+                    // --- FIM DA LÓGICA DE EXTRAÇÃO ---
+
+                    const iconClass = moduleIcons[moduleShortTitle] || moduleIcons['default']; // Tenta usar o texto curto para o ícone, senão o default
 
                     moduleCard.innerHTML = `
                         <div class="module-content">
-                            <span class="module-number">MÓDULO ${index + 1}:</span>
-                            <h3 class="module-title">${module.nome_modulo}</h3>
+                            <span class="module-number">${moduleShortTitle}</span>
+                            <h3 class="module-title">${moduleFullTitle}</h3>
                         </div>
                         <div class="module-icon">
                             <i class="${iconClass}"></i>
@@ -157,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
 
+                // Remove a mensagem de "Carregando módulos..." após o carregamento
                 const loadingMessage = modulesContainer.querySelector('.text-gray-700');
                 if (loadingMessage) {
                     loadingMessage.remove();
@@ -235,17 +257,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Fechar sidebar/menu mobile ao clicar fora (mobile)
-    // O clique na coluna esquerda em mobile NÃO deve fechar (pois a sidebar está 100% da largura).
-    // O backdrop (que não usamos) ou o clique no botão de toggle deve fechar.
-    
     // NOVO: Adicionado listener para fechar a sidebar ao clicar fora (no main content) em mobile
     // Verifica se a largura é mobile e se a sidebar está visível
     document.querySelector('.conteudo').addEventListener('click', (event) => {
         if (window.innerWidth <= 767 && colunaEsquerda.classList.contains('visivel')) {
             // Se o clique NÃO foi dentro da colunaEsquerda ou do botão de toggle, feche.
+            // Também adicionamos verificação para não fechar se clicar nos botões do perfil.
             if (!colunaEsquerda.contains(event.target) && 
-                !btnPerfil.contains(event.target) && !btnPerfilMobile.contains(event.target)) {
+                !btnPerfil.contains(event.target) && !btnPerfilMobile.contains(event.target) &&
+                !mobileMenu.contains(event.target) && !menuToggle.contains(event.target)) {
                 
                 toggleSidebar(false); // Fecha a sidebar
             }

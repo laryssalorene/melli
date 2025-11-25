@@ -260,11 +260,10 @@ body::before {
 /* CONTAINER DOS MÓDULOS (TRILHA/MAPA) */
 .modulos {
     display: grid;
-    grid-template-columns: repeat(2, 280px);
-    grid-template-rows: repeat(2, 200px);
-    gap: 0;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 80px; /* Aumenta o gap horizontal para dar espaço */
     position: relative;
-    max-width: 600px;
+    max-width: 640px; /* Aumenta a largura para comportar o gap */
     margin: 0 auto;
     padding: 20px;
 }
@@ -292,6 +291,7 @@ body::before {
     text-align: left;
     transform: translateZ(0);
     text-decoration: none;
+    margin: 0 auto; /* Centraliza o card na célula do grid */
 }
 
 .module-card:hover {
@@ -333,40 +333,25 @@ body::before {
     opacity: 0.8;
 }
 
-/* POSICIONAMENTO DOS CARDS NO GRID */
+/* POSICIONAMENTO DOS CARDS NO GRID (CORRIGIDO) */
 .module-1 {
     background-color: #508ee6;
-    grid-column: 1 / 2;
-    grid-row: 1 / 2;
-    justify-self: start;
-    align-self: start;
 }
 
 .module-2 {
     background-color: #5dc886;
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-    justify-self: end;
-    align-self: end;
-    transform: translateY(60px);
+    margin-top: 80px; /* Cria o efeito desalinhado */
 }
 
 .module-3 {
     background-color: #ff9933;
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-    justify-self: start;
-    align-self: start;
-    transform: translateY(-60px);
 }
 
 .module-4 {
     background-color: #9b59b6;
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
-    justify-self: end;
-    align-self: end;
+    margin-top: 80px; /* Cria o efeito desalinhado */
 }
+
 
 /* STATUS DOS MÓDULOS */
 .module-card.desbloqueado {
@@ -394,29 +379,40 @@ body::before {
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* LINHAS DE CONEXÃO (Trilha) */
+/* LINHAS DE CONEXÃO (Trilha) (CORRIGIDO) */
 .module-path {
     position: absolute;
     border: none;
     z-index: 5;
+    background-color: transparent;
+    border-top: 2px dashed rgba(80, 200, 198, 0.7); /* Estilo da linha */
+    transform-origin: left center;
 }
 
 /* Linha entre Módulo 1 e Módulo 2 */
 .path-1-2 {
-    top: 100px;
-    left: 215px;
-    width: 130px;
-    height: 0;
-    transform: rotate(20deg);
-    transform-origin: left center;
-    border-top: 2px dashed rgba(80, 200, 198, 0.7);
-    border-color: rgba(80, 200, 198, 0.7);
+    width: 150px;
+    top: 90px;
+    left: calc(60% - 135px);
+    transform: rotate(35deg);
 }
 
-/* As outras trilhas (path-2-3 e path-3-4) estão ocultas via HTML ou serão geradas pelo JS se precisar */
-.path-2-3, .path-3-4 {
-    display: none;
+/* Linha entre Módulo 2 e Módulo 3 */
+.path-2-3 {
+    width: 150px;
+    top: 230px;
+    left: calc(60% - 5px);
+    transform: rotate(145deg);
 }
+
+/* Linha entre Módulo 3 e Módulo 4 */
+.path-3-4 {
+    width: 150px;
+    top: 350px;
+    left: calc(60% - 135px);
+    transform: rotate(35deg);
+}
+
 
 /* Backdrop para mobile */
 .backdrop {
@@ -545,5 +541,44 @@ body::before {
     /* Esconde as linhas de conexão em mobile */
     .module-path {
         display: none;
+    }
+}
+
+/* Tablet Médio (Paisagem) */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .coluna-centro {
+        padding: 40px;
+    }
+    .coluna-centro h1 {
+        font-size: 2rem;
+    }
+    .coluna-centro p {
+        font-size: 1.05rem;
+    }
+    .modulos {
+        grid-template-columns: 250px 250px; /* Ajusta um pouco para tablets */
+        max-width: 550px;
+    }
+    .module-card {
+        width: 230px;
+    }
+    /* Reajuste das linhas de conexão para tablets se necessário */
+    .path-1-2 {
+        top: 90px;
+        left: 195px;
+        width: 200px;
+        transform: rotate(20deg);
+    }
+    .path-2-3 {
+        top: 190px;
+        left: 360px;
+        width: 150px;
+        transform: rotate(160deg);
+    }
+    .path-3-4 {
+        top: 310px;
+        left: 195px;
+        width: 150px;
+        transform: rotate(20deg);
     }
 }

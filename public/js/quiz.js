@@ -186,49 +186,47 @@ document.addEventListener('DOMContentLoaded', async () => {
     // =======================================================
 
     // Renderiza o bloco de explicação atual no container
-    function renderCurrentExplanationBlock() {
+    function renderAllExplanationBlocks() {
         currentExplanationBlockContent.innerHTML = ''; 
 
-        if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
-            const expBlock = currentExplanationBlocks[currentExplanationBlockIndex];
-            
-            if (expBlock.texto) {
-                const p = document.createElement('p');
-                p.textContent = expBlock.texto;
-                currentExplanationBlockContent.appendChild(p);
-            }
-            if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
-                const img = document.createElement('img');
-                img.src = expBlock.url_media;
-                img.alt = expBlock.texto || "Conteúdo visual da explicação";
-                currentExplanationBlockContent.appendChild(img);
-            }
-            if (expBlock.url_media && expBlock.tipo_media === 'video') {
-                const iframeContainer = document.createElement('div');
-                iframeContainer.classList.add('iframe-container');
-                const iframe = document.createElement('iframe');
-                
-                // Formata URL do YouTube para embed
-                let videoSrc = expBlock.url_media;
-                if (videoSrc.includes('youtube.com/watch?v=')) {
-                    const videoId = videoSrc.split('v=')[1].split('&')[0];
-                    videoSrc = `https://www.youtube.com/embed/${videoId}`;
-                } else if (videoSrc.includes('youtu.be/')) {
-                    const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
-                    videoSrc = `https://www.youtube.com/embed/${videoId}`;
-                }
-                iframe.src = videoSrc;
-                
-                iframe.frameBorder = "0";
-                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                iframe.allowFullscreen = true;
-                iframeContainer.appendChild(iframe);
-                currentExplanationBlockContent.appendChild(iframeContainer);
-            }
-            nextStepButton.textContent = 'Próximo'; 
-        } else {
-            nextStepButton.textContent = 'Iniciar Questão'; 
-        }
+        currentExplanationBlocks.forEach(expBlock => {
+             if (expBlock.texto) {
+                 const p = document.createElement('p');
+                 p.textContent = expBlock.texto;
+                 currentExplanationBlockContent.appendChild(p);
+             }
+             if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
+                 const img = document.createElement('img');
+                 img.src = expBlock.url_media;
+                 img.alt = expBlock.texto || "Conteúdo visual da explicação";
+                 currentExplanationBlockContent.appendChild(img);
+             }
+             if (expBlock.url_media && expBlock.tipo_media === 'video') {
+                 const iframeContainer = document.createElement('div');
+                 iframeContainer.classList.add('iframe-container');
+                 const iframe = document.createElement('iframe');
+                 
+                 // Formata URL do YouTube para embed
+                 let videoSrc = expBlock.url_media;
+                 if (videoSrc.includes('youtube.com/watch?v=')) {
+                     const videoId = videoSrc.split('v=')[1].split('&')[0];
+                     videoSrc = `https://www.youtube.com/embed/${videoId}`;
+                 } else if (videoSrc.includes('youtu.be/')) {
+                     const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
+                     videoSrc = `https://www.youtube.com/embed/${videoId}`;
+                 }
+                 iframe.src = videoSrc;
+                 
+                 iframe.frameBorder = "0";
+                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                 iframe.allowFullscreen = true;
+                 iframeContainer.appendChild(iframe);
+                 currentExplanationBlockContent.appendChild(iframeContainer);
+             }
+        });
+
+        // O botão agora sempre leva para a questão
+        nextStepButton.textContent = 'Iniciar Questão';
     }
 
     function displayExplanationStep() {
@@ -236,7 +234,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         explanationStepArea.classList.remove('hidden');
         userFeedbackMessage.classList.add('hidden'); // Esconde feedback da tela
 
-        renderCurrentExplanationBlock();
+        renderAllExplanationBlocks();
         
         nextStepButton.removeEventListener('click', handleNextStep);
         nextStepButton.addEventListener('click', handleNextStep);
@@ -245,13 +243,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     function handleNextStep() {
         // Avanca o progresso na barra
         updateProgressBar(1); 
-        
-        currentExplanationBlockIndex++;
-        if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
-            renderCurrentExplanationBlock(); // Próximo bloco de explicação
-        } else {
-            displayQuestion(); // Acabaram as explicações, mostre a pergunta
-        }
+
+        displayQuestion(); // Acabaram as explicações, mostre a pergunta
     }
 
     // =======================================================
@@ -266,12 +259,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         const question = questions[currentQuestionIndex];
         
         questionCounterElement.textContent = `Questão ${currentQuestionIndex + 1} de ${questions.length}`;
-        
-        questionImageElement.classList.add('hidden');
-        questionImageElement.src = ''; 
+
         if (question.img_url_pergunta) { 
             questionImageElement.src = question.img_url_pergunta;
             questionImageElement.classList.remove('hidden');
+        } else {
+            questionImageElement.classList.add('hidden');
+            questionImageElement.src = ''; 
         }
 
         questionTextElement.textContent = question.enunciado_pergunta;
@@ -322,6 +316,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             const labelSelected = selectedAlternativeInput.closest('label');
             alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true); // Desabilita inputs
+            alternativesContainer.classList.add('disabled'); // Adiciona a classe para desativar cliques no CSS
 
             if (isCorrect) {
                 labelSelected.classList.add('correct-answer');
@@ -358,6 +353,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function resetAlternativeStyles() {
         alternativesContainer.querySelectorAll('.alternative-item').forEach(item => {
             item.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback', 'selected');
+            alternativesContainer.classList.remove('disabled'); // Remove a classe para reativar os cliques
             item.querySelector('input').disabled = false;
             item.querySelector('input').checked = false; 
         });

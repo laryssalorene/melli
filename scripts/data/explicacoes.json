@@ -6,120 +6,1097 @@
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Olá, Hero! Antes de mergulharmos na capital da França, vamos ver algumas curiosidades. Você sabia que Paris é conhecida como a 'Cidade Luz'?"
+        "texto": "Sabe quando você come aquele lanche gostoso e, de repente, tem um monte de energia para correr, pular e brincar?"
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/torre_eiffel.jpg"
+        "url_media": "/img/energia_comida.jpg"
       },
       {
         "tipo_media": "texto",
-        "texto": "É um dos destinos turísticos mais populares do mundo. Agora sim, pronto para a pergunta!"
+        "texto": "Essa energia vem principalmente do açúcar que está nas comidas. É como se o corpo transformasse o lanche em combustível!"
       }
     ]
   },
   {
     "id_explicacao": 2,
-    "id_questao": 2,
-    "tipo": "pre_questao",
+    "id_questao": 1,
+    "tipo": "pos_resposta_correta",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "O ar que respiramos é uma mistura de vários gases. Qual deles é o mais abundante?"
+        "texto": "✅ Muito bem! O açúcar das comidas vira glicose, que o corpo usa como combustível para ter energia!"
       }
     ]
   },
   {
     "id_explicacao": 3,
     "id_questao": 1,
-    "tipo": "pos_resposta_correta",
+    "tipo": "pos_resposta_errada",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Parabéns! Paris é realmente a capital da França. C'est magnifique!"
+        "texto": "❌ O vento e o sono não dão energia para o corpo. Quem faz isso são os alimentos!"
       }
     ]
   },
   {
     "id_explicacao": 4,
-    "id_questao": 3,
+    "id_questao": 2,
     "tipo": "pre_questao",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Bem-vindo à unidade 'Navegando na Interface'! Para te ajudar a se localizar, vamos explorar como você pode acompanhar seu progresso no Melli Hero."
+        "texto": "Imagina que seu corpo é um carro e precisa de gasolina pra funcionar."
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/interface_modulo_exemplo.png"
+        "url_media": "/img/gasolina_corpo.jpg"
       },
       {
         "tipo_media": "texto",
-        "texto": "A página de módulos e unidades é o seu mapa principal. Preste atenção aos círculos e textos para saber onde você está e o que vem a seguir!"
+        "texto": "A glicose é o tipo de 'gasolina' que o corpo usa para ter energia e fazer tudo: correr, pensar, estudar e até dormir!"
       }
     ]
   },
   {
     "id_explicacao": 5,
-    "id_questao": 3,
+    "id_questao": 2,
     "tipo": "pos_resposta_correta",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Isso mesmo! A seção 'Aprender' ou as páginas específicas de módulo são onde você vê sua trilha de unidades. Continue assim!"
+        "texto": "✅ Isso mesmo! A glicose é o combustível do corpo, usada em todas as atividades diárias."
       }
     ]
   },
   {
     "id_explicacao": 6,
-    "id_questao": 3,
-    "tipo": "pos_resposta_incorreta",
+    "id_questao": 2,
+    "tipo": "pos_resposta_errada",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Quase lá! Lembre-se que o progresso em unidades é visualizado principalmente na página do módulo em 'Aprender'."
+        "texto": "❌ A glicose não é um vírus nem uma vitamina. Ela é um açúcar que o corpo transforma em energia!"
       }
     ]
   },
   {
     "id_explicacao": 7,
-    "id_questao": 4,
+    "id_questao": 3,
     "tipo": "pre_questao",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Agora que você sabe onde ver as unidades, vamos testar seu conhecimento sobre as informações do seu perfil na tela."
+        "texto": "A glicose é como o combustível do nosso corpo."
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/perfil_info_exemplo.png"
+        "url_media": "/img/insulina_chave.jpg"
       },
       {
         "tipo_media": "texto",
-        "texto": "Onde estão essas informações vitais que te ajudam a monitorar seu desempenho e status como Hero?"
+        "texto": "Igual a gasolina para um carro ou bateria para um videogame. "
       }
     ]
   },
   {
     "id_explicacao": 8,
-    "id_questao": 4,
+    "id_questao": 3,
     "tipo": "pos_resposta_correta",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Perfeito! A coluna lateral esquerda é o seu painel pessoal de status. Você está dominando a interface!"
+        "texto": "✅ Exato! O corpo não consegue usar a glicose corretamente e ela se acumula no sangue."
       }
     ]
   },
   {
     "id_explicacao": 9,
-    "id_questao": 4,
-    "tipo": "pos_resposta_incorreta",
+    "id_questao": 3,
+    "tipo": "pos_resposta_errada",
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "A informação do perfil é bastante visível! Dê uma olhada na barra lateral esquerda da tela do módulo."
+        "texto": "❌ No diabetes, o corpo tem dificuldade para usar a glicose como energia — ela não entra nas células direito!"
+      }
+    ]
+  },
+  {
+    "id_explicacao": 10,
+    "id_questao": 4,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "O Diabetes Mellitus é uma condição em que o corpo tem dificuldade para usar a glicose como energia."
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "É como se o corpo tivesse dificuldade de transformar o açúcar em força para o dia a dia."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 11,
+    "id_questao": 4,
+    "tipo": "pos_resposta_correta",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "✅ Muito bem! O diabetes é uma condição do corpo, não uma doença contagiosa."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 12,
+    "id_questao": 4,
+    "tipo": "pos_resposta_errada",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "❌ O diabetes não se transmite como uma gripe. Você pode abraçar e brincar com quem tem diabetes sem problema!"
+      }
+    ]
+  },
+  {
+    "id_explicacao": 13,
+    "id_questao": 5,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Existem diferentes tipos de diabetes."
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Com alguns cuidados, dá para controlar e viver uma vida feliz e saudável!"
+        }
+      
+    ]
+  },
+ 
+
+  {
+    "id_explicacao": 14,
+    "id_questao": 6,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "O diabetes não é contagioso."
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Você não pega de outra pessoa como um resfriado."
+      }
+    ]
+  }, 
+
+  {
+    "id_explicacao": 15,
+    "id_questao": 7,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "O corpo humano pode ser comparado a uma grande cidade cheia de casinhas - as células"
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/insulina_chave.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Essas células precisam de energia, que vem principalmente do açúcar (glicose)."
+      }
+    ]
+  },
+
+    {
+    "id_explicacao": 16,
+    "id_questao": 8,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": " Quando comemos, o açúcar dos alimentos entra no sangue."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/estrada_sangue.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "O nosso sangue é como uma estrada que viaja pelo corpo todo. Ele carrega a glicose (o açúcar doce) para todas as casinhas do corpo."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 17,
+    "id_questao": 9,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "O açúcar (glicose) viaja feliz na estrada de sangue, mas quando chega na porta da casinha (a célula), ela está trancada!"
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/porta_trancada.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "O açúcar não consegue entrar para dar energia!"
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 18,
+    "id_questao": 10,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Para o açúcar entrar na casinha (célula), é preciso uma chave especial."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/porta_enferrujada.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "A chave especia é chamada de INSULINA!"
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 19,
+    "id_questao": 11,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": " Às vezes a Insulina, dá problema"
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/insulina_problema.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "e não consegue abrir a porta das células para o açúcar entrar."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 20,
+    "id_questao": 12,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quando o açúcar (o combustível) não consegue entrar nas casinhas."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/insulina_problema.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "ele fica preso na estrada (no sangue), deixando o sangue com açúcar demais! "
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 21,
+    "id_questao": 13,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Hipoglicemia é quando o açúcar no sangue está muito baixo, deixando o corpo sem energia suficiente."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/gotinha_triste.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Por isso, é importante reconhecer os sinais e agir rápido oferecendo um alimento doce."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 107,
+    "id_questao": 16,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quando o açúcar está baixo, o corpo fica cansado, com fome ou tonto."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/sinal_alerta.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Aprender a identificar a hipoglicemia ajuda a prevenir quedas perigosas de energia."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 108,
+    "id_questao": 32,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "A hipoglicemia pode acontecer quando a pessoa pula refeições ou faz muito exercício sem se alimentar direito."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/comidinhas_coloridas.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Manter horários e lanches planejados ajuda a evitar esses momentos de baixo açúcar."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 109,
+    "id_questao": 32,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Pular refeições significa que o corpo não recebe energia suficiente, e o açúcar cai rapidamente."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/relogio_lanchinho.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Planejar os horários das refeições ajuda a manter a glicemia estável."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 110,
+    "id_questao": 33,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Os sintomas da hipoglicemia incluem tremedeira, suor frio, fome intensa, tontura e cansaço."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/emoji_tremendo.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Muita sede e boca seca aparecem quando o açúcar está alto, não baixo."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 111,
+    "id_questao": 33,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Sinais como suor frio ou tremedeira mostram que o corpo precisa de açúcar rápido."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/sinal_alerta.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "É importante oferecer um lanche doce nesses casos."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 112,
+    "id_questao": 34,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quando o açúcar está muito baixo, alimentos doces como suco de laranja, balas ou glicose em gel ajudam rapidamente."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/suco_bala.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Isso dá energia imediata para o corpo voltar ao normal."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 113,
+    "id_questao": 34,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Oferecer água ou salada não ajuda a subir o açúcar rapidamente."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/copo_suco.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Alimentos doces são essenciais em uma hipoglicemia."
+      }
+    ]
+  },
+
+  {
+  "id_explicacao": 114,
+  "id_questao": 35,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Hiperglicemia é quando o açúcar no sangue fica muito alto, acima do que o corpo consegue usar."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Isso acontece porque falta insulina ou porque o corpo não consegue usar bem a insulina."
+    }
+  ]
+},
+
+{
+  "id_explicacao": 115,
+  "id_questao": 36,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Quando o açúcar fica muito alto, o corpo tenta eliminar o excesso fazendo mais xixi."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Por isso a pessoa sente muita sede e precisa ir ao banheiro toda hora."
+    }
+  ]
+},
+
+
+
+{
+  "id_explicacao": 116,
+  "id_questao": 37,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "A hiperglicemia pode acontecer quando o corpo não tem insulina suficiente."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Ela também pode surgir quando a pessoa come muitos carboidratos sem a insulina certa."
+    }
+  ]
+},
+
+{
+  "id_explicacao": 117,
+  "id_questao": 38,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Quando o açúcar fica alto demais ou baixo demais, isso pode ser perigoso."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Nessas situações, é preciso agir rápido, porque elas não se resolvem sozinhas."
+    }
+  ]
+},
+{
+  "id_explicacao": 118,
+  "id_questao": 39,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Hipoglicemia grave é quando o açúcar no sangue fica muito baixo, abaixo de 54 mg/dL."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Isso pode deixar a pessoa confusa, fraca ou até causar desmaio."
+    }
+  ]
+},
+
+{
+  "id_explicacao": 119,
+  "id_questao": 40,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Para evitar hipoglicemia, é importante comer nos horários certos e não pular refeições."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Também é essencial seguir o plano de insulina e medicamentos indicado pelo médico."
+    }
+  ]
+},
+{
+  "id_explicacao": 120,
+  "id_questao": 41,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "O tratamento do diabetes ajuda a manter o açúcar do sangue em níveis seguros."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Isso evita problemas causados por açúcar muito alto ou muito baixo."
+    }
+  ]
+},
+{
+  "id_explicacao": 121,
+  "id_questao": 42,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "O tratamento do diabetes tem várias partes porque cada uma ajuda de um jeito diferente."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Comida, exercícios e insulina trabalham juntos para manter o açúcar estável."
+    }
+  ]
+},
+{
+  "id_explicacao": 122,
+  "id_questao": 43,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Uma alimentação saudável ajuda o corpo a controlar o açúcar no sangue."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Ela evita que o açúcar suba demais depois das refeições."
+    }
+  ]
+},
+{
+  "id_explicacao": 123,
+  "id_questao": 44,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Quando a pessoa se exercita, o corpo usa a glicose para ter energia."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Isso ajuda a baixar o açúcar e melhorar a ação da insulina."
+    }
+  ]
+},
+{
+  "id_explicacao": 124,
+  "id_questao": 45,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Medir a glicemia mostra como está o nível de açúcar no sangue naquele momento."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "É como checar o painel de controle do corpo!"
+    }
+  ]
+},
+{
+  "id_explicacao": 125,
+  "id_questao": 46,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Se a insulina fosse engolida, o estômago quebraria a proteína dela."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Assim, ela não chegaria ao sangue e não funcionaria."
+    }
+  ]
+},
+
+{
+  "id_explicacao": 126,
+  "id_questao": 47,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "A insulina deve ser aplicada na camada de gordura da pele."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Locais como barriga, coxa, braço e bumbum são os melhores."
+    }
+  ]
+},
+{
+  "id_explicacao": 127,
+  "id_questao": 48,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Aplicar sempre no mesmo lugar pode formar carocinhos chamados lipodistrofias."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Variar os locais ajuda a insulina a funcionar melhor."
+    }
+  ]
+},
+{
+  "id_explicacao": 128,
+  "id_questao": 49,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Quem tem diabetes pode comer doces, mas precisa planejar e não exagerar."
+    }
+  ]
+},
+{
+  "id_explicacao": 129,
+  "id_questao": 50,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "A alimentação saudável ajuda a controlar o açúcar e deixa o corpo funcionando bem."
+    }
+  ]
+},
+{
+  "id_explicacao": 130,
+  "id_questao": 51,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Mesmo quem tem diabetes pode comer doces, mas sempre com equilíbrio."
+    }
+  ]
+},
+{
+  "id_explicacao": 131,
+  "id_questao": 52,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Os exercícios ajudam o corpo a usar o açúcar para ter energia."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Isso faz o açúcar do sangue baixar e melhora a ação da insulina."
+    }
+  ]
+},
+{
+  "id_explicacao": 132,
+  "id_questao": 53,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Alguns exercícios podem baixar muito o açúcar."
+    },
+    {
+      "tipo_media": "texto",
+      "texto": "Por isso às vezes é preciso comer um lanchinho antes de treinar."
+    }
+  ]
+},
+{
+  "id_explicacao": 133,
+  "id_questao": 54,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "A alimentação saudável ajuda o corpo a funcionar bem e controla o açúcar do sangue."
+    }
+  ]
+},
+{
+  "id_explicacao": 134,
+  "id_questao": 55,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Comer nos horários certos ajuda o açúcar a não subir ou cair rápido demais."
+    }
+  ]
+},
+{
+  "id_explicacao": 135,
+  "id_questao": 56,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "Equilíbrio significa comer vários tipos de alimentos e evitar exageros."
+    }
+  ]
+},
+
+{
+  "id_explicacao": 136,
+  "id_questao": 57,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+      "texto": "A atividade física ajuda o corpo a usar a glicose e manter o açúcar controlado."
+    }
+  ]
+},
+{
+
+"id_explicacao": 137,
+  "id_questao": 58,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+        "texto": "Fazer exercícios ajuda o corpo a usar a insulina de forma mais eficiente."
+    }
+  ]
+      },
+  {
+    "id_explicacao": 138,
+  "id_questao": 59,
+  "tipo": "pre_questao",
+  "blocos": [
+    {
+      "tipo_media": "texto",
+        "texto": "Quando alguém com diabetes se exercita, o corpo gasta mais energia e usa o açúcar do sangue."
+    }
+  ]
+      },
+
+
+
+
+  {
+    "id_explicacao": 139,
+    "id_questao": 60,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Uma alimentação saudável ajuda o corpo a usar melhor a energia dos alimentos."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/alimentacao_saudavel.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Isso é essencial para manter o açúcar do sangue sob controle."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 140,
+    "id_questao": 60,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quando a pessoa faz escolhas saudáveis, o corpo funciona direitinho."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/prato_colorido.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Assim fica mais fácil manter a glicemia equilibrada no dia a dia."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 141,
+    "id_questao": 61,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Comer nos horários certos ajuda o corpo a não ter picos de açúcar."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/horario_refeicao.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Isso mantém a glicemia mais estável ao longo do dia."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 142,
+    "id_questao": 61,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Organizar os horários das refeições ajuda o corpo a entender quando esperar energia."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/rotina_alimentar.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Assim o açúcar não sobe nem desce de repente."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 143,
+    "id_questao": 62,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Equilíbrio na alimentação significa comer um pouco de cada tipo de alimento."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/equilibrio_prato.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Assim o corpo recebe tudo o que precisa sem exageros."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 144,
+    "id_questao": 62,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Variar os alimentos ajuda o corpo a ficar forte e saudável."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/pratos_variedade.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Equilíbrio é comer de tudo um pouco, sem excesso."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 145,
+    "id_questao": 63,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "A atividade física ajuda o corpo a usar o açúcar como energia."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/exercicio_glicose.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Isso ajuda a manter a glicemia mais controlada."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 146,
+    "id_questao": 63,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quando a pessoa se exercita, o corpo trabalha melhor e usa a glicose de maneira eficiente."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/atividade_fisica.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Isso melhora diretamente o controle do diabetes."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 147,
+    "id_questao": 64,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Viver bem com diabetes é manter uma rotina equilibrada."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/rotina_equilibrada.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Alimentação, descanso e cuidados ajudam o corpo a funcionar melhor."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 148,
+    "id_questao": 64,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "O segredo é manter hábitos saudáveis que deixam o corpo forte."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/habitos_saudaveis.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Com equilíbrio, é possível viver bem e controlar o diabetes."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 149,
+    "id_questao": 65,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Fazer refeições regulares ajuda a evitar picos e quedas de açúcar."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/refeicoes_regulares.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "O corpo se mantém mais equilibrado ao longo do dia."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 150,
+    "id_questao": 65,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quando a pessoa come sempre nos mesmos horários, o corpo sabe quando receber energia."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/rotina_refeicoes.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Isso evita que o açúcar suba demais ou caia rápido."
+      }
+    ]
+  },
+
+  {
+    "id_explicacao": 151,
+    "id_questao": 66,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Quem tem diabetes pode comer coisas gostosas, sim!"
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/comida_gostosa_equilibrio.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "O segredo é equilibrar as escolhas e evitar exageros."
+      }
+    ]
+  },
+  {
+    "id_explicacao": 152,
+    "id_questao": 66,
+    "tipo": "pre_questao",
+    "blocos": [
+      {
+        "tipo_media": "texto",
+        "texto": "Nada é proibido! O importante é saber escolher bem os alimentos."
+      },
+      {
+        "tipo_media": "imagem",
+        "url_media": "/img/escolhas_saudaveis.png"
+      },
+      {
+        "tipo_media": "texto",
+        "texto": "Com equilíbrio, dá para comer coisas gostosas sem prejudicar o controle do diabetes."
       }
     ]
   }
 ]
+
+
+
+
+
+
+
+
+
+
