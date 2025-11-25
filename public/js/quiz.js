@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const colunaEsquerda = document.getElementById("coluna-esquerda");
     const menuToggle = document.getElementById("menu-toggle");
     const mobileMenu = document.getElementById("mobile-menu");
-    const userNicknameSpan = document.getElementById("user-nickname"); 
+    const userNicknameSpan = document.getElementById("user-nickname");
     const userAssiduidadeSpan = document.getElementById("user-assiduidade");
     const userPontosSpan = document.getElementById("user-pontos");
     const btnLogout = document.getElementById('btn-logout');
     const btnLogoutMobile = document.getElementById('btn-logout-mobile');
-    const postExplanationTextElement = document.getElementById('post-explanation-text'); 
+    const postExplanationTextElement = document.getElementById('post-explanation-text');
 
     // Elementos do Quiz
     const unitTitleElement = document.getElementById('unit-title');
@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const questionTextElement = document.getElementById('question-text');
     const alternativesContainer = document.getElementById('alternatives-container');
     const submitButton = document.getElementById('submit-button');
-    const questionArea = document.getElementById('question-area'); 
+    const questionArea = document.getElementById('question-area');
     const resultsArea = document.getElementById('results-area');
     const finalScoreElement = document.getElementById('final-score');
-    
+
     // Elementos da Nova Área de Explicação Passo a Passo
-    const explanationStepArea = document.getElementById('explanation-step-area'); 
+    const explanationStepArea = document.getElementById('explanation-step-area');
     const currentExplanationBlockContent = document.getElementById('current-explanation-block-content');
-    const nextStepButton = document.getElementById('next-step-button'); 
+    const nextStepButton = document.getElementById('next-step-button');
 
     // Elementos da área de Ranking
     const rankingArea = document.getElementById('ranking-area');
@@ -40,13 +40,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     const progressBar = document.getElementById('progress-bar');
 
 
-    let questions = []; 
-    let currentQuestionIndex = 0; 
-    let userScore = 0; 
-    let unitId = null; 
-    let currentModuleId = null; 
-    let currentExplanationBlocks = []; 
-    let currentExplanationBlockIndex = 0; 
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let userScore = 0;
+    let unitId = null;
+    let currentModuleId = null;
+    let currentExplanationBlocks = [];
+    let currentExplanationBlockIndex = 0;
 
     // Variáveis de controle de progresso (NOVO)
     let totalContentSteps = 0;
@@ -71,13 +71,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // NOVO: Função para calcular o total de passos
     function calculateTotalSteps(allQuestions) {
         // Total de passos = (Número de questões) + (Total de blocos de explicação pré-questão)
-        let total = 0; 
-        
+        let total = 0;
+
         allQuestions.forEach(q => {
             total++; // Cada questão conta como um passo de CONSOLIDAÇÃO/PERGUNTA
             if (q.explicacoes_pre_questao && q.explicacoes_pre_questao.length > 0) {
                 // Cada bloco de explicação é um passo individual ANTES da questão
-                total += q.explicacoes_pre_questao.length; 
+                total += q.explicacoes_pre_questao.length;
             }
         });
         totalContentSteps = total;
@@ -108,12 +108,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     async function fetchAuthenticatedData(url, options = {}) {
-        const token = localStorage.getItem('jwtToken'); 
+        const token = localStorage.getItem('jwtToken');
         if (!token) {
             displayFeedbackMessage('Sessão expirada ou não autorizado. Faça login novamente.', 'error');
             localStorage.removeItem('jwtToken');
-            localStorage.removeItem('userId'); 
-            localStorage.removeItem('userNickname'); 
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userNickname');
             setTimeout(() => {
                 window.location.href = '/html/login.html';
             }, 1500);
@@ -126,8 +126,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.status === 401 || response.status === 403) {
             displayFeedbackMessage('Sessão expirada ou não autorizada. Faça login novamente.', 'error');
             localStorage.removeItem('jwtToken');
-            localStorage.removeItem('userId'); 
-            localStorage.removeItem('userNickname'); 
+            localStorage.removeItem('userId');
+            localStorage.removeItem('userNickname');
             setTimeout(() => {
                 window.location.href = '/html/login.html';
             }, 1500);
@@ -135,15 +135,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (!response.ok) {
-            let errorBody = await response.text(); 
+            let errorBody = await response.text();
             let errorData = {};
 
             try {
-                errorData = JSON.parse(errorBody); 
+                errorData = JSON.parse(errorBody);
             } catch (e) {
                 console.warn(`Resposta de erro não-JSON da URL ${url}:`, errorBody);
             }
-            
+
             const errorMessage = errorData.message || `Erro na requisição: ${response.status} ${response.statusText}. Detalhes: ${errorBody.substring(0, 200)}...`;
             displayFeedbackMessage(errorMessage, 'error');
             throw new Error(errorMessage);
@@ -156,11 +156,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
             const user = await fetchAuthenticatedData('/api/users/profile');
             if (user) {
-                userNicknameSpan.textContent = user.nickname; 
+                userNicknameSpan.textContent = user.nickname;
                 userAssiduidadeSpan.textContent = `${user.assiduidade_dias} dias`;
                 userPontosSpan.textContent = user.pontos;
                 localStorage.setItem('userId', user.id_usuario);
-                localStorage.setItem('userNickname', user.nickname); 
+                localStorage.setItem('userNickname', user.nickname);
             }
         } catch (error) {
             console.error('Erro ao carregar perfil do usuário:', error);
@@ -172,13 +172,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         explanationStepArea.classList.add('hidden');
         questionArea.classList.add('hidden');
         resultsArea.classList.add('hidden');
-        rankingArea.classList.add('hidden'); 
+        rankingArea.classList.add('hidden');
     }
 
     function logout() {
         localStorage.removeItem('jwtToken');
-        localStorage.removeItem('userId'); 
-        localStorage.removeItem('userNickname'); 
+        localStorage.removeItem('userId');
+        localStorage.removeItem('userNickname');
         displayFeedbackMessage('Você foi desconectado.', 'success', 500);
         setTimeout(() => {
             window.location.href = '/html/login.html';
@@ -189,51 +189,52 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Funções de Fluxo de Explicações (Duolingo/Mimo Style)
     // =======================================================
 
-    // Renderiza o bloco de explicação atual no container
+// Renderiza o bloco de explicação atual no container
     function renderCurrentExplanationBlock() {
-        currentExplanationBlockContent.innerHTML = ''; 
+        currentExplanationBlockContent.innerHTML = ''; // Limpa o conteúdo anterior
 
-        const expBlock = currentExplanationBlocks[currentExplanationBlockIndex];
+        const currentExplanationPage = currentExplanationBlocks[currentExplanationBlockIndex];
 
-        if (!expBlock) {
-            console.error("Bloco de explicação não encontrado no índice:", currentExplanationBlockIndex);
-            // Isso não deveria acontecer se o fluxo estiver correto
+        if (!currentExplanationPage || !currentExplanationPage.blocos || currentExplanationPage.blocos.length === 0) {
+            console.error("Dados da página de explicação não encontrados ou sem blocos no índice:", currentExplanationBlockIndex);
+            currentExplanationBlockContent.innerHTML = '<p>Nenhum conteúdo para esta explicação.</p>';
+            nextStepButton.textContent = 'Próximo'; // Garante que o usuário possa avançar
             return;
         }
 
-        if (expBlock.texto) {
-            const p = document.createElement('p');
-            p.textContent = expBlock.texto;
-            currentExplanationBlockContent.appendChild(p);
-        }
-        if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
-            const img = document.createElement('img');
-            img.src = expBlock.url_media;
-            img.alt = expBlock.texto || "Conteúdo visual da explicação";
-            currentExplanationBlockContent.appendChild(img);
-        }
-        if (expBlock.url_media && expBlock.tipo_media === 'video') {
-            const iframeContainer = document.createElement('div');
-            iframeContainer.classList.add('iframe-container');
-            const iframe = document.createElement('iframe');
-            
-            // Formata URL do YouTube para embed
-            let videoSrc = expBlock.url_media;
-            if (videoSrc.includes('youtube.com/watch?v=')) {
-                const videoId = videoSrc.split('v=')[1].split('&')[0];
-                videoSrc = `https://www.youtube.com/embed/${videoId}`;
-            } else if (videoSrc.includes('youtu.be/')) {
-                const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
-                videoSrc = `https://www.youtube.com/embed/${videoId}`;
+        // Itera sobre os blocos de conteúdo dentro da página de explicação atual
+        currentExplanationPage.blocos.forEach(block => {
+            if (block.tipo_media === 'texto' && block.texto) {
+                const p = document.createElement('p');
+                p.textContent = block.texto;
+                currentExplanationBlockContent.appendChild(p);
+            } else if (block.tipo_media === 'imagem' && block.url_media) {
+                const img = document.createElement('img');
+                img.src = block.url_media;
+                img.alt = block.texto || "Conteúdo visual da explicação"; // Usa o texto do bloco como alt, se existir
+                img.classList.add('explanation-image'); // Adicione uma classe para estilização da imagem
+                currentExplanationBlockContent.appendChild(img);
+            } else if (block.tipo_media === 'video' && block.url_media) {
+                const iframeContainer = document.createElement('div');
+                iframeContainer.classList.add('iframe-container');
+                const iframe = document.createElement('iframe');
+
+                let videoSrc = block.url_media;
+                if (videoSrc.includes('youtube.com/watch?v=')) {
+                    const videoId = videoSrc.split('v=')[1].split('&')[0];
+                    videoSrc = `https://www.youtube.com/embed/${videoId}`;
+                } else if (videoSrc.includes('youtu.be/')) {
+                    const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
+                    videoSrc = `https://www.youtube.com/embed/${videoId}`;
+                }
+                iframe.src = videoSrc;
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                iframeContainer.appendChild(iframe);
+                currentExplanationBlockContent.appendChild(iframeContainer);
             }
-            iframe.src = videoSrc;
-            
-            iframe.frameBorder = "0";
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-            iframeContainer.appendChild(iframe);
-            currentExplanationBlockContent.appendChild(iframeContainer);
-        }
+        });
 
         // Atualiza o texto do botão
         if (currentExplanationBlockIndex < currentExplanationBlocks.length - 1) {
@@ -241,7 +242,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             nextStepButton.textContent = 'Iniciar Questão';
         }
-    }
+    } 
 
     function displayExplanationStep() {
         hideAllContainers();
@@ -249,14 +250,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         userFeedbackMessage.classList.add('hidden'); // Esconde feedback da tela
 
         renderCurrentExplanationBlock();
-        
+
         nextStepButton.removeEventListener('click', handleNextStep);
         nextStepButton.addEventListener('click', handleNextStep);
     }
 
     function handleNextStep() {
         // Avanca o progresso na barra para o bloco de explicação atual
-        updateProgressBar(1); 
+        updateProgressBar(1);
 
         currentExplanationBlockIndex++;
         if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
@@ -276,30 +277,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         userFeedbackMessage.classList.add('hidden'); // Esconde feedback da tela
 
         const question = questions[currentQuestionIndex];
-        
+
         questionCounterElement.textContent = `Questão ${currentQuestionIndex + 1} de ${questions.length}`;
 
-        if (question.img_url_pergunta) { 
+        if (question.img_url_pergunta) {
             questionImageElement.src = question.img_url_pergunta;
             questionImageElement.classList.remove('hidden');
         } else {
             questionImageElement.classList.add('hidden');
-            questionImageElement.src = ''; 
+            questionImageElement.src = '';
         }
 
         questionTextElement.textContent = question.enunciado_pergunta;
-        postExplanationTextElement.classList.add('hidden'); 
-        postExplanationTextElement.textContent = ''; 
-        alternativesContainer.innerHTML = ''; 
+        postExplanationTextElement.classList.add('hidden');
+        postExplanationTextElement.textContent = '';
+        alternativesContainer.innerHTML = '';
 
-        question.respostas.forEach(alternative => { 
+        question.respostas.forEach(alternative => {
             const label = document.createElement('label');
             label.className = 'alternative-item'; // Nova classe base
             label.innerHTML = `
                 <input type="radio" name="alternative" value="${alternative.id_resposta}" data-correct="${alternative.eh_correto ? '1' : '0'}">
                 <span>${alternative.texto_resposta}</span>
             `;
-            
+
             // Adiciona listener para marcar a alternativa como 'selected' visualmente
             label.addEventListener('click', () => {
                 // Remove 'selected' de todas as outras
@@ -311,13 +312,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // Marca o radio button interno
                 label.querySelector('input[type="radio"]').checked = true;
             });
-            
+
             alternativesContainer.appendChild(label);
         });
 
         submitButton.disabled = false;
         submitButton.textContent = 'Confirmar Resposta';
-        submitButton.removeEventListener('click', handleSubmitOrNextQuestion); 
+        submitButton.removeEventListener('click', handleSubmitOrNextQuestion);
         submitButton.addEventListener('click', handleSubmitOrNextQuestion);
     }
 
@@ -330,9 +331,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return;
             }
 
-            const currentQuestion = questions[currentQuestionIndex]; 
+            const currentQuestion = questions[currentQuestionIndex];
             const isCorrect = selectedAlternativeInput.dataset.correct === '1';
-            
+
             const labelSelected = selectedAlternativeInput.closest('label');
             alternativesContainer.querySelectorAll('input').forEach(input => input.disabled = true); // Desabilita inputs
             alternativesContainer.classList.add('disabled'); // Adiciona a classe para desativar cliques no CSS
@@ -343,10 +344,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 displayFeedbackMessage('Resposta Correta! Bom trabalho!', 'success');
             } else {
                 labelSelected.classList.add('wrong-answer');
-                
+
                 // Revela a alternativa correta
                 const correctAnswerLabel = alternativesContainer.querySelector('input[data-correct="1"]').closest('label');
-                if (correctAnswerLabel) { 
+                if (correctAnswerLabel) {
                     correctAnswerLabel.classList.add('correct-answer-feedback');
                 }
 
@@ -360,7 +361,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             submitButton.textContent = 'Próxima Questão';
         } else {
             // Avanca o progresso na barra para a questão atual
-            updateProgressBar(1); 
+            updateProgressBar(1);
 
             // Após a resposta, avança para a próxima questão
             currentQuestionIndex++;
@@ -374,7 +375,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             item.classList.remove('correct-answer', 'wrong-answer', 'correct-answer-feedback', 'selected');
             alternativesContainer.classList.remove('disabled'); // Remove a classe para reativar os cliques
             item.querySelector('input').disabled = false;
-            item.querySelector('input').checked = false; 
+            item.querySelector('input').checked = false;
         });
         postExplanationTextElement.classList.add('hidden');
         postExplanationTextElement.textContent = '';
@@ -391,8 +392,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const question = questions[index];
         currentExplanationBlocks = question.explicacoes_pre_questao || [];
-        currentExplanationBlockIndex = 0; 
-        
+        currentExplanationBlockIndex = 0;
+
         if (currentExplanationBlocks.length > 0) {
             displayExplanationStep();
         } else {
@@ -406,7 +407,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Função para exibir os resultados finais e salvar o progresso
     async function showResults() {
         hideAllContainers();
-        resultsArea.classList.remove('hidden'); 
+        resultsArea.classList.remove('hidden');
 
         const totalQuestions = questions.length;
         const percentage = (userScore / totalQuestions) * 100;
@@ -426,28 +427,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    id_modulo: currentModuleId, 
+                body: JSON.stringify({
+                    id_modulo: currentModuleId,
                     pontuacao: userScore, // Envia a pontuação total do quiz
-                    concluido: true 
+                    concluido: true
                 }),
             });
 
             if (response) {
                 console.log('Unidade concluída e progresso salvo:', response);
                 await loadUserProfile(); // Atualiza o perfil do usuário (XP, etc.)
-                
+
                 // 2. Chamar a função para exibir o ranking
                 await displayRanking();
 
-                const moduleIdToRedirect = currentModuleId; 
+                const moduleIdToRedirect = currentModuleId;
 
                 // 3. Configurar o botão da tela de ranking para redirecionar
-                returnToModulesFromRankingButton.addEventListener('click', () => { 
+                returnToModulesFromRankingButton.addEventListener('click', () => {
                     if (moduleIdToRedirect) {
                         window.location.href = `/html/modulo.html?id=${moduleIdToRedirect}`;
                     } else {
-                        window.location.href = '/html/home.html'; 
+                        window.location.href = '/html/home.html';
                     }
                 });
 
@@ -462,17 +463,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     async function displayRanking() {
         hideAllContainers();
         rankingArea.classList.remove('hidden');
-        rankingList.innerHTML = ''; 
+        rankingList.innerHTML = '';
 
         try {
-            const rankingData = await fetchAuthenticatedData('/api/users/ranking'); 
-            
-            const top5 = rankingData.slice(0, 5); 
+            const rankingData = await fetchAuthenticatedData('/api/users/ranking');
+
+            const top5 = rankingData.slice(0, 5);
 
             top5.forEach((user, index) => {
                 const rankPosition = index + 1;
                 const rankingItem = document.createElement('div');
-                rankingItem.className = `ranking-item`; 
+                rankingItem.className = `ranking-item`;
 
                 if (rankPosition === 1) rankingItem.classList.add('top-1');
                 if (rankPosition === 2) rankingItem.classList.add('top-2');
@@ -499,27 +500,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnPerfil.addEventListener("click", () => {
         colunaEsquerda.classList.toggle("visivel");
     });
-    
-    if (btnPerfilMobile) { 
+
+    if (btnPerfilMobile) {
         btnPerfilMobile.addEventListener("click", () => {
-            colunaEsquerda.classList.toggle("visivel"); 
-            mobileMenu.classList.remove("visivel"); 
-        }); 
+            colunaEsquerda.classList.toggle("visivel");
+            mobileMenu.classList.remove("visivel");
+        });
     }
 
     menuToggle.addEventListener("click", () => {
         mobileMenu.classList.toggle("visivel");
-        colunaEsquerda.classList.remove("visivel"); 
+        colunaEsquerda.classList.remove("visivel");
     });
 
     btnLogout.addEventListener('click', logout);
-    
-    if (btnLogoutMobile) { 
-        btnLogoutMobile.addEventListener('click', logout); 
+
+    if (btnLogoutMobile) {
+        btnLogoutMobile.addEventListener('click', logout);
     }
 
     // --- Inicialização da página ---
-    loadUserProfile(); 
+    loadUserProfile();
 
     const urlParams = new URLSearchParams(window.location.search);
     unitId = urlParams.get('unitId');
@@ -536,14 +537,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const unitInfo = await fetchAuthenticatedData(`/api/content/unidade/${unitId}`);
         if (unitInfo) {
             unitTitleElement.textContent = `Quiz: ${unitInfo.nome_unidade}`;
-            
+
         }
 
         const fetchedQuestions = await fetchAuthenticatedData(`/api/content/unidade/${unitId}/questions`);
         if (fetchedQuestions && fetchedQuestions.length > 0) {
             questions = fetchedQuestions;
-            currentQuestionIndex = 0; 
-            
+            currentQuestionIndex = 0;
+
             // NOVO: Calcula o total de passos antes de iniciar o quiz
             calculateTotalSteps(questions);
 

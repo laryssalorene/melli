@@ -153,16 +153,13 @@ const contentService = {
         let unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
 
         unitQuestions = unitQuestions.map(question => {
-            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao');
-            
-            // CORREÇÃO AQUI: Acessar 'blocos' e verificar antes de sort
-            const explanationBlocks = preExplanationsEntry && preExplanationsEntry.blocos 
-                                        ? preExplanationsEntry.blocos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0)) // Garante que 'ordem' existe
-                                        : [];
+            const preExplanationsEntries = explanations
+                .filter(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao')
+                .sort((a, b) => (a.id_explicacao || 0) - (b.id_explicacao || 0));
 
             return {
                 ...question,
-                explicacoes_pre_questao: explanationBlocks
+                explicacoes_pre_questao: preExplanationsEntries
             };
         });
 
@@ -182,16 +179,13 @@ const contentService = {
         let unitQuestions = questions.filter(q => q.id_unidade === parseInt(unitId, 10));
 
         unitQuestions = unitQuestions.map(question => {
-            const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao');
-            
-            // CORREÇÃO AQUI: Acessar 'blocos' e verificar antes de sort
-            const explanationBlocks = preExplanationsEntry && preExplanationsEntry.blocos
-                                        ? preExplanationsEntry.blocos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0))
-                                        : [];
+            const preExplanationsEntries = explanations
+                .filter(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao')
+                .sort((a, b) => (a.id_explicacao || 0) - (b.id_explicacao || 0));
 
             return {
                 ...question,
-                explicacoes_pre_questao: explanationBlocks
+                explicacoes_pre_questao: preExplanationsEntries
             };
         });
         return unitQuestions;
@@ -204,14 +198,11 @@ const contentService = {
         let question = questions.find(q => q.id_questao === parseInt(questionId, 10));
         if (!question) return null;
 
-        const preExplanationsEntry = explanations.find(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao');
-        
-        // CORREÇÃO AQUI: Acessar 'blocos' e verificar antes de sort
-        const explanationBlocks = preExplanationsEntry && preExplanationsEntry.blocos
-                                    ? preExplanationsEntry.blocos.sort((a, b) => (a.ordem || 0) - (b.ordem || 0))
-                                    : [];
+        const preExplanationsEntries = explanations
+            .filter(e => e.id_questao === question.id_questao && e.tipo === 'pre_questao')
+            .sort((a, b) => (a.id_explicacao || 0) - (b.id_explicacao || 0));
 
-        question.explicacoes_pre_questao = explanationBlocks;
+        question.explicacoes_pre_questao = preExplanationsEntries;
 
         return question;
     }
