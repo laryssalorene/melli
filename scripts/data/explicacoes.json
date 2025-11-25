@@ -92,7 +92,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/insulina_chave.jpg"
+        "url_media": "/img/glicose_carro.png"
       },
       {
         "tipo_media": "texto",
@@ -204,7 +204,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/insulina_chave.png"
+        "url_media": "/img/corpo_casa.png"
       },
       {
         "tipo_media": "texto",
@@ -224,7 +224,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/estrada_sangue.png"
+        "url_media": "/img/acucar_sangue.png"
       },
       {
         "tipo_media": "texto",
@@ -244,7 +244,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/porta_trancada.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -264,7 +264,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/porta_enferrujada.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -284,7 +284,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/insulina_problema.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -303,7 +303,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/insulina_problema.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -323,7 +323,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/acucar_demais.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -342,7 +342,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/sinal_alerta.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -361,7 +361,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/comidinhas_coloridas.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -380,7 +380,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/relogio_lanchinho.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -399,7 +399,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/emoji_tremendo.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -418,7 +418,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/sinal_alerta.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -437,7 +437,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/suco_bala.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -456,7 +456,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/copo_suco.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -828,7 +828,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/alimentacao_saudavel.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -847,7 +847,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/prato_colorido.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -867,7 +867,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/horario_refeicao.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -886,7 +886,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/rotina_alimentar.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -906,7 +906,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/equilibrio_prato.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -925,7 +925,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/pratos_variedade.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -945,7 +945,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/exercicio_glicose.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -964,7 +964,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/atividade_fisica.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -984,7 +984,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/rotina_equilibrada.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -1003,7 +1003,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/habitos_saudaveis.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -1023,7 +1023,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/refeicoes_regulares.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -1042,7 +1042,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/rotina_refeicoes.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -1062,7 +1062,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/comida_gostosa_equilibrio.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -1081,7 +1081,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/escolhas_saudaveis.png"
+        "url_media": "/img/logo.jpeg"
       },
       {
         "tipo_media": "texto",
@@ -1090,13 +1090,3 @@
     ]
   }
 ]
-
-
-
-
-
-
-
-
-
-
