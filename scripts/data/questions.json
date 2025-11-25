@@ -320,13 +320,13 @@
         "id_questao": 12
       },
       {
-        "id_resposta": 34,
+        "id_resposta": 35,
         "texto_resposta": "O sol.",
         "eh_correto": false,
         "id_questao": 12
       },
       {
-        "id_resposta": 34,
+        "id_resposta": 36,
         "texto_resposta": "O sal.",
         "eh_correto": false,
         "id_questao": 12
@@ -334,15 +334,57 @@
     ]
   },
   {
-    "id_questao": 15,
+    "id_questao": 13,
     "id_unidade": 103,
-    "enunciado_pergunta": "No texto, o sangue é comparado às estradas. O que ele carrega nessas estradas?",
+    "enunciado_pergunta": "Qual o problema da Insulina não funcionar e o açúcar fica preso no sangue sem poder entrar nas casinhas?",
     "img_url_pergunta": null,
     "explicacao_pergunta": "O sangue leva a glicose por todo o corpo, como estradas que levam coisas importantes para as casas.",
     "respostas": [
-      { "id_resposta": 47, "texto_resposta": "Brinquedos e jogos", "eh_correto": false, "id_questao": 25 },
-      { "id_resposta": 48, "texto_resposta": "Açúcar que vira energia para as células", "eh_correto": true, "id_questao": 25 },
-      { "id_resposta": 49, "texto_resposta": "Ar para encher balões", "eh_correto": false, "id_questao": 25 }
+      {
+        "id_resposta": 37,
+        "texto_resposta": "Soneca",
+        "eh_correto": false,
+        "id_questao": 13
+      },
+      {
+        "id_resposta": 38,
+        "texto_resposta": "Diabetes",
+        "eh_correto": true,
+        "id_questao": 13
+      },
+      {
+        "id_resposta": 39,
+        "texto_resposta": "Festa do açúcar.",
+        "eh_correto": false,
+        "id_questao": 13
+      }
+    ]
+  },
+  {
+    "id_questao": 14,
+    "id_unidade": 201,
+    "enunciado_pergunta": "Qual o problema da Insulina não funcionar e o açúcar fica preso no sangue sem poder entrar nas casinhas?",
+    "img_url_pergunta": null,
+    "explicacao_pergunta": "O sangue leva a glicose por todo o corpo, como estradas que levam coisas importantes para as casas.",
+    "respostas": [
+      {
+        "id_resposta": 40,
+        "texto_resposta": "Soneca",
+        "eh_correto": false,
+        "id_questao": 14
+      },
+      {
+        "id_resposta": 41,
+        "texto_resposta": "Diabetes",
+        "eh_correto": true,
+        "id_questao": 14
+      },
+      {
+        "id_resposta": 42,
+        "texto_resposta": "Festa do açúcar.",
+        "eh_correto": false,
+        "id_questao": 14
+      }
     ]
   },
    

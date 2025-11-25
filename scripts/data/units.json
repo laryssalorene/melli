@@ -2,8 +2,8 @@
   {
     "id_unidade": 101, 
     "id_modulo": 1,
-    "nome_unidade": "Diabetes",
-    "descricao": "O que é? Um misterio no Corpo",
+    "nome_unidade": "Energia",
+    "descricao": "Açúcar? Um misterio no Corpo",
     "ordem": 1,
     "pontos_por_conclusao": 10
   },
@@ -11,65 +11,45 @@
     
     "id_unidade": 102, 
     "id_modulo": 1,
-    "nome_unidade": "A Incrível Viagem do Açúcar e o Papel do Diabetes",
-    "descricao": "Papel do Diabetes no nosso corpo",
+    "nome_unidade": "As Casinhas e a chave mágica",
+    "descricao": "Insulina abrindo portas",
     "ordem": 1,
     "pontos_por_conclusao": 10
   },
   {
     "id_unidade": 103, 
     "id_modulo": 1,
-    "nome_unidade": "Sinal Vermelho - Hipoglicemia",
-    "descricao": "Explore o açucar no sangue quando fica baixo.",
+    "nome_unidade": "Diabetes",
+    "descricao": "O que é?!.",
     "ordem": 2,
     "pontos_por_conclusao": 15
 
   },
   {
-     "id_unidade": 104, 
-    "id_modulo": 1,
+     "id_unidade": 201, 
+    "id_modulo": 2,
     "nome_unidade": "Sinal Vermelho - Hiperglicemia",
     "descricao": "Explore o açucar no sangue quando fica alto.",
-    "ordem": 2,
+    "ordem": 1,
     "pontos_por_conclusao": 15
   },
   {
-     "id_unidade": 105, 
-    "id_modulo": 1,
+     "id_unidade": 202, 
+    "id_modulo": 2,
     "nome_unidade": "Zona de Perigo — Quando o Açúcar Acende o Alerta Geral!",
     "descricao": "Explore o açucar no sangue quando fica muito alto ou muito baixo.",
     "ordem": 2,
     "pontos_por_conclusao": 15
   },
   {
-    "id_unidade": 201, 
+    "id_unidade": 203, 
     "id_modulo": 2,
     "nome_unidade": "Sinal Vermelho Baixinho Hipoglicemias",
     "descricao": "Explore o açucar no sangue quando fica baixo.",
-    "ordem": 1,
+    "ordem": 3,
     "pontos_por_conclusao": 20
   },
-  {
 
-
-    "id_unidade": 202, 
-    "id_modulo": 2,
-    "nome_unidade": "Sinal Vermelho Altinho Hiperglicemias",
-    "descricao": "Explore o açucar no sangue quando fica alto.",
-    "ordem": 1,
-    "pontos_por_conclusao": 20
-
-  },
-  {
-
-    
-     "id_unidade": 203, 
-    "id_modulo": 2,
-    "nome_unidade": "Zona de Perigo — Quando o Açúcar Acende o Alerta Geral!",
-    "descricao": "Explore o açucar no sangue quando fica muito alto ou muito baixo.",
-    "ordem": 2,
-    "pontos_por_conclusao": 15
-  },
   {
     
     "id_unidade": 301, 

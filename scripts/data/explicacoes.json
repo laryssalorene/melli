@@ -10,7 +10,7 @@
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/energia_comida.jpg"
+        "url_media": "/img/energia_comida.png"
       },
       {
         "tipo_media": "texto",
@@ -307,7 +307,7 @@
       },
       {
         "tipo_media": "texto",
-        "texto": "ele fica preso na estrada (no sangue), deixando o sangue com açúcar demais! "
+        "texto": "ele fica preso na estrada (no sangue), deixando o sangue com açúcar demais!"
       }
     ]
   },
@@ -319,21 +319,21 @@
     "blocos": [
       {
         "tipo_media": "texto",
-        "texto": "Hipoglicemia é quando o açúcar no sangue está muito baixo, deixando o corpo sem energia suficiente."
+        "texto": "Esse açúcar demais no sangue é a Diabetes."
       },
       {
         "tipo_media": "imagem",
-        "url_media": "/img/gotinha_triste.png"
+        "url_media": "/img/acucar_demais.png"
       },
       {
         "tipo_media": "texto",
-        "texto": "Por isso, é importante reconhecer os sinais e agir rápido oferecendo um alimento doce."
+        "texto": "A Diabetes faz com que o nosso corpo não consiga usar a energia da comida como deveria."
       }
     ]
   },
   {
-    "id_explicacao": 107,
-    "id_questao": 16,
+    "id_explicacao": 22,
+    "id_questao": 14,
     "tipo": "pre_questao",
     "blocos": [
       {

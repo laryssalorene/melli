@@ -65,21 +65,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const percentage = (currentContentStep / totalContentSteps) * 100;
         progressBar.style.width = `${Math.min(percentage, 100).toFixed(2)}%`;
+        console.log(`Progresso: ${currentContentStep}/${totalContentSteps} (${percentage.toFixed(2)}%)`);
     }
 
     // NOVO: Função para calcular o total de passos
     function calculateTotalSteps(allQuestions) {
         // Total de passos = (Número de questões) + (Total de blocos de explicação pré-questão)
-        let total = allQuestions.length; // Cada questão é um passo principal
+        let total = 0; 
         
         allQuestions.forEach(q => {
-            if (q.explicacoes_pre_questao) {
-                total += q.explicacoes_pre_questao.length;
+            total++; // Cada questão conta como um passo de CONSOLIDAÇÃO/PERGUNTA
+            if (q.explicacoes_pre_questao && q.explicacoes_pre_questao.length > 0) {
+                // Cada bloco de explicação é um passo individual ANTES da questão
+                total += q.explicacoes_pre_questao.length; 
             }
         });
         totalContentSteps = total;
         currentContentStep = 0; // Reseta o contador para o início
         updateProgressBar(0); // Inicializa a barra em 0%
+        console.log(`Total de passos calculado: ${totalContentSteps}`);
     }
 
 
@@ -186,47 +190,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     // =======================================================
 
     // Renderiza o bloco de explicação atual no container
-    function renderAllExplanationBlocks() {
+    function renderCurrentExplanationBlock() {
         currentExplanationBlockContent.innerHTML = ''; 
 
-        currentExplanationBlocks.forEach(expBlock => {
-             if (expBlock.texto) {
-                 const p = document.createElement('p');
-                 p.textContent = expBlock.texto;
-                 currentExplanationBlockContent.appendChild(p);
-             }
-             if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
-                 const img = document.createElement('img');
-                 img.src = expBlock.url_media;
-                 img.alt = expBlock.texto || "Conteúdo visual da explicação";
-                 currentExplanationBlockContent.appendChild(img);
-             }
-             if (expBlock.url_media && expBlock.tipo_media === 'video') {
-                 const iframeContainer = document.createElement('div');
-                 iframeContainer.classList.add('iframe-container');
-                 const iframe = document.createElement('iframe');
-                 
-                 // Formata URL do YouTube para embed
-                 let videoSrc = expBlock.url_media;
-                 if (videoSrc.includes('youtube.com/watch?v=')) {
-                     const videoId = videoSrc.split('v=')[1].split('&')[0];
-                     videoSrc = `https://www.youtube.com/embed/${videoId}`;
-                 } else if (videoSrc.includes('youtu.be/')) {
-                     const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
-                     videoSrc = `https://www.youtube.com/embed/${videoId}`;
-                 }
-                 iframe.src = videoSrc;
-                 
-                 iframe.frameBorder = "0";
-                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-                 iframe.allowFullscreen = true;
-                 iframeContainer.appendChild(iframe);
-                 currentExplanationBlockContent.appendChild(iframeContainer);
-             }
-        });
+        const expBlock = currentExplanationBlocks[currentExplanationBlockIndex];
 
-        // O botão agora sempre leva para a questão
-        nextStepButton.textContent = 'Iniciar Questão';
+        if (!expBlock) {
+            console.error("Bloco de explicação não encontrado no índice:", currentExplanationBlockIndex);
+            // Isso não deveria acontecer se o fluxo estiver correto
+            return;
+        }
+
+        if (expBlock.texto) {
+            const p = document.createElement('p');
+            p.textContent = expBlock.texto;
+            currentExplanationBlockContent.appendChild(p);
+        }
+        if (expBlock.url_media && expBlock.tipo_media === 'imagem') {
+            const img = document.createElement('img');
+            img.src = expBlock.url_media;
+            img.alt = expBlock.texto || "Conteúdo visual da explicação";
+            currentExplanationBlockContent.appendChild(img);
+        }
+        if (expBlock.url_media && expBlock.tipo_media === 'video') {
+            const iframeContainer = document.createElement('div');
+            iframeContainer.classList.add('iframe-container');
+            const iframe = document.createElement('iframe');
+            
+            // Formata URL do YouTube para embed
+            let videoSrc = expBlock.url_media;
+            if (videoSrc.includes('youtube.com/watch?v=')) {
+                const videoId = videoSrc.split('v=')[1].split('&')[0];
+                videoSrc = `https://www.youtube.com/embed/${videoId}`;
+            } else if (videoSrc.includes('youtu.be/')) {
+                const videoId = videoSrc.split('youtu.be/')[1].split('?')[0];
+                videoSrc = `https://www.youtube.com/embed/${videoId}`;
+            }
+            iframe.src = videoSrc;
+            
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+            iframeContainer.appendChild(iframe);
+            currentExplanationBlockContent.appendChild(iframeContainer);
+        }
+
+        // Atualiza o texto do botão
+        if (currentExplanationBlockIndex < currentExplanationBlocks.length - 1) {
+            nextStepButton.textContent = 'Próximo';
+        } else {
+            nextStepButton.textContent = 'Iniciar Questão';
+        }
     }
 
     function displayExplanationStep() {
@@ -234,17 +248,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         explanationStepArea.classList.remove('hidden');
         userFeedbackMessage.classList.add('hidden'); // Esconde feedback da tela
 
-        renderAllExplanationBlocks();
+        renderCurrentExplanationBlock();
         
         nextStepButton.removeEventListener('click', handleNextStep);
         nextStepButton.addEventListener('click', handleNextStep);
     }
 
     function handleNextStep() {
-        // Avanca o progresso na barra
+        // Avanca o progresso na barra para o bloco de explicação atual
         updateProgressBar(1); 
 
-        displayQuestion(); // Acabaram as explicações, mostre a pergunta
+        currentExplanationBlockIndex++;
+        if (currentExplanationBlockIndex < currentExplanationBlocks.length) {
+            displayExplanationStep(); // Mostra o próximo bloco de explicação
+        } else {
+            displayQuestion(); // Acabaram as explicações, mostre a pergunta
+        }
     }
 
     // =======================================================
@@ -340,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             submitButton.textContent = 'Próxima Questão';
         } else {
-            // Avanca o progresso na barra
+            // Avanca o progresso na barra para a questão atual
             updateProgressBar(1); 
 
             // Após a resposta, avança para a próxima questão
@@ -365,8 +384,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Função para iniciar o fluxo de uma questão (explicações ou direto para a pergunta)
     function startQuestionFlow(index) {
         if (index >= questions.length) {
-            // Se todas as questões foram respondidas, avança o progresso e mostra os resultados
-            updateProgressBar(1); 
+            // Se todas as questões foram respondidas, mostra os resultados
             showResults();
             return;
         }
@@ -375,12 +393,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         currentExplanationBlocks = question.explicacoes_pre_questao || [];
         currentExplanationBlockIndex = 0; 
         
-        // Se houver explicações pré-questão, a barra avança no handleNextStep
-        // Senão, ela avança ao carregar a questão
         if (currentExplanationBlocks.length > 0) {
             displayExplanationStep();
         } else {
-            updateProgressBar(1); // Avança o progresso para a tela da questão
+            // Se não há explicações, avança a barra para a questão e exibe-a
+            updateProgressBar(1); // Avanca o progresso para a tela da questão
             displayQuestion();
         }
     }
