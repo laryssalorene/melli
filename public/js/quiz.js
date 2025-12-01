@@ -358,7 +358,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 displayFeedbackMessage('Resposta Incorreta. Revise a explicação abaixo.', 'error');
             }
 
-            submitButton.textContent = 'Próxima Questão';
+            submitButton.textContent = 'Próxima';
         } else {
             // Avanca o progresso na barra para a questão atual
             updateProgressBar(1);

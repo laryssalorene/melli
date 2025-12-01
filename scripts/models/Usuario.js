@@ -200,7 +200,7 @@ class Usuario {
     }
 
     static async getRanking() {
-        const rows = await all(`SELECT nickname, pontos, mascote_id FROM Usuario ORDER BY pontos DESC LIMIT 10`);
+        const rows = await all(`SELECT nickname, pontos, mascote_id FROM Usuario ORDER BY pontos DESC LIMIT 5`);
         return rows.map(row => new Usuario(row)); 
     }
 
